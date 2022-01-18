@@ -1,0 +1,14 @@
+[package]
+name = "Malachite"
+version = "0.1.0"
+authors = [ "michal <michal@tar.black>" ]
+edition = "2021"
+description = "Packaging tool for pacman repositories"
+license-file = "LICENSE.md"
+
+[[bin]]
+name = "mlc"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "2.34.0", default-features = false }
