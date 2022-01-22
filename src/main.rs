@@ -48,8 +48,7 @@ fn main() {
                     ),
             )
             .subcommand(
-                SubCommand::with_name("repo-gen")
-                    .about("Generates repository from build packages")
+                SubCommand::with_name("repo-gen").about("Generates repository from build packages"),
             )
             .subcommand(
                 SubCommand::with_name("prune")

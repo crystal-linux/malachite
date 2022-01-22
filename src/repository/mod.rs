@@ -5,4 +5,6 @@ pub fn build(pkg: String) {
     package::build(pkg);
 }
 
-pub fn generate() { repo::generate(); }
+pub fn generate() {
+    repo::generate();
+}

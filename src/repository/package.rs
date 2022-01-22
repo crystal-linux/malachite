@@ -1,6 +1,6 @@
-use std::{env, fs};
 use std::path::Path;
 use std::process::Command;
+use std::{env, fs};
 
 pub fn build(pkg: String) {
     let dir = env::current_dir().unwrap();
