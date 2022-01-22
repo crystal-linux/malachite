@@ -1,8 +1,10 @@
 use std::env;
+use std::path::Path;
 use std::process::Command;
 
-use clap::{App, AppSettings, Arg, ArgSettings, SubCommand};
 use crate::internal::{crash, info};
+use clap::{App, AppSettings, Arg, ArgSettings, SubCommand};
+use crate::repository::create_config;
 
 use crate::workspace::read_cfg;
 
@@ -24,6 +26,7 @@ fn main() {
                     .help("Sets the level of verbosity"),
             )
             .arg(
+                // TODO implement --exclude
                 Arg::with_name("exclude")
                     .short("e")
                     .long("exclude")
@@ -32,6 +35,7 @@ fn main() {
                     .help("Excludes packages from given operation"),
             )
             .arg(
+                // TODO implement --all
                 Arg::with_name("all")
                     .long("all")
                     .set(ArgSettings::Global)
@@ -49,7 +53,7 @@ fn main() {
                     ),
             )
             .subcommand(
-                SubCommand::with_name("repo-gen").about("Generates repository from build packages"),
+                SubCommand::with_name("repo-gen").about("Generates repository from built packages"),
             )
             .subcommand(
                 SubCommand::with_name("prune")
@@ -68,6 +72,9 @@ fn main() {
                 SubCommand::with_name("pull").alias("update").about(
                     "Pulls all git repositories from mlc.toml branching from current directory",
                 ),
+            )
+            .subcommand(
+                SubCommand::with_name("config").about("Create and/or open local config file"),
             )
             .settings(&[
                 AppSettings::GlobalVersion,
@@ -163,6 +170,7 @@ fn main() {
 
     if let true = matches.is_present("pull") {
         let config = workspace::read_cfg();
+        let cdir = env::current_dir().unwrap();
         for r in config.repo {
             info(format!("Entering working directory: {}", r));
             let dir = format!(
@@ -177,6 +185,7 @@ fn main() {
                 .unwrap()
                 .wait()
                 .unwrap();
+            env::set_current_dir(&cdir).unwrap();
         }
     }
 
@@ -186,5 +195,18 @@ fn main() {
             panic!("Cannot build packages in workspace mode")
         }
         repository::generate();
+    }
+
+    if let true = matches.is_present("config") {
+        if !Path::exists("mlc.toml".as_ref()) {
+            create_config();
+        }
+        let editor = env::var("EDITOR").unwrap_or("nano".to_string());
+        Command::new(editor)
+            .arg("mlc.toml")
+            .spawn()
+            .unwrap()
+            .wait()
+            .unwrap();
     }
 }

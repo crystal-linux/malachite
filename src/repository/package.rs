@@ -1,7 +1,7 @@
+use crate::crash;
 use std::path::Path;
 use std::process::Command;
 use std::{env, fs};
-use crate::crash;
 
 pub fn build(pkg: String) {
     let dir = env::current_dir().unwrap();

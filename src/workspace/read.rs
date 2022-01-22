@@ -1,6 +1,6 @@
+use crate::crash;
 use std::fs;
 use std::path::Path;
-use crate::crash;
 
 use crate::internal::structs::Config;
 
