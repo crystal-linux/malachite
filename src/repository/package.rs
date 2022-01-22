@@ -1,6 +1,7 @@
 use std::path::Path;
 use std::process::Command;
 use std::{env, fs};
+use crate::crash;
 
 pub fn build(pkg: String) {
     let dir = env::current_dir().unwrap();
@@ -8,7 +9,7 @@ pub fn build(pkg: String) {
         fs::create_dir_all("out").unwrap();
     }
     if !Path::exists(pkg.as_ref()) {
-        panic!("Git directory for {} not found, aborting", pkg);
+        crash(format!("Git directory for {} not found, aborting", pkg), 4);
     }
 
     env::set_current_dir(pkg).unwrap();

@@ -2,6 +2,7 @@ use std::env;
 use std::process::Command;
 
 use clap::{App, AppSettings, Arg, ArgSettings, SubCommand};
+use crate::internal::{crash, info};
 
 use crate::workspace::read_cfg;
 
@@ -83,7 +84,7 @@ fn main() {
         let config = workspace::read_cfg();
         if config.mode == "workspace" {
             for r in config.repo {
-                println!("Cloning (workspace mode): {}", r);
+                info(format!("Cloning (workspace mode): {}", r));
                 Command::new("git")
                     .args(&["clone", &r])
                     .spawn()
@@ -93,7 +94,7 @@ fn main() {
             }
         } else if config.mode == "repository" {
             for r in config.repo {
-                println!("Cloning (repository mode): {}", r);
+                info(format!("Cloning (repository mode): {}", r));
                 Command::new("git")
                     .args(&["clone", "--no-checkout", &r])
                     .spawn()
@@ -101,7 +102,7 @@ fn main() {
                     .wait()
                     .unwrap();
 
-                println!("Entering working directory: {}", r);
+                info(format!("Entering working directory: {}", r));
                 let dir = format!(
                     "{}/{}",
                     env::current_dir().unwrap().display(),
@@ -109,7 +110,7 @@ fn main() {
                 );
                 env::set_current_dir(dir).unwrap();
 
-                println!("Resetting unstaged files: {}", r);
+                info(format!("Resetting unstaged files: {}", r));
                 Command::new("git")
                     .arg("reset")
                     .spawn()
@@ -117,7 +118,7 @@ fn main() {
                     .wait()
                     .unwrap();
 
-                println!("Checking out PKGBUILD: {}", r);
+                info(format!("Checking out PKGBUILD: {}", r));
                 Command::new("git")
                     .args(&["checkout", "HEAD", "PKGBUILD"])
                     .spawn()
@@ -126,14 +127,14 @@ fn main() {
                     .unwrap();
             }
         } else {
-            panic!("Invalid mode in mlc.toml");
+            crash("Invalid mode in mlc.toml".to_string(), 1);
         }
     }
 
     if let true = matches.is_present("build") {
         let config = workspace::read_cfg();
         if config.mode != "repository" {
-            panic!("Cannot build packages in workspace mode")
+            crash("Cannot build packages in workspace mode".to_string(), 2);
         }
         let packages: Vec<String> = matches
             .subcommand()
@@ -153,7 +154,7 @@ fn main() {
 
         for pkg in packages {
             if !repos.contains(&pkg) {
-                panic!("Package {} not found in repos in mlc.toml", pkg);
+                crash(format!("Package {} not found in repos in mlc.toml", pkg), 3);
             } else {
                 repository::build(pkg);
             }
@@ -163,7 +164,7 @@ fn main() {
     if let true = matches.is_present("pull") {
         let config = workspace::read_cfg();
         for r in config.repo {
-            println!("Entering working directory: {}", r);
+            info(format!("Entering working directory: {}", r));
             let dir = format!(
                 "{}/{}",
                 env::current_dir().unwrap().display(),
