@@ -4,20 +4,22 @@
   </a>
 </p>
 <h2 align="center">Malachite</h2>
-</p>
 <p align="center">
-<a href="https://discord.gg/yp4xpZeAgW"><img alt="Discord" src="https://img.shields.io/discord/825473796227858482?color=blue&label=Discord&logo=Discord&logoColor=white"?link=https://discord.gg/yp4xpZeAgW&link=https://discord.gg/yp4xpZeAgW> </p></a>
+    <a href="https://discord.gg/yp4xpZeAgW"><img alt="Discord" src="https://img.shields.io/discord/825473796227858482?color=blue&label=Discord&logo=Discord&logoColor=white"?link=https://discord.gg/yp4xpZeAgW&link=https://discord.gg/yp4xpZeAgW></a>
+</p>
 
-<p align="center">Malachite is a simple yet fast workspace and repo management tool, made for packagers of Arch Linux based distributions.</p>
+<p align="center">Malachite is a simple yet useful workspace and local repository management tool, made for packagers of Arch Linux based distributions.</p>
 
 ## Basic usage
 
-| Action | Command |
-|----------------------|--|
-| Build a package | mlc build \<package\> |
-| Generate local repository | mlc repo-gen |
-| Update local repos/PKGBUILDs | mlc pull/update |
-| Create and/or open config file | mlc conf |
+| Action                                                 | Command               |
+|--------------------------------------------------------|-----------------------|
+| Build a package                                        | mlc build \<package\> |
+| Generate local repository                              | mlc repo-gen          |
+| Update local repos/PKGBUILDs                           | mlc pull/update       |
+| Create and/or open config file                         | mlc conf              |
+| Initialises repo/workspace based on config in mlc.toml | mlc init              |
+| Prunes old, duplicate packages from repository         | mlc prune \<days\>    |
 
 ## Exit codes overview
 
@@ -45,18 +47,11 @@ Tested on latest Cargo (1.60.0-nightly)
 
 - `cargo build --release`
 
-#### Pkg-warner included
-
-- `cargo build (--release) --all --features=pkg-warner`
-
-<br>
-<br>
-
 <!--
 
-echo "AME_UWU=true" >> ~/.zshrc
-echo "AME_UWU=true" >> ~/.bashrc
-set -Ux AME_UWU true
+echo "MLC_UWU=true" >> ~/.zshrc
+echo "MLC_UWU=true" >> ~/.bashrc
+set -Ux MLC_UWU true
 
 :)
 
