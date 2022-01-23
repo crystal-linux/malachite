@@ -21,17 +21,12 @@
 | Initialises repo/workspace based on config in mlc.toml | mlc init              |
 | Prunes old, duplicate packages from repository         | mlc prune \<days\>    |
 
-## Exit codes overview
+### Pacman Repository Creation
 
-| Exit Code (i32) | Reason                                                   |
-|-----------------|----------------------------------------------------------|
-| 1               | Running ame as UID 0 / root                              |
-| 2               | Failed adding package to database                        |
-| 3               | Failed initialising database                             |
-| 4               | Error creating cache and/or database paths               |
-| 5               | Could not find one or more required package dependencies |
-| 6               | User cancelled package installation                      |
-| 7               | Pacman error when installing package                     |
+- `mlc config` to create the config (and also populate it)
+- `mlc init` to build repository base from config file
+- `mlc build <package>/--all` to either build individual packages or all packages in mlc.toml
+- `mlc repo-gen` to generate functional pacman repository at \<name\>/\<name\>.db from built packages
 
 ## How to build:
 
@@ -46,13 +41,3 @@ Tested on latest Cargo (1.60.0-nightly)
 #### Optimised/release builds
 
 - `cargo build --release`
-
-<!--
-
-echo "MLC_UWU=true" >> ~/.zshrc
-echo "MLC_UWU=true" >> ~/.bashrc
-set -Ux MLC_UWU true
-
-:)
-
--->
