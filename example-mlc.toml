@@ -1,0 +1,22 @@
+mode = "repository"
+name = "test"
+
+repo = ["1::ame",
+		"1::jade",
+		"2::notop-git",
+		"3::slippy-rb"]
+
+urls = ["https://git.tar.black/crystal/%repo%",
+	    "https://aur.archlinux.org/%repo%",
+		"https://github.com/jnats/%repo%"]
+
+# in this example, mlc will create a repository called "test", with 4 packages
+# these packages will be expanded based on the index number they have (index_number::package)
+# to demonstrate, the ones in this config will expand to the following:
+#
+# https://git.tar.black/crystal/ame
+# https://git.tar.black/crystal/jade
+# https://aur.archlinux.org/notop-git
+# https://github.com/jnats/slippy-rb
+#
+# when in repository mode, malachite only pulls the PKGBUILD file from the repository (all we need to build the packages from src)
