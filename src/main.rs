@@ -8,11 +8,22 @@ use crate::repository::create_config;
 
 use crate::workspace::read_cfg;
 
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 mod internal;
 mod repository;
 mod workspace;
 
 fn main() {
+    extern "C" {
+        fn geteuid() -> u32;
+    }
+
+    if unsafe { geteuid() } == 0 {
+        crash("Running malachite as root is disallowed as it can lead to system breakage. Instead, malachite will prompt you when it needs superuser permissions".to_string(), 1);
+    }
+
     fn build_app() -> App<'static, 'static> {
         let app = App::new("Malachite")
             .version(env!("CARGO_PKG_VERSION"))
@@ -25,32 +36,29 @@ fn main() {
                     .set(ArgSettings::Global)
                     .help("Sets the level of verbosity"),
             )
-            .arg(
-                // TODO implement --exclude
-                Arg::with_name("exclude")
-                    .short("e")
-                    .long("exclude")
-                    .multiple(true)
-                    .set(ArgSettings::Global)
-                    .help("Excludes packages from given operation"),
-            )
-            .arg(
-                // TODO implement --all
-                Arg::with_name("all")
-                    .long("all")
-                    .set(ArgSettings::Global)
-                    .help("Operates on every possible package"),
-            )
             .subcommand(
                 SubCommand::with_name("build")
                     .about("Builds the given packages")
                     .arg(
                         Arg::with_name("package(s)")
                             .help("The packages to operate on")
-                            .required(true)
                             .multiple(true)
                             .index(1),
-                    ),
+                    )
+                    .arg(
+                        Arg::with_name("all")
+                            .long("all")
+                            .help("Builds all packages in mlc.toml (except if -x is specified)")
+                            .conflicts_with("package(s)")
+                    )
+                    .arg(
+                        Arg::with_name("exclude")
+                            .short("x")
+                            .long("exclude")
+                            .multiple(true)
+                            .takes_value(true)
+                            .help("Excludes packages from given operation")
+                    )
             )
             .subcommand(
                 SubCommand::with_name("repo-gen").about("Generates repository from built packages"),
@@ -87,6 +95,7 @@ fn main() {
 
     let matches = build_app().get_matches();
 
+
     if let true = matches.is_present("init") {
         let config = workspace::read_cfg();
         if config.mode == "workspace" {
@@ -110,6 +119,7 @@ fn main() {
                     .unwrap();
 
                 info(format!("Entering working directory: {}", r));
+                let cdir = env::current_dir().unwrap();
                 let dir = format!(
                     "{}/{}",
                     env::current_dir().unwrap().display(),
@@ -132,6 +142,9 @@ fn main() {
                     .unwrap()
                     .wait()
                     .unwrap();
+
+                info(format!("Exiting work directory: {}", r));
+                env::set_current_dir(cdir).unwrap();
             }
         } else {
             crash("Invalid mode in mlc.toml".to_string(), 1);
@@ -140,18 +153,26 @@ fn main() {
 
     if let true = matches.is_present("build") {
         let config = workspace::read_cfg();
+        let mut packages: Vec<String> = matches
+            .subcommand_matches("build")
+            .unwrap()
+            .values_of_lossy("package(s)")
+            .unwrap_or(vec![]);
+
+        let exclude: Vec<String> = matches
+            .subcommand_matches("build")
+            .unwrap()
+            .values_of_lossy("exclude")
+            .unwrap_or(vec![]);
+
+        for pkg in &exclude {
+            packages.retain(|x| &*x != pkg);
+        }
+
         if config.mode != "repository" {
             crash("Cannot build packages in workspace mode".to_string(), 2);
         }
-        let packages: Vec<String> = matches
-            .subcommand()
-            .1
-            .unwrap()
-            .values_of("package(s)")
-            .unwrap()
-            .into_iter()
-            .map(|s| s.to_string())
-            .collect();
+
         let mut repos: Vec<String> = vec![];
         for r in config.repo {
             let split = r.split('/').collect::<Vec<&str>>();
@@ -159,10 +180,22 @@ fn main() {
             repos.push(a.parse().unwrap());
         }
 
+        if matches.subcommand_matches("build").unwrap().is_present("exclude") {
+            for ex in exclude {
+                repos.retain(|x| *x != ex);
+            }
+        }
+
         for pkg in packages {
             if !repos.contains(&pkg) {
                 crash(format!("Package {} not found in repos in mlc.toml", pkg), 3);
             } else {
+                repository::build(pkg);
+            }
+        }
+
+        if matches.subcommand_matches("build").unwrap().is_present("all") {
+            for pkg in repos {
                 repository::build(pkg);
             }
         }
