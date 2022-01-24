@@ -18,5 +18,5 @@ pub struct UnexpandedConfig {
 #[derive(Debug)]
 pub struct SplitRepo {
     pub indx: usize,
-    pub name: String
+    pub name: String,
 }

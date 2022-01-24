@@ -8,9 +8,11 @@ pub fn generate() {
     let config = read_cfg();
     let name = config.name.unwrap();
 
-    if !Path::exists(name.as_ref()) {
-        fs::create_dir_all(&name).unwrap();
+    if Path::exists(name.as_ref()) {
+        fs::remove_dir_all(&name).unwrap();
     }
+
+    fs::create_dir_all(&name).unwrap();
 
     Command::new("bash")
         .args(&["-c", &format!("cp -v out/* {}/", &name)])

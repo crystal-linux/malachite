@@ -1,10 +1,10 @@
-use std::env;
 use std::path::Path;
 use std::process::Command;
+use std::{env, fs};
 
 use crate::internal::{crash, info};
-use clap::{App, AppSettings, Arg, ArgSettings, SubCommand};
 use crate::repository::create_config;
+use clap::{App, AppSettings, Arg, ArgSettings, SubCommand};
 
 use crate::workspace::read_cfg;
 
@@ -49,7 +49,7 @@ fn main() {
                         Arg::with_name("all")
                             .long("all")
                             .help("Builds all packages in mlc.toml (except if -x is specified)")
-                            .conflicts_with("package(s)")
+                            .conflicts_with("package(s)"),
                     )
                     .arg(
                         Arg::with_name("exclude")
@@ -57,21 +57,21 @@ fn main() {
                             .long("exclude")
                             .multiple(true)
                             .takes_value(true)
-                            .help("Excludes packages from given operation")
+                            .help("Excludes packages from given operation"),
                     )
+                    .arg(
+                        Arg::with_name("regen")
+                            .short("r")
+                            .long("regen")
+                            .help("Regenerates repository after building give package(s)"),
+                    ),
             )
             .subcommand(
                 SubCommand::with_name("repo-gen").about("Generates repository from built packages"),
             )
             .subcommand(
                 SubCommand::with_name("prune")
-                    .about("Prunes duplicate packages older than X days from the repository")
-                    .arg(
-                        Arg::with_name("days")
-                            .help("How old a duplicate package needs to be (in days) to be pruned")
-                            .required(true)
-                            .index(1),
-                    ),
+                    .about("Prunes duplicate packages from the repository"),
             )
             .subcommand(SubCommand::with_name("init").about(
                 "Clones all git repositories from mlc.toml branching from current directory",
@@ -94,7 +94,6 @@ fn main() {
     }
 
     let matches = build_app().get_matches();
-
 
     if let true = matches.is_present("init") {
         let config = workspace::read_cfg();
@@ -156,14 +155,12 @@ fn main() {
         let mut packages: Vec<String> = matches
             .subcommand_matches("build")
             .unwrap()
-            .values_of_lossy("package(s)")
-            .unwrap_or(vec![]);
+            .values_of_lossy("package(s)").unwrap_or_default();
 
         let exclude: Vec<String> = matches
             .subcommand_matches("build")
             .unwrap()
-            .values_of_lossy("exclude")
-            .unwrap_or(vec![]);
+            .values_of_lossy("exclude").unwrap_or_default();
 
         for pkg in &exclude {
             packages.retain(|x| &*x != pkg);
@@ -180,7 +177,11 @@ fn main() {
             repos.push(a.parse().unwrap());
         }
 
-        if matches.subcommand_matches("build").unwrap().is_present("exclude") {
+        if matches
+            .subcommand_matches("build")
+            .unwrap()
+            .is_present("exclude")
+        {
             for ex in exclude {
                 repos.retain(|x| *x != ex);
             }
@@ -194,10 +195,22 @@ fn main() {
             }
         }
 
-        if matches.subcommand_matches("build").unwrap().is_present("all") {
+        if matches
+            .subcommand_matches("build")
+            .unwrap()
+            .is_present("all")
+        {
             for pkg in repos {
                 repository::build(pkg);
             }
+        }
+
+        if matches
+            .subcommand_matches("build")
+            .unwrap()
+            .is_present("regen")
+        {
+            repository::generate();
         }
     }
 
@@ -227,7 +240,59 @@ fn main() {
         if config.mode != "repository" {
             panic!("Cannot build packages in workspace mode")
         }
+        info(format!("Generating repository: {}", config.name.unwrap()));
         repository::generate();
+    }
+
+    if let true = matches.is_present("prune") {
+        let config = read_cfg();
+        if &config.mode != "repository" {
+            panic!("Cannot build packages in workspace mode")
+        }
+        let mut packages = vec![];
+        for untrimmed_repo in &config.repo {
+            pub fn trim_repo(a: String) -> String {
+                (a.split('/')
+                    .map(|s| s.to_string())
+                    .collect::<Vec<String>>()
+                    .last()
+                    .unwrap())
+                .to_string()
+            }
+            packages.push(trim_repo(untrimmed_repo.to_string()));
+        }
+
+        let mut packages_to_del = vec![];
+
+        for pkg in packages {
+            let dups = Command::new("bash")
+                .args(&["-c", &format!("ls out/{}*.tar.zst -w 1 | sort -r", pkg)])
+                .output()
+                .unwrap()
+                .stdout
+                .to_ascii_lowercase();
+
+            let duplicates = String::from_utf8_lossy(&dups);
+            let duplicates_lines = duplicates.lines().collect::<Vec<&str>>();
+            let variable_hell = duplicates_lines.iter().skip(1).collect::<Vec<&&str>>();
+
+            if !variable_hell.is_empty() {
+                for var in variable_hell {
+                    packages_to_del.push(var.to_string());
+                }
+            }
+        }
+
+        if !packages_to_del.is_empty() {
+            info(format!(
+                "Pruning duplicates: {}",
+                packages_to_del.join(", ")
+            ));
+        }
+
+        for pkg in packages_to_del {
+            fs::remove_file(pkg).unwrap();
+        }
     }
 
     if let true = matches.is_present("config") {

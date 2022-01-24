@@ -1,6 +1,6 @@
+mod config;
 mod package;
 mod repo;
-mod config;
 
 pub fn build(pkg: String) {
     package::build(pkg);

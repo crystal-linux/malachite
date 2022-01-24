@@ -23,21 +23,19 @@ pub fn read_cfg() -> Config {
 
     let config_repos = config.repo;
     for x in config_repos {
-            let split: Vec<&str> = x.split("::").collect();
-            let sr_struct = SplitRepo {
-                indx: (&split[0]).parse().unwrap(),
-                name: (&split[1]).parse().unwrap()
-            };
-            let index = sr_struct.indx;
-            let expanded = format!("{}{}", trimmed_urls[index-1], sr_struct.name);
-            println!("{}", expanded);
-            expanded_repos.push(expanded);
+        let split: Vec<&str> = x.split("::").collect();
+        let sr_struct = SplitRepo {
+            indx: split[0].parse().unwrap(),
+            name: split[1].parse().unwrap(),
+        };
+        let index = sr_struct.indx;
+        let expanded = format!("{}{}", trimmed_urls[index - 1], sr_struct.name);
+        expanded_repos.push(expanded);
     }
 
     Config {
         mode: config.mode,
         name: config.name,
-        repo: expanded_repos
+        repo: expanded_repos,
     }
-
 }
