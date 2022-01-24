@@ -3,19 +3,22 @@
 pkgname=malachite
 pkgver=1.0.0
 pkgrel=1
-pkgdesc="Crystal Linux Wallpaper Images"
-arch=('any')
+pkgdesc="Tool for packaging and maintaining pacman repositories"
+arch=('x86_64')
 url="https://git.tar.black/crystal/programs/malachite"
-license=()
-source=()
-depends=()
-conflicts=()
-md5sums=()
+license=('Nolicense')
+source=("git+https://git.tar.black/crystal/programs/malachite")
+sha256sums=('SKIP')
+depends=('git')
+makedepends=('cargo')
+
+build() {
+    cd ${srcdir}/malachite
+    cargo build --release
+}
 
 package() {
-
-    cd ../ && cargo build --release
-    mkdir -p "${pkgdir}/usr/bin"
-    cp target/release/mlc "${pkgdir}/usr/bin/."
-
+    mkdir -p $pkgdir/usr/bin
+    chmod +x ${srcdir}/malachite/target/release/mlc
+    cp ${srcdir}/malachite/target/release/mlc  $pkgdir/usr/bin/.
 }
