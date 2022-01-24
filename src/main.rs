@@ -111,39 +111,11 @@ fn main() {
             for r in config.repo {
                 info(format!("Cloning (repository mode): {}", r));
                 Command::new("git")
-                    .args(&["clone", "--no-checkout", &r])
+                    .args(&["clone", &r])
                     .spawn()
                     .unwrap()
                     .wait()
                     .unwrap();
-
-                info(format!("Entering working directory: {}", r));
-                let cdir = env::current_dir().unwrap();
-                let dir = format!(
-                    "{}/{}",
-                    env::current_dir().unwrap().display(),
-                    r.split('/').collect::<Vec<&str>>().last().unwrap()
-                );
-                env::set_current_dir(dir).unwrap();
-
-                info(format!("Resetting unstaged files: {}", r));
-                Command::new("git")
-                    .arg("reset")
-                    .spawn()
-                    .unwrap()
-                    .wait()
-                    .unwrap();
-
-                info(format!("Checking out PKGBUILD: {}", r));
-                Command::new("git")
-                    .args(&["checkout", "HEAD", "PKGBUILD"])
-                    .spawn()
-                    .unwrap()
-                    .wait()
-                    .unwrap();
-
-                info(format!("Exiting work directory: {}", r));
-                env::set_current_dir(cdir).unwrap();
             }
         } else {
             crash("Invalid mode in mlc.toml".to_string(), 1);
