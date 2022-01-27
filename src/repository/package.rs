@@ -23,7 +23,7 @@ pub fn build(pkg: String) {
         .unwrap();
 
     Command::new("bash")
-        .args(&["-c", "cp *.pkg.tar.zst* ../out/"])
+        .args(&["-c", "cp *.pkg.tar* ../out/"])
         .spawn()
         .unwrap()
         .wait()

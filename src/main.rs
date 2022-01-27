@@ -238,7 +238,7 @@ fn main() {
 
         for pkg in packages {
             let dups = Command::new("bash")
-                .args(&["-c", &format!("ls out/{}*.tar.zst -w 1 | sort -r", pkg)])
+                .args(&["-c", &format!("ls out/{}*.tar.* -w 1 | sort -r", pkg)])
                 .output()
                 .unwrap()
                 .stdout
