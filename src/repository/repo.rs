@@ -27,7 +27,7 @@ pub fn generate() {
     let files = format!("{}.files", &name);
 
     Command::new("bash")
-        .args(&["-c", &format!("repo-add {}.tar.gz *.pkg.tar.*", db)])
+        .args(&["-c", &format!("repo-add {}.tar.gz *.pkg.tar.xz *.pkg.tar.zst", db)])
         .spawn()
         .unwrap()
         .wait()
