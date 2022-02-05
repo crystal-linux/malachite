@@ -13,7 +13,6 @@ pub fn build(pkg: String) {
     }
 
     env::set_current_dir(pkg).unwrap();
-    Command::new("updpkgsums").spawn().unwrap().wait().unwrap();
 
     Command::new("makepkg")
         .args(&["-sf", "--skippgpcheck", "--sign", "--noconfirm"])
