@@ -76,10 +76,20 @@ fn main() {
             .subcommand(SubCommand::with_name("init").about(
                 "Clones all git repositories from mlc.toml branching from current directory",
             ))
+            .subcommand(SubCommand::with_name("reinit"))
+            .about("Removes all subdirectories and reinitialises")
             .subcommand(
-                SubCommand::with_name("pull").alias("update").about(
-                    "Pulls all git repositories from mlc.toml branching from current directory",
-                ),
+                SubCommand::with_name("pull")
+                    .alias("update")
+                    .about(
+                        "Pulls all git repositories from mlc.toml branching from current directory",
+                    )
+                    .arg(
+                        Arg::with_name("package(s)")
+                            .help("The packages to operate on")
+                            .multiple(true)
+                            .index(1),
+                    ),
             )
             .subcommand(
                 SubCommand::with_name("config").about("Create and/or open local config file"),
@@ -123,6 +133,39 @@ fn main() {
 
     if let true = matches.is_present("init") {
         let config = workspace::read_cfg();
+        if config.mode == "workspace" {
+            for r in config.repo {
+                info(format!("Cloning (workspace mode): {}", r));
+                Command::new("git")
+                    .args(&["clone", &r])
+                    .spawn()
+                    .unwrap()
+                    .wait()
+                    .unwrap();
+            }
+        } else if config.mode == "repository" {
+            for r in config.repo {
+                info(format!("Cloning (repository mode): {}", r));
+                Command::new("git")
+                    .args(&["clone", &r])
+                    .spawn()
+                    .unwrap()
+                    .wait()
+                    .unwrap();
+            }
+        } else {
+            crash("Invalid mode in mlc.toml".to_string(), 1);
+        }
+    }
+
+    if let true = matches.is_present("reinit") {
+        let config = workspace::read_cfg();
+        Command::new("bash")
+            .args(&["-c", "rm -rf */"])
+            .spawn()
+            .unwrap()
+            .wait()
+            .unwrap();
         if config.mode == "workspace" {
             for r in config.repo {
                 info(format!("Cloning (workspace mode): {}", r));
@@ -215,23 +258,47 @@ fn main() {
     }
 
     if let true = matches.is_present("pull") {
+        let packages: Vec<String> = matches
+            .subcommand_matches("pull")
+            .unwrap()
+            .values_of_lossy("package(s)")
+            .unwrap_or_default();
         let config = workspace::read_cfg();
         let cdir = env::current_dir().unwrap();
-        for r in config.repo {
-            info(format!("Entering working directory: {}", r));
-            let dir = format!(
-                "{}/{}",
-                env::current_dir().unwrap().display(),
-                r.split('/').collect::<Vec<&str>>().last().unwrap()
-            );
-            env::set_current_dir(dir).unwrap();
-            Command::new("git")
-                .args(&["pull", &r])
-                .spawn()
-                .unwrap()
-                .wait()
-                .unwrap();
-            env::set_current_dir(&cdir).unwrap();
+        if packages.is_empty() {
+            for r in config.repo {
+                info(format!("Entering working directory: {}", r));
+                let dir = format!(
+                    "{}/{}",
+                    env::current_dir().unwrap().display(),
+                    r.split('/').collect::<Vec<&str>>().last().unwrap()
+                );
+                env::set_current_dir(dir).unwrap();
+                Command::new("git")
+                    .args(&["pull", &r])
+                    .spawn()
+                    .unwrap()
+                    .wait()
+                    .unwrap();
+                env::set_current_dir(&cdir).unwrap();
+            }
+        } else {
+            for r in packages {
+                info(format!("Entering working directory: {}", r));
+                let dir = format!(
+                    "{}/{}",
+                    env::current_dir().unwrap().display(),
+                    r.split('/').collect::<Vec<&str>>().last().unwrap()
+                );
+                env::set_current_dir(dir).unwrap();
+                Command::new("git")
+                    .args(&["pull", &r])
+                    .spawn()
+                    .unwrap()
+                    .wait()
+                    .unwrap();
+                env::set_current_dir(&cdir).unwrap();
+            }
         }
     }
 
