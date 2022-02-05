@@ -95,6 +95,32 @@ fn main() {
 
     let matches = build_app().get_matches();
 
+    if Path::exists("mlc.toml".as_ref()) && Path::exists(".git".as_ref()) {
+        info(
+            "In a git repository, pulling latest mlc.toml. It is advised you run mlc pull/update"
+                .to_string(),
+        );
+        Command::new("git")
+            .arg("pull")
+            .spawn()
+            .unwrap()
+            .wait()
+            .unwrap();
+    }
+
+    if Path::exists("../.git".as_ref()) {
+        info("Parent directory is a git directory, pulling latest mlc.toml. It is advised you run mlc pull/update in all malachite directories".to_string());
+        let dir = env::current_dir().unwrap();
+        env::set_current_dir("../").unwrap();
+        Command::new("git")
+            .arg("pull")
+            .spawn()
+            .unwrap()
+            .wait()
+            .unwrap();
+        env::set_current_dir(dir).unwrap();
+    }
+
     if let true = matches.is_present("init") {
         let config = workspace::read_cfg();
         if config.mode == "workspace" {
@@ -127,12 +153,14 @@ fn main() {
         let mut packages: Vec<String> = matches
             .subcommand_matches("build")
             .unwrap()
-            .values_of_lossy("package(s)").unwrap_or_default();
+            .values_of_lossy("package(s)")
+            .unwrap_or_default();
 
         let exclude: Vec<String> = matches
             .subcommand_matches("build")
             .unwrap()
-            .values_of_lossy("exclude").unwrap_or_default();
+            .values_of_lossy("exclude")
+            .unwrap_or_default();
 
         for pkg in &exclude {
             packages.retain(|x| &*x != pkg);
