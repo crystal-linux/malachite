@@ -14,6 +14,7 @@ static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 mod internal;
 mod repository;
 mod workspace;
+mod operations;
 
 fn main() {
     extern "C" {
@@ -132,194 +133,19 @@ fn main() {
     }
 
     if let true = matches.is_present("init") {
-        let config = workspace::read_cfg();
-        if config.mode == "workspace" {
-            for r in config.repo {
-                info(format!("Cloning (workspace mode): {}", r));
-                Command::new("git")
-                    .args(&["clone", &r])
-                    .spawn()
-                    .unwrap()
-                    .wait()
-                    .unwrap();
-            }
-        } else if config.mode == "repository" {
-            for r in config.repo {
-                info(format!("Cloning (repository mode): {}", r));
-                Command::new("git")
-                    .args(&["clone", &r])
-                    .spawn()
-                    .unwrap()
-                    .wait()
-                    .unwrap();
-            }
-        } else {
-            crash("Invalid mode in mlc.toml".to_string(), 1);
-        }
+        operations::init();
     }
 
     if let true = matches.is_present("reinit") {
-        let config = workspace::read_cfg();
-        let out = Command::new("bash")
-            .args(&["-c", "ls -A"])
-            .output()
-            .unwrap()
-            .stdout;
-        let dirs_to_s = String::from_utf8_lossy(&*out);
-        let mut dirs = dirs_to_s.lines().collect::<Vec<&str>>();
-
-        let name = config.name.unwrap();
-
-        dirs.retain(|x| *x != "mlc.toml");
-        dirs.retain(|x| *x != ".git");
-        if config.mode == "repository" {
-            dirs.retain(|x| *x != "out");
-            dirs.retain(|x| *x != name);
-        }
-
-        info("Removing all repo directories to reinitialise".to_string());
-
-        Command::new("rm")
-            .args(&["-rf", &dirs.join(" ")])
-            .spawn()
-            .unwrap()
-            .wait()
-            .unwrap();
-
-        if config.mode == "workspace" {
-            for r in config.repo {
-                info(format!("Cloning (workspace mode): {}", r));
-                Command::new("git")
-                    .args(&["clone", &r])
-                    .spawn()
-                    .unwrap()
-                    .wait()
-                    .unwrap();
-            }
-        } else if config.mode == "repository" {
-            for r in config.repo {
-                info(format!("Cloning (repository mode): {}", r));
-                Command::new("git")
-                    .args(&["clone", &r])
-                    .spawn()
-                    .unwrap()
-                    .wait()
-                    .unwrap();
-            }
-        } else {
-            crash("Invalid mode in mlc.toml".to_string(), 1);
-        }
+       operations::reinit();
     }
 
     if let true = matches.is_present("build") {
-        let config = workspace::read_cfg();
-        let mut packages: Vec<String> = matches
-            .subcommand_matches("build")
-            .unwrap()
-            .values_of_lossy("package(s)")
-            .unwrap_or_default();
-
-        let exclude: Vec<String> = matches
-            .subcommand_matches("build")
-            .unwrap()
-            .values_of_lossy("exclude")
-            .unwrap_or_default();
-
-        for pkg in &exclude {
-            packages.retain(|x| &*x != pkg);
-        }
-
-        if config.mode != "repository" {
-            crash("Cannot build packages in workspace mode".to_string(), 2);
-        }
-
-        let mut repos: Vec<String> = vec![];
-        for r in config.repo {
-            let split = r.split('/').collect::<Vec<&str>>();
-            let a = split.last().unwrap();
-            repos.push(a.parse().unwrap());
-        }
-
-        if matches
-            .subcommand_matches("build")
-            .unwrap()
-            .is_present("exclude")
-        {
-            for ex in exclude {
-                repos.retain(|x| *x != ex);
-            }
-        }
-
-        for pkg in packages {
-            if !repos.contains(&pkg) {
-                crash(format!("Package {} not found in repos in mlc.toml", pkg), 3);
-            } else {
-                repository::build(pkg);
-            }
-        }
-
-        if matches
-            .subcommand_matches("build")
-            .unwrap()
-            .is_present("all")
-        {
-            for pkg in repos {
-                repository::build(pkg);
-            }
-        }
-
-        if matches
-            .subcommand_matches("build")
-            .unwrap()
-            .is_present("regen")
-        {
-            repository::generate();
-        }
+       operations::build(&matches);
     }
 
     if let true = matches.is_present("pull") {
-        let packages: Vec<String> = matches
-            .subcommand_matches("pull")
-            .unwrap()
-            .values_of_lossy("package(s)")
-            .unwrap_or_default();
-        let config = workspace::read_cfg();
-        let cdir = env::current_dir().unwrap();
-        if packages.is_empty() {
-            for r in config.repo {
-                info(format!("Entering working directory: {}", r));
-                let dir = format!(
-                    "{}/{}",
-                    env::current_dir().unwrap().display(),
-                    r.split('/').collect::<Vec<&str>>().last().unwrap()
-                );
-                env::set_current_dir(dir).unwrap();
-                Command::new("git")
-                    .args(&["pull", &r])
-                    .spawn()
-                    .unwrap()
-                    .wait()
-                    .unwrap();
-                env::set_current_dir(&cdir).unwrap();
-            }
-        } else {
-            for r in packages {
-                info(format!("Entering working directory: {}", r));
-                let dir = format!(
-                    "{}/{}",
-                    env::current_dir().unwrap().display(),
-                    r.split('/').collect::<Vec<&str>>().last().unwrap()
-                );
-                env::set_current_dir(dir).unwrap();
-                Command::new("git")
-                    .args(&["pull", &r])
-                    .spawn()
-                    .unwrap()
-                    .wait()
-                    .unwrap();
-                env::set_current_dir(&cdir).unwrap();
-            }
-        }
+        operations::pull(&matches);
     }
 
     if let true = matches.is_present("repo-gen") {
@@ -383,15 +209,6 @@ fn main() {
     }
 
     if let true = matches.is_present("config") {
-        if !Path::exists("mlc.toml".as_ref()) {
-            create_config();
-        }
-        let editor = env::var("EDITOR").unwrap_or_else(|_| "nano".to_string());
-        Command::new(editor)
-            .arg("mlc.toml")
-            .spawn()
-            .unwrap()
-            .wait()
-            .unwrap();
+        operations::config();
     }
 }
