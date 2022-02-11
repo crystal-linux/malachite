@@ -1,3 +1,8 @@
+use crate::create_config;
+use std::env;
+use std::path::Path;
+use std::process::Command;
+
 pub fn config() {
     if !Path::exists("mlc.toml".as_ref()) {
         create_config();

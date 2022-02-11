@@ -1,5 +1,5 @@
-use std::process::Command;
 use crate::{crash, info, workspace};
+use std::process::Command;
 
 pub fn reinit() {
     let config = workspace::read_cfg();

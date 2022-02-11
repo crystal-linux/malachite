@@ -1,5 +1,6 @@
-use clap::ArgMatches;
+use crate::repository::generate;
 use crate::{crash, repository, workspace};
+use clap::ArgMatches;
 
 pub fn build(matches: &ArgMatches) {
     let config = workspace::read_cfg();
@@ -14,7 +15,6 @@ pub fn build(matches: &ArgMatches) {
         .unwrap()
         .values_of_lossy("exclude")
         .unwrap_or_default();
-
 
     for pkg in &exclude {
         packages.retain(|x| &*x != pkg);
@@ -57,6 +57,7 @@ pub fn build(matches: &ArgMatches) {
         for pkg in repos {
             repository::build(pkg);
         }
+        generate();
     }
 
     if matches

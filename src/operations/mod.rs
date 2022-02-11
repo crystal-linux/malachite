@@ -1,9 +1,9 @@
 use clap::ArgMatches;
 
-mod init;
 mod build;
-mod pull;
 mod config;
+mod init;
+mod pull;
 
 pub fn reinit() {
     init::reinit();

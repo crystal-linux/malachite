@@ -12,9 +12,9 @@ use crate::workspace::read_cfg;
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
 mod internal;
+mod operations;
 mod repository;
 mod workspace;
-mod operations;
 
 fn main() {
     extern "C" {
@@ -137,11 +137,11 @@ fn main() {
     }
 
     if let true = matches.is_present("reinit") {
-       operations::reinit();
+        operations::reinit();
     }
 
     if let true = matches.is_present("build") {
-       operations::build(&matches);
+        operations::build(&matches);
     }
 
     if let true = matches.is_present("pull") {

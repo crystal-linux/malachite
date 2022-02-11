@@ -1,7 +1,7 @@
+use crate::{info, workspace};
+use clap::ArgMatches;
 use std::env;
 use std::process::Command;
-use clap::ArgMatches;
-use crate::{info, workspace};
 
 pub fn pull(matches: &ArgMatches) {
     let packages: Vec<String> = matches
