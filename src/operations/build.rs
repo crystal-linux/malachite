@@ -77,6 +77,9 @@ pub fn build(matches: &ArgMatches) {
     }
 
     if !errored.is_empty() {
-        info(format!("The following packages build jobs returned a non-zero exit code: {}", errored.join(" ")))
+        info(format!(
+            "The following packages build jobs returned a non-zero exit code: {}",
+            errored.join(" ")
+        ))
     }
 }
