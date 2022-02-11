@@ -3,6 +3,7 @@ use clap::ArgMatches;
 mod build;
 mod config;
 mod init;
+mod prune;
 mod pull;
 
 pub fn reinit() {
@@ -23,4 +24,8 @@ pub fn pull(matches: &ArgMatches) {
 
 pub fn config() {
     config::config();
+}
+
+pub fn prune() {
+    prune::prune();
 }
