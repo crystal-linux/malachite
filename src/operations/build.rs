@@ -1,5 +1,5 @@
 use crate::repository::generate;
-use crate::{crash, repository, workspace};
+use crate::{crash, info, repository, workspace};
 use clap::ArgMatches;
 
 pub fn build(matches: &ArgMatches) {
@@ -41,11 +41,16 @@ pub fn build(matches: &ArgMatches) {
         }
     }
 
+    let mut errored: Vec<String> = vec![];
+
     for pkg in packages {
         if !repos.contains(&pkg) {
             crash(format!("Package {} not found in repos in mlc.toml", pkg), 3);
         } else {
-            repository::build(pkg);
+            let code = repository::build(&pkg);
+            if code != 0 {
+                errored.push(pkg);
+            }
         }
     }
 
@@ -55,7 +60,10 @@ pub fn build(matches: &ArgMatches) {
         .is_present("all")
     {
         for pkg in repos {
-            repository::build(pkg);
+            let code = repository::build(&pkg);
+            if code != 0 {
+                errored.push(pkg);
+            }
         }
         generate();
     }
@@ -66,5 +74,9 @@ pub fn build(matches: &ArgMatches) {
         .is_present("regen")
     {
         repository::generate();
+    }
+
+    if !errored.is_empty() {
+        info(format!("The following packages build jobs returned a non-zero exit code: {}", errored.join(" ")))
     }
 }

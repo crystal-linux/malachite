@@ -3,7 +3,7 @@ use std::path::Path;
 use std::process::Command;
 use std::{env, fs};
 
-pub fn build(pkg: String) {
+pub fn build(pkg: &str) -> i32 {
     let dir = env::current_dir().unwrap();
     if !Path::exists("out".as_ref()) {
         fs::create_dir_all("out").unwrap();
@@ -14,7 +14,7 @@ pub fn build(pkg: String) {
 
     env::set_current_dir(pkg).unwrap();
 
-    Command::new("makepkg")
+    let a = Command::new("makepkg")
         .args(&["-sf", "--skippgpcheck", "--sign", "--noconfirm"])
         .spawn()
         .unwrap()
@@ -29,4 +29,6 @@ pub fn build(pkg: String) {
         .unwrap();
 
     env::set_current_dir(dir).unwrap();
+
+    a.code().unwrap()
 }

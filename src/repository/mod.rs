@@ -2,8 +2,8 @@ mod config;
 mod package;
 mod repo;
 
-pub fn build(pkg: String) {
-    package::build(pkg);
+pub fn build(pkg: &str) -> i32 {
+    package::build(pkg)
 }
 
 pub fn generate() {
