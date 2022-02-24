@@ -1,80 +1,54 @@
 use crate::{crash, info, workspace};
 use std::process::Command;
 
-pub fn reinit() {
-    let config = workspace::read_cfg();
-    let out = Command::new("bash")
-        .args(&["-c", "ls -A"])
-        .output()
-        .unwrap()
-        .stdout;
-    let dirs_to_s = String::from_utf8_lossy(&*out);
-    let mut dirs = dirs_to_s.lines().collect::<Vec<&str>>();
-
-    let name = config.name.unwrap();
-
-    dirs.retain(|x| *x != "mlc.toml");
-    dirs.retain(|x| *x != ".git");
-    if config.mode == "repository" {
-        dirs.retain(|x| *x != "out");
-        dirs.retain(|x| *x != name);
-    }
-
-    info("Removing all repo directories to reinitialise".to_string());
-
-    Command::new("rm")
-        .args(&["-rf", &dirs.join(" ")])
-        .spawn()
-        .unwrap()
-        .wait()
-        .unwrap();
-
-    if config.mode == "workspace" {
-        for r in config.repo {
-            info(format!("Cloning (workspace mode): {}", r));
-            Command::new("git")
-                .args(&["clone", &r])
-                .spawn()
-                .unwrap()
-                .wait()
-                .unwrap();
-        }
-    } else if config.mode == "repository" {
-        for r in config.repo {
-            info(format!("Cloning (repository mode): {}", r));
-            Command::new("git")
-                .args(&["clone", &r])
-                .spawn()
-                .unwrap()
-                .wait()
-                .unwrap();
-        }
-    } else {
-        crash("Invalid mode in mlc.toml".to_string(), 1);
-    }
-}
-
 pub fn init() {
     let config = workspace::read_cfg();
-    if config.mode == "workspace" {
-        for r in config.repo {
-            info(format!("Cloning (workspace mode): {}", r));
-            Command::new("git")
-                .args(&["clone", &r])
-                .spawn()
-                .unwrap()
-                .wait()
-                .unwrap();
+    if config.mode == "workspace" || config.mode == "repository" {
+        let dirs_raw = Command::new("ls").arg("-1").output().unwrap().stdout;
+        let dirs_string = String::from_utf8_lossy(&dirs_raw);
+        let mut dirs = dirs_string.lines().collect::<Vec<&str>>();
+
+        dirs.retain(|x| *x != "mlc.toml");
+        dirs.sort_unstable();
+
+        let repos = &config.repo;
+        let mut repos = repos
+            .iter()
+            .map(|x| x.split('/').last().unwrap())
+            .collect::<Vec<&str>>();
+
+        repos.sort_unstable();
+
+        let mut diff = repos.clone();
+        diff.retain(|x| !dirs.contains(x));
+
+        let mut diff_matches = vec![];
+
+        for &x in &diff {
+            for y in config.repo.iter() {
+                if x == y.split('/').last().unwrap() {
+                    diff_matches.push(y);
+                }
+            }
         }
-    } else if config.mode == "repository" {
-        for r in config.repo {
-            info(format!("Cloning (repository mode): {}", r));
-            Command::new("git")
-                .args(&["clone", &r])
-                .spawn()
-                .unwrap()
-                .wait()
-                .unwrap();
+
+        if diff.is_empty() {
+            info("All repos are already cloned".to_string());
+        } else {
+            info(format!("New/missing repos to clone: {}", diff.join(", ")));
+            for r in diff_matches {
+                info(format!(
+                    "Cloning ({} mode): {}",
+                    config.mode,
+                    r.split('/').last().unwrap()
+                ));
+                Command::new("git")
+                    .args(&["clone", r])
+                    .spawn()
+                    .unwrap()
+                    .wait()
+                    .unwrap();
+            }
         }
     } else {
         crash("Invalid mode in mlc.toml".to_string(), 1);

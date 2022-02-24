@@ -77,8 +77,6 @@ fn main() {
             .subcommand(SubCommand::with_name("init").about(
                 "Clones all git repositories from mlc.toml branching from current directory",
             ))
-            .subcommand(SubCommand::with_name("reinit"))
-            .about("Removes all subdirectories and reinitialises")
             .subcommand(
                 SubCommand::with_name("pull")
                     .alias("update")
@@ -134,10 +132,6 @@ fn main() {
 
     if let true = matches.is_present("init") {
         operations::init();
-    }
-
-    if let true = matches.is_present("reinit") {
-        operations::reinit();
     }
 
     if let true = matches.is_present("build") {

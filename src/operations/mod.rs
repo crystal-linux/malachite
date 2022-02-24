@@ -6,10 +6,6 @@ mod init;
 mod prune;
 mod pull;
 
-pub fn reinit() {
-    init::reinit();
-}
-
 pub fn init() {
     init::init();
 }
