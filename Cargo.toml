@@ -1,6 +1,6 @@
 [package]
 name = "Malachite"
-version = "1.1.0"
+version = "1.2.0"
 authors = [ "michal <michal@tar.black>" ]
 edition = "2021"
 description = "Packaging tool for pacman repositories"
