@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://git.getcryst.al/crystal/ame/">
-    <img src="https://git.getcryst.al/crystal/branding/raw/branch/main/logos/crystal-logo-minimal.png" alt="Logo" width="150" height="150">
+    <img src="https://via.placeholder.com/15/A900FF/000000?text=+" alt="Logo" width="150" height="150">
   </a>
 </p>
 <h2 align="center">Malachite</h2>
