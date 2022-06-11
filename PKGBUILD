@@ -4,6 +4,7 @@ pkgname=malachite
 pkgver=1.2.0
 pkgrel=1
 pkgdesc="Tool for packaging and maintaining pacman repositories"
+license=('GPL3')
 arch=('any')
 url="https://git.tar.black/crystal/programs/malachite"
 license=('Nolicense')
