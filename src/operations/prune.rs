@@ -56,6 +56,6 @@ pub fn prune() {
 
     for pkg in packages_to_del {
         fs::remove_file(&pkg).unwrap();
-        let _ = fs::remove_file(format!("{}.sig", pkg));
+        fs::remove_file(format!("{}.sig", &pkg)).unwrap();
     }
 }
