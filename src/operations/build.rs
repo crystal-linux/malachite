@@ -68,10 +68,10 @@ pub fn build(matches: &ArgMatches) {
         generate();
     }
 
-    if matches
+    if !matches
         .subcommand_matches("build")
         .unwrap()
-        .is_present("regen")
+        .is_present("no-regen")
     {
         repository::generate();
     }

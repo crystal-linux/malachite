@@ -61,10 +61,10 @@ fn main() {
                             .help("Excludes packages from given operation"),
                     )
                     .arg(
-                        Arg::with_name("regen")
-                            .short("r")
-                            .long("regen")
-                            .help("Regenerates repository after building give package(s)"),
+                        Arg::with_name("no-regen")
+                            .short("n")
+                            .long("no-regen")
+                            .help("Does not regenerate repository after building given package(s)"),
                     ),
             )
             .subcommand(
