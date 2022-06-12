@@ -4,6 +4,7 @@ pacman -S --noconfirm \
     curl \
     git \
     base-devel \
+    lldb \
     rustup
 
 rustup install nightly
