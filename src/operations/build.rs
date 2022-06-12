@@ -17,7 +17,7 @@ pub fn build(matches: &ArgMatches) {
         .unwrap_or_default();
 
     for pkg in &exclude {
-        packages.retain(|x| &*x != pkg);
+        packages.retain(|x| x != pkg);
     }
 
     if config.mode != "repository" {
