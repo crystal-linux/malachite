@@ -3,9 +3,9 @@ FROM crystallinux/crystal:crystal
 WORKDIR /home/
 COPY . .
 
-RUN useradd -m -G wheel vscode
-
 RUN bash ./setup.sh
+
+RUN useradd -m -G wheel vscode
 
 USER vscode
 RUN bash ./rust.sh
