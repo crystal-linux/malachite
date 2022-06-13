@@ -12,7 +12,7 @@ RUN rustup install nightly
 
 RUN sudo pacman --noconfirm -S pfetch
 
-RUN echo "[[ $- != *i* ]] && return"     > /home/vscode/.bashrc
+RUN echo "[[ \$- != *i* ]] && return"     > /home/vscode/.bashrc
 RUN echo "alias ls=\"ls --color=auto\""  >> /home/vscode/.bashrc
 RUN echo "alias clear=\"clear; pfetch\"" >> /home/vscode/.bashrc
 RUN echo "pfetch"                        >> /home/vscode/.bashrc
