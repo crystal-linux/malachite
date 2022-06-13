@@ -6,3 +6,5 @@ pacman -S --noconfirm \
     base-devel \
     lldb \
     rustup
+
+echo "%wheel ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
