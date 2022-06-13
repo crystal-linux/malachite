@@ -16,5 +16,6 @@
         "mutantndino.resourcemonitor"
     ],
     "forwardPorts": [],
-    "postCreateCommand": "rustc --version"
+    "postCreateCommand": "rustc --version",
+    "remoteUser": "vscode"
 }
