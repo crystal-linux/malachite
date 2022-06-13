@@ -1,4 +1,4 @@
-FROM archlinux:latest
+FROM crystallinux:crystal
 
 WORKDIR /home/
 
