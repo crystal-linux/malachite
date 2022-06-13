@@ -11,7 +11,10 @@ USER vscode
 RUN rustup install nightly
 
 RUN sudo pacman --noconfirm -S pfetch
-RUN echo "alias clear=\"clear; pfetch\"" >> /home/vscode/.bashrc
-RUN echo "pfetch" >> /home/vscode/.bashrc
 
-ENV PS1="\[\033[38;5;8m\]\T\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;13m\]\W\[$(tput sgr0)\] \$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/') \[$(tput sgr0)\]\[\033[38;5;7m\][\$?]\[$(tput sgr0)\]\n\[$(tput sgr0)\]\[\033[38;5;5m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]"
+RUN echo "[[ $- != *i* ]] && return"     > /home/vscode/.bashrc
+RUN echo "alias ls=\"ls --color=auto\""  >> /home/vscode/.bashrc
+RUN echo "alias clear=\"clear; pfetch\"" >> /home/vscode/.bashrc
+RUN echo "pfetch"                        >> /home/vscode/.bashrc
+
+RUN echo "PS1=\"\[\033[38;5;8m\]\T\[$(tput sgr0)\] \[$(tput sgr0)\]\[\033[38;5;13m\]\W\[$(tput sgr0)\] \$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/') \[$(tput sgr0)\]\[\033[38;5;7m\][\$?]\[$(tput sgr0)\]\n\[$(tput sgr0)\]\[\033[38;5;5m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]\"" >> /home/vscode/.bashrc
