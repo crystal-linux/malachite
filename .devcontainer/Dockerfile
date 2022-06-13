@@ -1,4 +1,4 @@
-FROM crystallinux/crystal
+FROM crystallinux/crystal:crystal
 
 WORKDIR /home/
 
