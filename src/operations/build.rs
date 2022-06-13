@@ -1,20 +1,8 @@
 use crate::repository::generate;
 use crate::{crash, info, repository, workspace};
-use clap::ArgMatches;
 
-pub fn build(matches: &ArgMatches) {
+pub fn build(mut packages: Vec<String>, all: bool, exclude: Vec<String>, no_regen: bool) {
     let config = workspace::read_cfg();
-    let mut packages: Vec<String> = matches
-        .subcommand_matches("build")
-        .unwrap()
-        .values_of_lossy("package(s)")
-        .unwrap_or_default();
-
-    let exclude: Vec<String> = matches
-        .subcommand_matches("build")
-        .unwrap()
-        .values_of_lossy("exclude")
-        .unwrap_or_default();
 
     for pkg in &exclude {
         packages.retain(|x| x != pkg);
@@ -31,11 +19,7 @@ pub fn build(matches: &ArgMatches) {
         repos.push(a.parse().unwrap());
     }
 
-    if matches
-        .subcommand_matches("build")
-        .unwrap()
-        .is_present("exclude")
-    {
+    if exclude.is_empty() {
         for ex in exclude {
             repos.retain(|x| *x != ex);
         }
@@ -54,11 +38,7 @@ pub fn build(matches: &ArgMatches) {
         }
     }
 
-    if matches
-        .subcommand_matches("build")
-        .unwrap()
-        .is_present("all")
-    {
+    if all {
         for pkg in repos {
             let code = repository::build(&pkg);
             if code != 0 {
@@ -68,11 +48,7 @@ pub fn build(matches: &ArgMatches) {
         generate();
     }
 
-    if !matches
-        .subcommand_matches("build")
-        .unwrap()
-        .is_present("no-regen")
-    {
+    if !no_regen {
         repository::generate();
     }
 
