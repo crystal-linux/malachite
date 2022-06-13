@@ -10,12 +10,11 @@
         }
     },
     "extensions": [
-        "rust-lang.rust",
+        "rust-lang.rust-analyzer",
         "bungcip.better-toml",
         "vadimcn.vscode-lldb",
         "mutantndino.resourcemonitor"
     ],
     "forwardPorts": [],
-    "postCreateCommand": "rustc --version",
     "remoteUser": "vscode"
 }
