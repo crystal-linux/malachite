@@ -1,5 +1,5 @@
 {
-    "name": "Rust on Arch",
+    "name": "Rust on Crystal",
     "build": {
         "dockerfile": "Dockerfile"
     },
