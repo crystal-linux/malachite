@@ -13,7 +13,6 @@ use crate::workspace::read_cfg;
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
 mod args;
-
 mod internal;
 mod operations;
 mod repository;
