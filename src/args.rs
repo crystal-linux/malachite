@@ -25,7 +25,7 @@ pub enum Operation {
         packages: Vec<String>,
 
         /// Builds all packages in mlc.toml (except if -x is specified)
-        #[clap(long="all", action=ArgAction::Append, takes_value=true, conflicts_with="package(s)")]
+        #[clap(long="all", takes_value=false, action=ArgAction::SetTrue, conflicts_with="package(s)")]
         all: bool,
 
         /// Excludes packages from given operation
@@ -57,7 +57,7 @@ pub enum Operation {
         packages: Vec<String>,
 
         /// Pulls from all git repositories from mlc.toml branching from current directory
-        #[clap(long="all", action=ArgAction::SetTrue)]
+        #[clap(long="all", action=ArgAction::SetTrue, conflicts_with="package(s)")]
         all: bool,
     },
 
