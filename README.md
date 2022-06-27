@@ -1,12 +1,17 @@
 <p align="center">
-  <a href="https://git.getcryst.al/crystal/ame/">
-    <img src="https://raw.githubusercontent.com/crystal-linux/branding/main/logos/crystal-logo-minimal.png" alt="Logo" width="150" height="150">
+  <a href="https://github.com/crystal-linux/Malachite">
+    <img src="https://github.com/crystal-linux/branding/blob/main/logos/crystal-logo-minimal.png?raw=true" alt="Logo" width="150" height="150">
   </a>
 </p>
+
 <h2 align="center">Malachite</h2>
+
 <p align="center">
-    <a href="https://discord.gg/yp4xpZeAgW"><img alt="Discord" src="https://img.shields.io/discord/825473796227858482?color=blue&label=Discord&logo=Discord&logoColor=white"?link=https://discord.gg/yp4xpZeAgW&link=https://discord.gg/yp4xpZeAgW></a>
+    <a href="https://discord.gg/yp4xpZeAgW"><img alt="Discord" src="https://img.shields.io/discord/825473796227858482?color=blue&label=Discord&logo=Discord&logoColor=white"?link=https://discord.gg/yp4xpZeAgW&link=https://discord.gg/yp4xpZeAgW> </a>
+    <img src="https://img.shields.io/badge/Maintainer-@ihatethefrench-brightgreen" alt=The maintainer of this repository" href="https://github.com/ihatethefrench">
 </p>
+
+
 
 <p align="center">Malachite is a simple yet useful workspace and local repository management tool, made for packagers of Arch Linux based distributions.</p>
 
