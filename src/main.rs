@@ -2,15 +2,17 @@ use std::env;
 use std::path::Path;
 use std::process::Command;
 
+use crate::args::{Args, Operation};
 use crate::internal::{crash, info};
 use crate::repository::create_config;
-use clap::{App, AppSettings, Arg, ArgSettings, SubCommand};
+use clap::Parser;
 
 use crate::workspace::read_cfg;
 
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 
+mod args;
 mod internal;
 mod operations;
 mod repository;
@@ -25,84 +27,7 @@ fn main() {
         crash("Running malachite as root is disallowed as it can lead to system breakage. Instead, malachite will prompt you when it needs superuser permissions".to_string(), 1);
     }
 
-    fn build_app() -> App<'static, 'static> {
-        let app = App::new("Malachite")
-            .version(env!("CARGO_PKG_VERSION"))
-            .about(env!("CARGO_PKG_DESCRIPTION"))
-            .arg(
-                Arg::with_name("verbose")
-                    .short("v")
-                    .long("verbose")
-                    .multiple(true)
-                    .set(ArgSettings::Global)
-                    .help("Sets the level of verbosity"),
-            )
-            .subcommand(
-                SubCommand::with_name("build")
-                    .about("Builds the given packages")
-                    .arg(
-                        Arg::with_name("package(s)")
-                            .help("The packages to operate on")
-                            .multiple(true)
-                            .index(1),
-                    )
-                    .arg(
-                        Arg::with_name("all")
-                            .long("all")
-                            .help("Builds all packages in mlc.toml (except if -x is specified)")
-                            .conflicts_with("package(s)"),
-                    )
-                    .arg(
-                        Arg::with_name("exclude")
-                            .short("x")
-                            .long("exclude")
-                            .multiple(true)
-                            .takes_value(true)
-                            .help("Excludes packages from given operation"),
-                    )
-                    .arg(
-                        Arg::with_name("no-regen")
-                            .short("n")
-                            .long("no-regen")
-                            .help("Does not regenerate repository after building given package(s)"),
-                    ),
-            )
-            .subcommand(
-                SubCommand::with_name("repo-gen").about("Generates repository from built packages"),
-            )
-            .subcommand(
-                SubCommand::with_name("prune")
-                    .about("Prunes duplicate packages from the repository"),
-            )
-            .subcommand(SubCommand::with_name("init").about(
-                "Clones all git repositories from mlc.toml branching from current directory",
-            ))
-            .subcommand(
-                SubCommand::with_name("pull")
-                    .alias("update")
-                    .about(
-                        "Pulls all git repositories from mlc.toml branching from current directory",
-                    )
-                    .arg(
-                        Arg::with_name("package(s)")
-                            .help("The packages to operate on")
-                            .multiple(true)
-                            .index(1),
-                    ),
-            )
-            .subcommand(
-                SubCommand::with_name("config").about("Create and/or open local config file"),
-            )
-            .settings(&[
-                AppSettings::GlobalVersion,
-                AppSettings::VersionlessSubcommands,
-                AppSettings::ArgRequiredElseHelp,
-                AppSettings::InferSubcommands,
-            ]);
-        app
-    }
-
-    let matches = build_app().get_matches();
+    let args: Args = Args::parse();
 
     if Path::exists("mlc.toml".as_ref()) && Path::exists(".git".as_ref()) {
         info(
@@ -130,32 +55,26 @@ fn main() {
         env::set_current_dir(dir).unwrap();
     }
 
-    if let true = matches.is_present("init") {
-        operations::init();
-    }
-
-    if let true = matches.is_present("build") {
-        operations::build(&matches);
-    }
-
-    if let true = matches.is_present("pull") {
-        operations::pull(&matches);
-    }
-
-    if let true = matches.is_present("repo-gen") {
-        let config = read_cfg();
-        if config.mode != "repository" {
-            panic!("Cannot build packages in workspace mode")
+    match args.subcommand.unwrap_or(Operation::Init) {
+        Operation::Init => operations::init(),
+        Operation::Build {
+            packages,
+            exclude,
+            no_regen,
+            ..
+        } => operations::build(packages, exclude, no_regen),
+        Operation::Pull {
+            packages, exclude, ..
+        } => operations::pull(packages, exclude),
+        Operation::RepoGen => {
+            let config = read_cfg();
+            if config.mode != "repository" {
+                panic!("Cannot build packages in workspace mode")
+            }
+            info(format!("Generating repository: {}", config.name.unwrap()));
+            repository::generate();
         }
-        info(format!("Generating repository: {}", config.name.unwrap()));
-        repository::generate();
-    }
-
-    if let true = matches.is_present("prune") {
-        operations::prune();
-    }
-
-    if let true = matches.is_present("config") {
-        operations::config();
+        Operation::Prune => operations::prune(),
+        Operation::Config => operations::config(),
     }
 }
