@@ -59,6 +59,10 @@ pub enum Operation {
         /// Pulls from all git repositories from mlc.toml branching from current directory
         #[clap(long="all", action=ArgAction::SetTrue, conflicts_with="package(s)")]
         all: bool,
+
+        /// Excludes packages from given operation
+        #[clap(short='x', long="exclude", action=ArgAction::Append, takes_value=true)]
+        exclude: Vec<String>,
     },
 
     /// Create and/or open local config file

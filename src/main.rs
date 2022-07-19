@@ -59,12 +59,13 @@ fn main() {
         Operation::Init => operations::init(),
         Operation::Build {
             packages,
-            all,
             exclude,
             no_regen,
             ..
-        } => operations::build(packages, all, exclude, no_regen),
-        Operation::Pull { packages, all, .. } => operations::pull(packages, all),
+        } => operations::build(packages, exclude, no_regen),
+        Operation::Pull {
+            packages, exclude, ..
+        } => operations::pull(packages, exclude),
         Operation::RepoGen => {
             let config = read_cfg();
             if config.mode != "repository" {

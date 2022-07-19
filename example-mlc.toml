@@ -2,14 +2,14 @@ mode = "repository"
 name = "test"
 
 repo = [
-	"1::ame",
+	"1::amethyst",
 	"1::jade",
 	"2::notop-git",
 	"3::slippy-rb"
 ]
 
 urls = [
-	"https://git.tar.black/crystal/%repo%",
+	"https://github.com/crystal-linux/%repo%",
 	"https://aur.archlinux.org/%repo%",
 	"https://github.com/jnats/%repo%"
 ]
@@ -18,8 +18,8 @@ urls = [
 # these packages will be expanded based on the index number they have (index_number::package)
 # to demonstrate, the ones in this config will expand to the following:
 #
-# https://git.tar.black/crystal/ame
-# https://git.tar.black/crystal/jade
+# https://github.com/crystal-linux/ame
+# https://github.com/crystal-linux/jade
 # https://aur.archlinux.org/notop-git
 # https://github.com/jnats/slippy-rb
 #

@@ -34,5 +34,7 @@
           clippy
         ];
       };
+
+      formatter = pkgs.alejandra;
     });
 }

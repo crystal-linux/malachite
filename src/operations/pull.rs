@@ -17,10 +17,8 @@ fn do_the_pulling(packages: Vec<String>) {
     }
 }
 
-pub fn pull(packages: Vec<String>, all: bool) {
-    let all = if packages.is_empty() {
-        true
-    };
+pub fn pull(packages: Vec<String>, exclude: Vec<String>) {
+    let all = packages.is_empty();
     if all {
         let stdout = Command::new("ls").arg("-1").output().unwrap().stdout;
         let dirs_string = String::from_utf8_lossy(&stdout);
@@ -28,6 +26,10 @@ pub fn pull(packages: Vec<String>, all: bool) {
         let mut dirs = dirs_string.lines().collect::<Vec<&str>>();
 
         dirs.retain(|x| *x != "mlc.toml");
+        for x in exclude {
+            dirs.retain(|y| *y != x);
+        }
+
         let dirs_mapped = dirs.iter().map(|x| x.to_string()).collect();
 
         do_the_pulling(dirs_mapped);
