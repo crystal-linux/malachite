@@ -1,47 +1,39 @@
 use crate::info;
-use clap::ArgMatches;
 use std::env;
 use std::process::Command;
 
-pub fn pull(matches: &ArgMatches) {
-    let packages: Vec<String> = matches
-        .subcommand_matches("pull")
-        .unwrap()
-        .values_of_lossy("package(s)")
-        .unwrap_or_default();
+fn do_the_pulling(packages: Vec<String>) {
+    for dir in packages {
+        let current_dir = env::current_dir().unwrap();
+        info(format!("Entering working directory: {}", dir));
+        env::set_current_dir(dir).unwrap();
+        Command::new("git")
+            .arg("pull")
+            .spawn()
+            .unwrap()
+            .wait()
+            .unwrap();
+        env::set_current_dir(current_dir).unwrap();
+    }
+}
 
-    if packages.is_empty() {
+pub fn pull(packages: Vec<String>, exclude: Vec<String>) {
+    let all = packages.is_empty();
+    if all {
         let stdout = Command::new("ls").arg("-1").output().unwrap().stdout;
         let dirs_string = String::from_utf8_lossy(&stdout);
 
         let mut dirs = dirs_string.lines().collect::<Vec<&str>>();
 
         dirs.retain(|x| *x != "mlc.toml");
+        for x in exclude {
+            dirs.retain(|y| *y != x);
+        }
 
-        for dir in dirs {
-            let cdir = env::current_dir().unwrap();
-            info(format!("Entering working directory: {}", dir));
-            env::set_current_dir(dir).unwrap();
-            Command::new("git")
-                .arg("pull")
-                .spawn()
-                .unwrap()
-                .wait()
-                .unwrap();
-            env::set_current_dir(cdir).unwrap();
-        }
+        let dirs_mapped = dirs.iter().map(|x| x.to_string()).collect();
+
+        do_the_pulling(dirs_mapped);
     } else {
-        for dir in packages {
-            let cdir = env::current_dir().unwrap();
-            info(format!("Entering working directory: {}", dir));
-            env::set_current_dir(dir).unwrap();
-            Command::new("git")
-                .arg("pull")
-                .spawn()
-                .unwrap()
-                .wait()
-                .unwrap();
-            env::set_current_dir(cdir).unwrap();
-        }
+        do_the_pulling(packages);
     }
 }

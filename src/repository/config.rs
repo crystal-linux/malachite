@@ -4,10 +4,23 @@ use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 
-const DEFAULT_CONFIG: &str = r#"mode = ""   # either "repository" or "workspace"
-name = ""   # only required when in repository mode, decides what to call the repository and relevant files
-repo = [""] # an array of git repos to clone from, formatted url_index::repo_name, e.g. if you had urls = [ "https://example.com/%repo%" ], 1::package would expand to https://example.com/package
-urls = [""] # an array of urls to clone from, in the format https://example.com/%repo% (the %repo% is NOT optional)"#;
+const DEFAULT_CONFIG: &str = r#"# either "repository" or "workspace"
+mode = ""
+
+# only required when in repository mode, decides what to call the repository and relevant files
+name = ""
+
+# an array of git repos to clone from, formatted url_index::repo_name, e.g. if you had urls = [ "https://example.com/%repo%" ], 1::package would expand to https://example.com/package
+repo = [
+    "",
+    ""
+]
+
+# an array of urls to clone from, in the format https://example.com/%repo% (the %repo% is NOT optional)
+urls = [
+    "",
+    ""
+]"#;
 
 pub fn create_config() {
     if env::current_dir()
