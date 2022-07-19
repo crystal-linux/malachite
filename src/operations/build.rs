@@ -2,6 +2,10 @@ use crate::repository::generate;
 use crate::{crash, info, repository, workspace};
 
 pub fn build(mut packages: Vec<String>, all: bool, exclude: Vec<String>, no_regen: bool) {
+    let all = if packages.is_empty() {
+        true
+    };
+
     let config = workspace::read_cfg();
 
     for pkg in &exclude {

@@ -18,6 +18,9 @@ fn do_the_pulling(packages: Vec<String>) {
 }
 
 pub fn pull(packages: Vec<String>, all: bool) {
+    let all = if packages.is_empty() {
+        true
+    };
     if all {
         let stdout = Command::new("ls").arg("-1").output().unwrap().stdout;
         let dirs_string = String::from_utf8_lossy(&stdout);
