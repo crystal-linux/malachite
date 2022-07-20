@@ -3,6 +3,7 @@ use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
+use crate::internal::AppExitCode;
 
 const DEFAULT_CONFIG: &str = r#"# either "repository" or "workspace"
 mode = ""
@@ -30,10 +31,9 @@ pub fn create_config() {
         .next()
         .is_some()
     {
-        crash(
+        crash!(
+            AppExitCode::DirNotEmpty,
             "Directory is not empty, please only create a repository in an empty directory"
-                .to_string(),
-            6,
         );
     }
     if !Path::exists("mlc.toml".as_ref()) {

@@ -4,9 +4,6 @@ use std::process::Command;
 
 pub fn prune() {
     let config = read_cfg();
-    if &config.mode != "repository" {
-        panic!("Cannot build packages in workspace mode")
-    }
     let mut packages = vec![];
     for untrimmed_repo in &config.repo {
         pub fn trim_repo(a: String) -> String {
@@ -48,10 +45,10 @@ pub fn prune() {
     }
 
     if !packages_to_del.is_empty() {
-        info(format!(
+        info!(
             "Pruning duplicates: {}",
             packages_to_del.join(", ")
-        ));
+        );
     }
 
     for pkg in packages_to_del {

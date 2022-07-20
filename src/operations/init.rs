@@ -1,4 +1,5 @@
 use crate::{crash, info, workspace};
+use crate::internal::AppExitCode;
 use std::process::Command;
 
 pub fn init() {
@@ -33,15 +34,15 @@ pub fn init() {
         }
 
         if diff.is_empty() {
-            info("All repos are already cloned".to_string());
+            info!("All repos are already cloned");
         } else {
-            info(format!("New/missing repos to clone: {}", diff.join(", ")));
+            info!("New/missing repos to clone: {}", diff.join(", "));
             for r in diff_matches {
-                info(format!(
+                info!(
                     "Cloning ({} mode): {}",
                     config.mode,
                     r.split('/').last().unwrap()
-                ));
+                );
                 Command::new("git")
                     .args(&["clone", r])
                     .spawn()
@@ -51,6 +52,6 @@ pub fn init() {
             }
         }
     } else {
-        crash("Invalid mode in mlc.toml".to_string(), 1);
+        crash!(AppExitCode::InvalidMode, "Invalid mode in mlc.toml");
     }
 }

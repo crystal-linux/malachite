@@ -1,12 +1,13 @@
 use crate::crash;
 use std::fs;
 use std::path::Path;
+use crate::internal::AppExitCode;
 
 use crate::internal::structs::{Config, SplitRepo, UnexpandedConfig};
 
 pub fn read_cfg() -> Config {
     if !Path::exists("mlc.toml".as_ref()) {
-        crash("Config file not found (mlc.toml)".to_string(), 5)
+        crash!(AppExitCode::ConfigNotFound, "Config file not found (mlc.toml)")
     }
 
     let file = fs::read_to_string("mlc.toml").unwrap();

@@ -1,18 +1,11 @@
 use crate::repository::generate;
 use crate::{crash, info, repository, workspace};
+use crate::internal::AppExitCode;
 
-pub fn build(mut packages: Vec<String>, exclude: Vec<String>, no_regen: bool) {
+pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool) {
     let all = packages.is_empty();
 
     let config = workspace::read_cfg();
-
-    for pkg in &exclude {
-        packages.retain(|x| x != pkg);
-    }
-
-    if config.mode != "repository" {
-        crash("Cannot build packages in workspace mode".to_string(), 2);
-    }
 
     let mut repos: Vec<String> = vec![];
     for r in config.repo {
@@ -31,7 +24,7 @@ pub fn build(mut packages: Vec<String>, exclude: Vec<String>, no_regen: bool) {
 
     for pkg in packages {
         if !repos.contains(&pkg) {
-            crash(format!("Package {} not found in repos in mlc.toml", pkg), 3);
+            crash!(AppExitCode::PkgNotFound, "Package {} not found in repos in mlc.toml", pkg);
         } else {
             let code = repository::build(&pkg);
             if code != 0 {
@@ -55,9 +48,9 @@ pub fn build(mut packages: Vec<String>, exclude: Vec<String>, no_regen: bool) {
     }
 
     if !errored.is_empty() {
-        info(format!(
+        info!(
             "The following packages build jobs returned a non-zero exit code: {}",
             errored.join(" ")
-        ))
+        )
     }
 }

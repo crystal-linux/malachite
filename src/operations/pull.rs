@@ -5,7 +5,7 @@ use std::process::Command;
 fn do_the_pulling(packages: Vec<String>) {
     for dir in packages {
         let current_dir = env::current_dir().unwrap();
-        info(format!("Entering working directory: {}", dir));
+        info!("Entering working directory: {}", dir);
         env::set_current_dir(dir).unwrap();
         Command::new("git")
             .arg("pull")
