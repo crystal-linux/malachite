@@ -1,8 +1,8 @@
 use crate::crash;
+use crate::internal::AppExitCode;
 use std::path::Path;
 use std::process::Command;
 use std::{env, fs};
-use crate::internal::AppExitCode;
 
 pub fn build(pkg: &str) -> i32 {
     let dir = env::current_dir().unwrap();
@@ -10,7 +10,11 @@ pub fn build(pkg: &str) -> i32 {
         fs::create_dir_all("out").unwrap();
     }
     if !Path::exists(pkg.as_ref()) {
-        crash!(AppExitCode::DirNotGit, "Git directory for {} not found, aborting", pkg);
+        crash!(
+            AppExitCode::DirNotGit,
+            "Git directory for {} not found, aborting",
+            pkg
+        );
     }
 
     env::set_current_dir(pkg).unwrap();

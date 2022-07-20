@@ -26,7 +26,9 @@ fn main() {
     let args: Args = Args::parse();
 
     if Path::exists("mlc.toml".as_ref()) && Path::exists(".git".as_ref()) {
-        info!("In a git repository, pulling latest mlc.toml. It is advised you run mlc pull/update");
+        info!(
+            "In a git repository, pulling latest mlc.toml. It is advised you run mlc pull/update"
+        );
         Command::new("git")
             .arg("pull")
             .spawn()
@@ -62,7 +64,10 @@ fn main() {
         Operation::RepoGen => {
             let config = read_cfg();
             if config.mode != "repository" {
-                crash!(AppExitCode::BuildInWorkspace, "Cannot build packages in workspace mode")
+                crash!(
+                    AppExitCode::BuildInWorkspace,
+                    "Cannot build packages in workspace mode"
+                )
             }
             info!("Generating repository: {}", config.name.unwrap());
             repository::generate();
