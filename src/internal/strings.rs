@@ -1,6 +1,6 @@
-use std::process::exit;
 use crate::internal::AppExitCode;
 use colored::*;
+use std::process::exit;
 
 const LOGO_SYMBOL: &str = "μ";
 const ERR_SYMBOL: &str = "❌";

@@ -1,6 +1,6 @@
+use crate::internal::AppExitCode;
 use crate::repository::generate;
 use crate::{crash, info, repository, workspace};
-use crate::internal::AppExitCode;
 
 pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool) {
     let all = packages.is_empty();
@@ -24,7 +24,11 @@ pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool) {
 
     for pkg in packages {
         if !repos.contains(&pkg) {
-            crash!(AppExitCode::PkgNotFound, "Package {} not found in repos in mlc.toml", pkg);
+            crash!(
+                AppExitCode::PkgNotFound,
+                "Package {} not found in repos in mlc.toml",
+                pkg
+            );
         } else {
             let code = repository::build(&pkg);
             if code != 0 {

@@ -1,9 +1,9 @@
 use crate::crash;
+use crate::internal::AppExitCode;
 use std::env;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
-use crate::internal::AppExitCode;
 
 const DEFAULT_CONFIG: &str = r#"# either "repository" or "workspace"
 mode = ""

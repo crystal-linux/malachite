@@ -45,10 +45,7 @@ pub fn prune() {
     }
 
     if !packages_to_del.is_empty() {
-        info!(
-            "Pruning duplicates: {}",
-            packages_to_del.join(", ")
-        );
+        info!("Pruning duplicates: {}", packages_to_del.join(", "));
     }
 
     for pkg in packages_to_del {
