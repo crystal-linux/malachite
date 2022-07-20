@@ -1,8 +1,9 @@
-use crate::crash;
-use crate::internal::AppExitCode;
 use std::path::Path;
 use std::process::Command;
 use std::{env, fs};
+
+use crate::crash;
+use crate::internal::AppExitCode;
 
 pub fn build(pkg: &str) -> i32 {
     let dir = env::current_dir().unwrap();

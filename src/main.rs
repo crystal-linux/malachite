@@ -1,3 +1,4 @@
+use clap::Parser;
 use std::env;
 use std::path::Path;
 use std::process::Command;
@@ -5,8 +6,6 @@ use std::process::Command;
 use crate::args::{Args, Operation};
 use crate::internal::AppExitCode;
 use crate::repository::create_config;
-use clap::Parser;
-
 use crate::workspace::read_cfg;
 
 #[global_allocator]

@@ -1,6 +1,7 @@
-use crate::{info, read_cfg};
 use std::fs;
 use std::process::Command;
+
+use crate::{info, read_cfg};
 
 pub fn prune() {
     let config = read_cfg();

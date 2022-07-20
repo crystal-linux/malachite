@@ -1,9 +1,9 @@
-use crate::crash;
-use crate::internal::AppExitCode;
 use std::fs;
 use std::path::Path;
 
+use crate::crash;
 use crate::internal::structs::{Config, SplitRepo, UnexpandedConfig};
+use crate::internal::AppExitCode;
 
 pub fn read_cfg() -> Config {
     if !Path::exists("mlc.toml".as_ref()) {

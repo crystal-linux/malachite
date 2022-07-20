@@ -1,6 +1,7 @@
-use crate::info;
 use std::env;
 use std::process::Command;
+
+use crate::info;
 
 fn do_the_pulling(packages: Vec<String>) {
     for dir in packages {
