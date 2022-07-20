@@ -1,6 +1,7 @@
+use std::process::Command;
+
 use crate::internal::AppExitCode;
 use crate::{crash, info, workspace};
-use std::process::Command;
 
 pub fn init() {
     let config = workspace::read_cfg();
