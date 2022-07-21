@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 
-use crate::crash;
+use crate::{crash, log};
 use crate::internal::AppExitCode;
 
 const DEFAULT_CONFIG: &str = r#"
@@ -43,10 +43,12 @@ pub fn create_config() {
             "Directory is not empty, please only create a repository in an empty directory"
         );
     }
+    log!("Creating config file");
 
     // If config file exists, create it
     if !Path::exists("mlc.toml".as_ref()) {
         let mut file = File::create("mlc.toml").unwrap();
         file.write_all(DEFAULT_CONFIG.as_ref()).unwrap();
     }
+    log!("Config file created");
 }
