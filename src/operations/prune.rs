@@ -47,7 +47,7 @@ pub fn prune(verbose: bool) {
         let ext = parts.next().unwrap();
         let package = PackageFile {
             name: name.to_string(),
-            ver: ver.to_string() + "-" + &rel.to_string(),
+            ver: ver.to_string() + "-" + rel,
             ext: ext.to_string(),
         };
         log!(verbose, "Package: {:?}", package);
@@ -83,8 +83,8 @@ pub fn prune(verbose: bool) {
     let mut packages_to_delete: Vec<PackageFile> = vec![];
     for p in packages_by_name.iter() {
         let mut to_delete = vec![];
-        for i in 0..p.len() {
-            if i >= 4 {
+        for (i, _) in p.iter().enumerate() {
+            if i >= 3 {
                 log!(verbose, "Deleting {:?}", p[i]);
                 to_delete.push(p[i].clone());
             }
