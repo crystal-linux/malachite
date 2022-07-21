@@ -1,8 +1,8 @@
-use crate::{crash, internal::AppExitCode};
 use std::env;
 use std::process::Command;
 
 use crate::info;
+use crate::{crash, internal::AppExitCode};
 
 fn do_the_pulling(repos: Vec<String>) {
     for repo in repos {
