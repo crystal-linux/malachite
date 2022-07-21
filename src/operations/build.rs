@@ -1,4 +1,4 @@
-use crate::internal::structs::ErroredPackage;
+use crate::internal::structs::{ErroredPackage, Repo};
 use crate::internal::AppExitCode;
 use crate::{crash, info, repository, workspace};
 
@@ -8,10 +8,10 @@ pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool) {
     let all = packages.is_empty();
 
     // Get list of repos and subtract exclude
-    let mut repos: Vec<String> = config.repo.iter().map(|x| x.name.clone()).collect();
+    let mut repos: Vec<Repo> = config.repo;
     if !exclude.is_empty() {
         for ex in exclude {
-            repos.retain(|x| *x != ex);
+            repos.retain(|x| *x.name != ex);
         }
     }
 
@@ -19,16 +19,21 @@ pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool) {
     let mut errored: Vec<ErroredPackage> = vec![];
     if !packages.is_empty() && !all {
         for pkg in &packages {
-            if !repos.contains(pkg) {
+            // If repo is not in config, crash
+            if !repos.iter().map(|x| x.name.clone()).any(|x| x == *pkg) {
                 crash!(
                     AppExitCode::PkgNotFound,
                     "Package repo {} not found in in mlc.toml",
                     pkg
                 );
             } else {
+                // Otherwise, build
                 let code = repository::build(pkg, config.sign);
                 if code != 0 {
-                    let error = ErroredPackage { name: pkg.to_string(), code };
+                    let error = ErroredPackage {
+                        name: pkg.to_string(),
+                        code,
+                    };
                     errored.push(error);
                 }
             }
@@ -37,10 +42,15 @@ pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool) {
 
     // If all is specified, attempt to build a package from all repos
     if all {
+        // Sort by package priority
+        repos.sort_by(|a, b| b.priority.cmp(&a.priority));
         for pkg in repos {
-            let code = repository::build(&pkg, config.sign);
+            let code = repository::build(&pkg.name, config.sign);
             if code != 0 {
-                let error = ErroredPackage { name: pkg, code };
+                let error = ErroredPackage {
+                    name: pkg.name,
+                    code,
+                };
                 errored.push(error);
             }
         }

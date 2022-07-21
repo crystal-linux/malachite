@@ -37,10 +37,7 @@ pub fn generate() {
     Command::new("bash")
         .args(&[
             "-c",
-            &format!(
-                "GLOBIGNORE=\"*.sig\" repo-add {}.tar.gz *.pkg.tar.*",
-                db
-            ),
+            &format!("GLOBIGNORE=\"*.sig\" repo-add {}.tar.gz *.pkg.tar.*", db),
         ])
         .spawn()
         .unwrap()
