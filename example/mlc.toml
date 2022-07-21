@@ -1,0 +1,32 @@
+mode = "repository"
+name = "test"
+sign = false
+
+repo = [
+	"1::amethyst",
+	"1::jade!",
+	"2::notop-git",
+	"3::slippy-rb"
+]
+
+urls = [
+	"https://github.com/crystal-linux/%repo%",
+	"https://aur.archlinux.org/%repo%",
+	"https://github.com/jnats/%repo%"
+]
+
+# In this example, Malachite will create a repository called "test", with 4 packages
+# These packages will be expanded based on the index number they have (index_number::package)
+# To demonstrate, the ones in this config will expand to the following:
+#
+# https://github.com/crystal-linux/ame
+# https://github.com/crystal-linux/jade
+# https://aur.archlinux.org/notop-git
+# https://github.com/jnats/slippy-rb
+#
+# The "name" option specifies the name of the pacman repository.
+# The "sign" option specifies whether the built packages should be signed, which is recommended for all pacman repositories.
+# When in repository mode, malachite only pulls the PKGBUILD file from the git repository (all we need to build the packages from src)
+#
+# Additionally, packages are built in the order of priority, so packages with a higher priority (denoted by "!"s appended to the name) will be built first.
+# In this case, jade has a higher priority than amethyst, so it will be built first.
