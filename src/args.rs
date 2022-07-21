@@ -42,6 +42,10 @@ pub enum Operation {
     #[clap(name = "clone", aliases = & ["init", "i", "c"])]
     Clone,
 
+    /// Removes everything in directory except for mlc.toml
+    #[clap(name = "clean", aliases = & ["clean", "cl", "reset"])]
+    Clean,
+
     /// Pulls in git repositories from mlc.toml branching from current directory
     #[clap(name = "pull", aliases = & ["u"])]
     Pull {

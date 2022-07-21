@@ -69,5 +69,6 @@ fn main() {
             repository::generate();
         }
         Operation::Config => operations::config(),
+        Operation::Clean => operations::clean(),
     }
 }
