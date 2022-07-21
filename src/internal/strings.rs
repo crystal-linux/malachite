@@ -1,5 +1,6 @@
 use colored::*;
 use std::process::exit;
+use std::time::UNIX_EPOCH;
 
 use crate::internal::AppExitCode;
 
@@ -14,15 +15,28 @@ macro_rules! info {
 }
 
 #[macro_export]
+macro_rules! log {
+    ($($arg:tt)+) => {
+        $crate::internal::strings::log_fn(format!($($arg)+))
+    }
+}
+
+#[macro_export]
 macro_rules! crash {
     ($exit_code:expr, $($arg:tt)+) => {
         $crate::internal::strings::crash_fn(format!($($arg)+), $exit_code)
     }
 }
 
+
 pub fn info_fn<S: ToString>(msg: S) {
     let msg = msg.to_string();
     println!("{} {}", LOGO_SYMBOL.black(), msg.bold())
+}
+
+pub fn log_fn<S: ToString>(msg: S) {
+    let msg = msg.to_string();
+    eprintln!("{} {}", std::time::SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_secs(), msg)
 }
 
 pub fn crash_fn<S: ToString>(msg: S, exit_code: AppExitCode) {
