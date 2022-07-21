@@ -1,20 +1,20 @@
+use std::{env, fs};
 use std::path::Path;
 use std::process::Command;
-use std::{env, fs};
 
 use crate::{crash, log};
 use crate::internal::AppExitCode;
 
-pub fn build(pkg: &str, sign: bool) -> i32 {
-    log!("Building {}", pkg);
-    log!("Signing: {}", sign);
+pub fn build(pkg: &str, sign: bool, verbose: bool) -> i32 {
+    log!(verbose, "Building {}", pkg);
+    log!(verbose, "Signing: {}", sign);
     // Set root dir to return after build
     let dir = env::current_dir().unwrap();
-    log!("Root dir: {:?}", dir);
+    log!(verbose, "Root dir: {:?}", dir);
 
     // Create out dir if not already present
     if !Path::exists("out".as_ref()) {
-        log!("Creating out dir");
+        log!(verbose, "Creating out dir");
         fs::create_dir_all("out").unwrap();
     }
 
@@ -29,7 +29,7 @@ pub fn build(pkg: &str, sign: bool) -> i32 {
 
     // Enter build directory
     env::set_current_dir(pkg).unwrap();
-    log!("Current dir: {:?}", env::current_dir().unwrap());
+    log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
 
     // Build each package
     let a = Command::new("makepkg")
@@ -43,7 +43,7 @@ pub fn build(pkg: &str, sign: bool) -> i32 {
         .unwrap()
         .wait()
         .unwrap();
-    log!("{} Build job returned: {:?}", pkg, a);
+    log!(verbose, "{} Build job returned: {:?}", pkg, a);
 
     // Copy built package to out dir
     Command::new("bash")
@@ -52,11 +52,15 @@ pub fn build(pkg: &str, sign: bool) -> i32 {
         .unwrap()
         .wait()
         .unwrap();
-    log!("Copied built package to out dir");
+    log!(verbose, "Copied built package to out dir");
 
     // Return to root dir
     env::set_current_dir(dir).unwrap();
-    log!("Returned to root dir: {:?}", env::current_dir().unwrap());
+    log!(
+        verbose,
+        "Returned to root dir: {:?}",
+        env::current_dir().unwrap()
+    );
 
     // Return exit code
     a.code().unwrap()

@@ -7,8 +7,8 @@ pub struct Args {
     pub subcommand: Option<Operation>,
 
     /// Sets the level of verbosity
-    #[clap(long, short, global(true), action = ArgAction::Count)]
-    pub verbose: u8,
+    #[clap(long, short, global(true), action = ArgAction::SetTrue)]
+    pub verbose: bool,
 
     /// Complete operations without prompting user
     #[clap(long = "noconfirm", global(true), action = ArgAction::SetTrue)]

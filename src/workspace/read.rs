@@ -1,11 +1,11 @@
 use std::fs;
 use std::path::Path;
 
-use crate::crash;
-use crate::internal::structs::{Config, Repo, SplitRepo, UnexpandedConfig};
+use crate::{crash, log};
 use crate::internal::AppExitCode;
+use crate::internal::structs::{Config, Repo, SplitRepo, UnexpandedConfig};
 
-pub fn read_cfg() -> Config {
+pub fn read_cfg(verbose: bool) -> Config {
     // Crash if mlc.toml doesn't exist
     if !Path::exists("mlc.toml".as_ref()) {
         crash!(
@@ -17,6 +17,7 @@ pub fn read_cfg() -> Config {
     // Reading the config file to an UnexpandedConfig struct
     let file = fs::read_to_string("mlc.toml").unwrap();
     let config: UnexpandedConfig = toml::from_str(&file).unwrap();
+    log!(verbose, "Config file read: {:?}", config);
 
     // Crash if incorrect mode is set
     if config.mode != "workspace" && config.mode != "repository" {
@@ -30,12 +31,14 @@ pub fn read_cfg() -> Config {
 
     // Parsing repos from the config file
     for x in config.repo {
+        log!(verbose, "Parsing repo: {:?}", x);
         // Splits the repo name and index inta a SplitRepo struct
         let split: Vec<&str> = x.split("::").collect();
         let split_struct = SplitRepo {
             indx: split[0].parse().unwrap(),
             name: split[1].parse().unwrap(),
         };
+        log!(verbose, "Split repo: {:?}", split_struct);
 
         // Parses all necessary values for expanding the repo to a Repo struct
         let index = split_struct.indx;
@@ -49,14 +52,17 @@ pub fn read_cfg() -> Config {
             url,
             priority: *priority,
         };
+        log!(verbose, "Expanded repo: {:?}", repo);
         expanded_repos.push(repo);
     }
 
     // Returns parsed config file
-    Config {
+    let conf = Config {
         mode: config.mode,
         sign: config.sign,
         name: config.name,
         repo: expanded_repos,
-    }
+    };
+    log!(verbose, "Config: {:?}", conf);
+    conf
 }

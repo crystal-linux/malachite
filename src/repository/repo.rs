@@ -1,27 +1,27 @@
+use std::{env, fs};
 use std::path::Path;
 use std::process::Command;
-use std::{env, fs};
 
-use crate::{workspace::read_cfg, log};
+use crate::{log, workspace::read_cfg};
 
-pub fn generate() {
+pub fn generate(verbose: bool) {
     // Read config struct from mlc.toml
-    let config = read_cfg();
-    log!("Config: {:?}", config);
+    let config = read_cfg(verbose);
+    log!(verbose, "Config: {:?}", config);
 
     // Get repository name from config
     let name = config.name.unwrap();
-    log!("Name: {}", name);
+    log!(verbose, "Name: {}", name);
 
     // If repository exists, delete it
     if Path::exists(name.as_ref()) {
-        log!("Deleting {}", name);
+        log!(verbose, "Deleting {}", name);
         fs::remove_dir_all(&name).unwrap();
     }
 
     // Create or recreate repository directory
     fs::create_dir_all(&name).unwrap();
-    log!("Created {}", name);
+    log!(verbose, "Created {}", name);
 
     // Copy out packages to repository directory
     Command::new("bash")
@@ -30,11 +30,11 @@ pub fn generate() {
         .unwrap()
         .wait()
         .unwrap();
-    log!("Copied out packages to {}", name);
+    log!(verbose, "Copied out packages to {}", name);
 
     // Enter repository directory
     env::set_current_dir(&name).unwrap();
-    log!("Current dir: {:?}", env::current_dir().unwrap());
+    log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
 
     let db = format!("{}.db", &name);
     let files = format!("{}.files", &name);
@@ -49,7 +49,7 @@ pub fn generate() {
         .unwrap()
         .wait()
         .unwrap();
-    log!("Created {} and {}", db, files);
+    log!(verbose, "Created {} and {}", db, files);
 
     // Replace repo.{db,files}.tar.gz with just repo.{db,files}
     Command::new("bash")
@@ -61,5 +61,12 @@ pub fn generate() {
         .unwrap()
         .wait()
         .unwrap();
-    log!("Renamed {}.tar.gz to {} and {}.tar.gz to {}", db, db, files, files);
+    log!(
+        verbose,
+        "Renamed {}.tar.gz to {} and {}.tar.gz to {}",
+        db,
+        db,
+        files,
+        files
+    );
 }

@@ -29,7 +29,7 @@ urls = [
     ""
 ]"#;
 
-pub fn create_config() {
+pub fn create_config(verbose: bool) {
     // Ensure current directory is empty
     if env::current_dir()
         .unwrap()
@@ -43,12 +43,12 @@ pub fn create_config() {
             "Directory is not empty, please only create a repository in an empty directory"
         );
     }
-    log!("Creating config file");
+    log!(verbose, "Creating config file");
 
     // If config file exists, create it
     if !Path::exists("mlc.toml".as_ref()) {
         let mut file = File::create("mlc.toml").unwrap();
         file.write_all(DEFAULT_CONFIG.as_ref()).unwrap();
     }
-    log!("Config file created");
+    log!(verbose, "Config file created");
 }
