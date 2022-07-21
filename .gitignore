@@ -1,6 +1,6 @@
 /target
 .idea
 .direnv
-test/*
 
-!test/mlc.toml
+example/*
+!example/mlc.toml
