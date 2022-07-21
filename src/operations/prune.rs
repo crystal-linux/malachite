@@ -110,6 +110,6 @@ pub fn prune(verbose: bool) {
     // Print which packages were deleted
     info!("Deleted the following packages:");
     for p in packages_to_delete.iter_mut() {
-        info!("{}-{}-{}", p.name, p.ver, p.ext);
+        info!("{}-{}", p.name.replace("./", ""), p.ver);
     }
 }
