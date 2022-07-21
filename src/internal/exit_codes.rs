@@ -4,6 +4,7 @@ pub enum AppExitCode {
     PkgNotFound = 3,
     InvalidMode = 4,
     DirNotEmpty = 5,
-    DirNotGit = 6,
+    RepoNotFound = 6,
     ConfigNotFound = 7,
+    NoPkgs = 8,
 }

@@ -4,7 +4,7 @@ name = "test"
 repo = [
 	"1::amethyst",
 	"1::jade",
-	"2::notop-git",
+	"2::notop-git!",
 	"3::slippy-rb"
 ]
 
