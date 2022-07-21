@@ -18,9 +18,6 @@ pub struct Args {
     #[clap(short = 'x', long = "exclude", action = ArgAction::Append, takes_value = true)]
     pub exclude: Vec<String>,
 
-    /// Operates on all packages in the workspace, if applicable
-    #[clap(long = "all", action = ArgAction::SetTrue, conflicts_with = "package(s)")]
-    pub all: bool,
 }
 
 #[derive(Debug, Clone, Subcommand)]
@@ -42,7 +39,7 @@ pub enum Operation {
     RepoGen,
 
     /// Clones all git repositories from mlc.toml branching from current directory
-    #[clap(name = "clone", aliases = & ["c"])]
+    #[clap(name = "clone", aliases = & ["init", "i", "c"])]
     Clone,
 
     /// Pulls in git repositories from mlc.toml branching from current directory
