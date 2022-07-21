@@ -70,6 +70,7 @@ fn main() {
             repository::generate(verbose);
         }
         Operation::Config => operations::config(verbose),
+        Operation::Prune => operations::prune(verbose),
         Operation::Clean => operations::clean(verbose),
     }
 }

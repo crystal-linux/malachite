@@ -45,6 +45,10 @@ pub enum Operation {
     #[clap(name = "clean", aliases = & ["clean", "cl", "reset"])]
     Clean,
 
+    /// Removes all but the latest 3 versions of each package in a repository
+    #[clap(name = "prune", aliases = & ["prune", "p"])]
+    Prune,
+
     /// Pulls in git repositories from mlc.toml branching from current directory
     #[clap(name = "pull", aliases = & ["u"])]
     Pull {
