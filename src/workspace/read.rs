@@ -1,9 +1,9 @@
 use std::fs;
 use std::path::Path;
 
-use crate::{crash, log};
-use crate::internal::AppExitCode;
 use crate::internal::structs::{Config, Repo, SplitRepo, UnexpandedConfig};
+use crate::internal::AppExitCode;
+use crate::{crash, log};
 
 pub fn read_cfg(verbose: bool) -> Config {
     // Crash if mlc.toml doesn't exist
