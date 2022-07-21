@@ -1,6 +1,6 @@
-use crate::{crash, info, log, repository, workspace};
-use crate::internal::AppExitCode;
 use crate::internal::structs::{ErroredPackage, Repo};
+use crate::internal::AppExitCode;
+use crate::{crash, info, log, repository, workspace};
 
 pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool, verbose: bool) {
     // Read config struct from mlc.toml

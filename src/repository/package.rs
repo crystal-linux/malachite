@@ -1,9 +1,9 @@
-use std::{env, fs};
 use std::path::Path;
 use std::process::Command;
+use std::{env, fs};
 
-use crate::{crash, log};
 use crate::internal::AppExitCode;
+use crate::{crash, log};
 
 pub fn build(pkg: &str, sign: bool, verbose: bool) -> i32 {
     log!(verbose, "Building {}", pkg);

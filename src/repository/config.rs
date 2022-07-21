@@ -3,8 +3,8 @@ use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 
-use crate::{crash, log};
 use crate::internal::AppExitCode;
+use crate::{crash, log};
 
 const DEFAULT_CONFIG: &str = r#"
 # Either "repository" or "workspace"

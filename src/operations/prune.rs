@@ -1,9 +1,9 @@
-use std::env;
-use std::path::PathBuf;
-use std::fs;
 use crate::info;
 use crate::log;
 use crate::read_cfg;
+use std::env;
+use std::fs;
+use std::path::PathBuf;
 
 #[derive(Debug, Clone)]
 struct PackageFile {
@@ -97,9 +97,8 @@ pub fn prune(verbose: bool) {
     for p in packages_to_delete.iter() {
         let path = format!("{}-{}-{}", p.name, p.ver, p.ext);
         log!(verbose, "Deleting {}", path);
-        std::process::Command::new("bash").args(&["-c",
-            &format!("rm -rf ./{} ./{}.sig", path, path)
-        ])
+        std::process::Command::new("bash")
+            .args(&["-c", &format!("rm -rf ./{} ./{}.sig", path, path)])
             .output()
             .unwrap();
     }
