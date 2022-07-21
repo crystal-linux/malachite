@@ -1,13 +1,13 @@
 use std::process::Command;
 
-use crate::{info, workspace, log};
+use crate::{info, log, workspace};
 
-pub fn clone() {
+pub fn clone(verbose: bool) {
     // Read config struct from mlc.toml
-    let config = workspace::read_cfg();
-    log!("Config: {:?}", config);
+    let config = workspace::read_cfg(verbose);
+    log!(verbose, "Config: {:?}", config);
     let repos = &config.repo;
-    log!("Repos: {:?}", repos);
+    log!(verbose, "Repos: {:?}", repos);
 
     // Get a vector of all files/dirs in the current directory, excluding config file
     let dir_paths = std::fs::read_dir("./").unwrap();
@@ -15,7 +15,7 @@ pub fn clone() {
         .map(|x| x.unwrap().path().display().to_string())
         .collect::<Vec<String>>();
     dirs.retain(|x| *x != "./mlc.toml");
-    log!("Paths with mlc.toml excluded: {:?}", dirs);
+    log!(verbose, "Paths with mlc.toml excluded: {:?}", dirs);
 
     // Creates a vector of the difference between cloned repos and repos defined in config
     let mut repo_diff = vec![];
@@ -29,10 +29,10 @@ pub fn clone() {
     // Diff logic
     if repo_diff.is_empty() {
         // No diff, do nothing
-        log!("No diff");
+        log!(verbose, "No diff");
         info!("All repos are already cloned");
     } else {
-        log!("Diff: {:?}", repo_diff);
+        log!(verbose, "Diff: {:?}", repo_diff);
         // This is just for pretty display purposes
         let display = repo_diff
             .iter()
@@ -43,7 +43,7 @@ pub fn clone() {
 
         // Clone all diff repos
         for r in repo_diff {
-            log!("Cloning {}", r.name);
+            log!(verbose, "Cloning {}", r.name);
             info!("Cloning ({} mode): {}", config.mode, r.name);
             Command::new("git")
                 .args(&["clone", &r.url, &r.name])

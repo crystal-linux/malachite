@@ -1,18 +1,18 @@
 use std::env;
 use std::process::Command;
 
-use crate::info;
 use crate::{crash, internal::AppExitCode, log};
+use crate::info;
 
-fn do_the_pulling(repos: Vec<String>) {
+fn do_the_pulling(repos: Vec<String>, verbose: bool) {
     for repo in repos {
         // Set root dir to return after each git pull
         let root_dir = env::current_dir().unwrap();
-        log!("Root dir: {:?}", root_dir);
+        log!(verbose, "Root dir: {:?}", root_dir);
         info!("Entering working directory: {}", &repo);
         env::set_current_dir(repo).unwrap();
-        log!("Current dir: {:?}", env::current_dir().unwrap());
-        log!("Pulling");
+        log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
+        log!(verbose, "Pulling");
         Command::new("git")
             .arg("pull")
             .spawn()
@@ -22,26 +22,30 @@ fn do_the_pulling(repos: Vec<String>) {
 
         // Return to root dir
         env::set_current_dir(root_dir).unwrap();
-        log!("Returned to root dir: {:?}", env::current_dir().unwrap());
+        log!(
+            verbose,
+            "Returned to root dir: {:?}",
+            env::current_dir().unwrap()
+        );
     }
 }
 
-pub fn pull(packages: Vec<String>, exclude: Vec<String>) {
+pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool) {
     // If no packages are specified, imply all
     let all = packages.is_empty();
-    log!("All: {}", all);
+    log!(verbose, "All: {}", all);
 
     // Read repos from config file
-    let repos = crate::workspace::read_cfg()
+    let repos = crate::workspace::read_cfg(verbose)
         .repo
         .iter()
         .map(|x| x.name.clone())
         .collect::<Vec<String>>();
-    log!("Repos: {:?}", repos);
+    log!(verbose, "Repos: {:?}", repos);
 
     // Set repos_applicable for next function
     let mut repos_applicable = if all { repos } else { packages };
-    log!("Repos applicable: {:?}", repos_applicable);
+    log!(verbose, "Repos applicable: {:?}", repos_applicable);
 
     // Subtract exclude from repos_applicable
     if !exclude.is_empty() {
@@ -49,8 +53,8 @@ pub fn pull(packages: Vec<String>, exclude: Vec<String>) {
             repos_applicable.retain(|x| *x != *ex);
         }
     }
-    log!("Exclude: {:?}", exclude);
-    log!("Repos applicable excluded: {:?}", repos_applicable);
+    log!(verbose, "Exclude: {:?}", exclude);
+    log!(verbose, "Repos applicable excluded: {:?}", repos_applicable);
 
     // If all is not specified and packages is empty, crash
     if repos_applicable.is_empty() {
@@ -58,6 +62,6 @@ pub fn pull(packages: Vec<String>, exclude: Vec<String>) {
     }
 
     // Pull!
-    log!("Pulling {:?}", repos_applicable);
-    do_the_pulling(repos_applicable);
+    log!(verbose, "Pulling {:?}", repos_applicable);
+    do_the_pulling(repos_applicable, verbose);
 }

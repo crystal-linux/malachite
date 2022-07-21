@@ -37,6 +37,7 @@ fn main() {
     }
 
     let exclude = &args.exclude;
+    let verbose = args.verbose;
 
     if Path::exists("../.git".as_ref()) {
         info!("Parent directory is a git directory, pulling latest mlc.toml. It is advised you run mlc pull/update in all malachite directories");
@@ -52,13 +53,13 @@ fn main() {
     }
 
     match args.subcommand.unwrap_or(Operation::Clone) {
-        Operation::Clone => operations::clone(),
+        Operation::Clone => operations::clone(verbose),
         Operation::Build {
             packages, no_regen, ..
-        } => operations::build(packages, exclude.to_vec(), no_regen),
-        Operation::Pull { packages, .. } => operations::pull(packages, exclude.to_vec()),
+        } => operations::build(packages, exclude.to_vec(), no_regen, verbose),
+        Operation::Pull { packages, .. } => operations::pull(packages, exclude.to_vec(), verbose),
         Operation::RepoGen => {
-            let config = read_cfg();
+            let config = read_cfg(verbose);
             if config.mode != "repository" {
                 crash!(
                     AppExitCode::BuildInWorkspace,
@@ -66,9 +67,9 @@ fn main() {
                 )
             }
             info!("Generating repository: {}", config.name.unwrap());
-            repository::generate();
+            repository::generate(verbose);
         }
-        Operation::Config => operations::config(),
-        Operation::Clean => operations::clean(),
+        Operation::Config => operations::config(verbose),
+        Operation::Clean => operations::clean(verbose),
     }
 }
