@@ -17,7 +17,6 @@ pub struct Args {
     /// Excludes packages from given operation, if applicable
     #[clap(short = 'x', long = "exclude", action = ArgAction::Append, takes_value = true)]
     pub exclude: Vec<String>,
-
 }
 
 #[derive(Debug, Clone, Subcommand)]

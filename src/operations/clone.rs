@@ -1,5 +1,6 @@
-use crate::{info, workspace};
 use std::process::Command;
+
+use crate::{info, workspace};
 
 pub fn clone() {
     // Read config struct from mlc.toml
