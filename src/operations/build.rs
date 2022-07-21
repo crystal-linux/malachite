@@ -15,7 +15,7 @@ pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool) {
         }
     }
 
-    // If packages is not empty and all isn't specified, build specifed packages
+    // If packages is not empty and all isn't specified, build specified packages
     let mut errored: Vec<ErroredPackage> = vec![];
     if !packages.is_empty() && !all {
         for pkg in &packages {
