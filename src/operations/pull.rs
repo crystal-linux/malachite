@@ -1,4 +1,4 @@
-use crate::{internal::AppExitCode, crash};
+use crate::{crash, internal::AppExitCode};
 use std::env;
 use std::process::Command;
 
@@ -34,11 +34,7 @@ pub fn pull(packages: Vec<String>, exclude: Vec<String>) {
         .collect::<Vec<String>>();
 
     // Set repos_applicable for next function
-    let mut repos_applicable = if all {
-        repos
-    } else {
-        packages
-    };
+    let mut repos_applicable = if all { repos } else { packages };
 
     // Subtract exclude from repos_applicable
     if !exclude.is_empty() {

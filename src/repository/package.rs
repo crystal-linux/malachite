@@ -29,7 +29,12 @@ pub fn build(pkg: &str, sign: bool) -> i32 {
 
     // Build each package
     let a = Command::new("makepkg")
-        .args(&["-sf", "--skippgpcheck", if sign { "--sign" } else {"--nosign"}, "--noconfirm"])
+        .args(&[
+            "-sf",
+            "--skippgpcheck",
+            if sign { "--sign" } else { "--nosign" },
+            "--noconfirm",
+        ])
         .spawn()
         .unwrap()
         .wait()
