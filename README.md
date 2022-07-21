@@ -22,14 +22,13 @@
 
 ## Basic usage
 
-| Action                                                 | Command      |
-|--------------------------------------------------------|--------------|
+| Action                                                 | Command               |
+|--------------------------------------------------------|-----------------------|
 | Build a package                                        | mlc build \<package\> |
-| Generate local repository                              | mlc repo-gen |
-| Update local repos/PKGBUILDs                           | mlc pull/update |
-| Create and/or open config file                         | mlc conf     |
-| Initialises repo/workspace based on config in mlc.toml | mlc init     |
-| Prunes old duplicate packages from repository          | mlc prune    |
+| Generate local repository                              | mlc repo-gen          |
+| Update local repos/PKGBUILDs                           | mlc pull/update       |
+| Create and/or open config file                         | mlc conf              |
+| Initialises repo/workspace based on config in mlc.toml | mlc clone/init        |
 
 ### Pacman Repository Creation
 
