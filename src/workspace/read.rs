@@ -40,7 +40,7 @@ pub fn read_cfg() -> Config {
         // Parses all necessary values for expanding the repo to a Repo struct
         let index = split_struct.indx;
         let name = split_struct.name.replace('!', "");
-        let url = config.urls[index - 1].replace("%repo%", &split_struct.name);
+        let url = config.urls[index - 1].replace("%repo%", &name);
         let priority = &split_struct.name.matches('!').count();
 
         // Creates and pushes Repo struct to expanded_repos
