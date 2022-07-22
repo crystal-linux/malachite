@@ -8,10 +8,15 @@ pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool, verbos
     log!(verbose, "Config: {:?}", config);
     let all = packages.is_empty();
     log!(verbose, "All: {:?}", all);
-    log!(verbose, "Signing: {:?}", config.sign);
+    let sign = if config.mode.repository.signing.enabled && config.mode.repository.signing.on_gen {
+        false
+    } else {
+        config.mode.repository.signing.enabled
+    };
+    log!(verbose, "Signing: {:?}", config.mode.repository.signing);
 
     // Get list of repos and subtract exclude
-    let mut repos: Vec<Repo> = config.repo;
+    let mut repos: Vec<Repo> = config.repositories;
     log!(verbose, "{} Repos: {:?}", repos.len(), repos);
     if !exclude.is_empty() {
         log!(verbose, "Exclude not empty: {:?}", exclude);
@@ -42,7 +47,7 @@ pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool, verbos
             } else {
                 // Otherwise, build
                 log!(verbose, "Building {}", pkg);
-                let code = repository::build(pkg, config.sign, verbose);
+                let code = repository::build(pkg, sign, verbose);
                 log!(
                     verbose,
                     "Package {} finished with exit code: {:?}",
@@ -70,7 +75,7 @@ pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool, verbos
         log!(verbose, "Sorted: {:?}", repos);
         for pkg in repos {
             log!(verbose, "Building {}", pkg.name);
-            let code = repository::build(&pkg.name, config.sign, verbose);
+            let code = repository::build(&pkg.name, sign, verbose);
             log!(
                 verbose,
                 "Package {} finished with exit code: {:?}",

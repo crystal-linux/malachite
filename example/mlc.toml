@@ -4,8 +4,12 @@ smart_pull = true
 
 [mode.repository]
 name = "test"
-sign = false
 build_on_update = true
+
+[mode.repository.signing]
+enabled = true
+key = ""
+on_gen = true
 
 [mode.workspace]
 

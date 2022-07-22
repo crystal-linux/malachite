@@ -3,12 +3,9 @@ use serde_derive::Deserialize;
 //// Config structs
 #[derive(Debug, Deserialize)]
 pub struct Config {
-    pub mode: String,
-    pub name: String,
-    pub sign: bool,
-    pub smart_pull: bool,
-    pub build_on_update: bool,
-    pub repo: Vec<Repo>,
+    pub base: ConfigBase,
+    pub mode: ConfigMode,
+    pub repositories: Vec<Repo>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -33,8 +30,15 @@ pub struct ConfigMode {
 #[derive(Debug, Deserialize)]
 pub struct ConfigModeRepository {
     pub name: String,
-    pub sign: bool,
     pub build_on_update: bool,
+    pub signing: ConfigModeRepositorySigning,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ConfigModeRepositorySigning {
+    pub enabled: bool,
+    pub key: String,
+    pub on_gen: bool,
 }
 
 #[derive(Debug, Deserialize)]
@@ -44,6 +48,11 @@ pub struct ConfigModeWorkspace {}
 pub struct ConfigRepositories {
     pub name: Vec<String>,
     pub urls: Vec<String>,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct ConfigRepositoriesExpanded {
+    pub repos: Vec<Repo>,
 }
 
 //// Repository structs

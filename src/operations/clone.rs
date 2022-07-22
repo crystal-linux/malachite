@@ -6,7 +6,7 @@ pub fn clone(verbose: bool) {
     // Read config struct from mlc.toml
     let config = workspace::read_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
-    let repos = &config.repo;
+    let repos = &config.repositories;
     log!(verbose, "Repos: {:?}", repos);
 
     // Get a vector of all files/dirs in the current directory, excluding config file
@@ -44,7 +44,7 @@ pub fn clone(verbose: bool) {
         // Clone all diff repos
         for r in repo_diff {
             log!(verbose, "Cloning {}", r.name);
-            info!("Cloning ({} mode): {}", config.mode, r.name);
+            info!("Cloning ({} mode): {}", config.base.mode, r.name);
             Command::new("git")
                 .args(&["clone", &r.url, &r.name])
                 .spawn()

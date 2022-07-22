@@ -36,7 +36,7 @@ fn main() {
         env::set_current_dir("../").unwrap();
         log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
 
-        if config.smart_pull {
+        if config.base.smart_pull {
             log!(verbose, "Smart pull");
             Command::new("git")
                 .args(&["remote", "update"])
@@ -80,13 +80,13 @@ fn main() {
         Operation::Pull { packages, .. } => operations::pull(packages, exclude.to_vec(), verbose),
         Operation::RepoGen => {
             let config = read_cfg(verbose);
-            if config.mode != "repository" {
+            if config.base.mode != "repository" {
                 crash!(
                     AppExitCode::BuildInWorkspace,
                     "Cannot build packages in workspace mode"
                 )
             }
-            info!("Generating repository: {}", config.name);
+            info!("Generating repository: {}", config.mode.repository.name);
             repository::generate(verbose);
         }
         Operation::Config => operations::config(verbose),
