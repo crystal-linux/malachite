@@ -61,6 +61,7 @@ pub fn read_cfg(verbose: bool) -> Config {
         mode: config.mode,
         sign: config.sign,
         name: config.name,
+        smart_pull: config.smart_pull,
         repo: expanded_repos,
     };
     log!(verbose, "Config: {:?}", conf);
