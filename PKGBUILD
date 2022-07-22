@@ -1,15 +1,15 @@
 # Maintainer: Matt C <mdc028[at]bucknell[dot]edu>
 
 pkgname=malachite
-pkgver=1.4.0
+pkgver=2.0.0
 pkgrel=1
 pkgdesc="Tool for packaging and maintaining pacman repositories"
 license=('GPL3')
 arch=('any')
-url="https://git.tar.black/crystal/programs/malachite"
-source=("git+https://git.tar.black/crystal/programs/malachite")
+url="https://github.com/crystal-linux/malachite"
+source=("git+$url")
 sha256sums=('SKIP')
-depends=('git')
+depends=('git' 'pacman-contrib')
 makedepends=('cargo')
 
 build() {
