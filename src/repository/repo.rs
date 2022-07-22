@@ -47,7 +47,14 @@ pub fn generate(verbose: bool) {
             if path.extension().unwrap() == "zst" || path.extension().unwrap() == "xz" {
                 log!(verbose, "Signing {}", path.display());
                 Command::new("bash")
-                    .args(&["-c", &format!("gpg --default-key {} --detach-sign {}", config.mode.repository.signing.key, file.file_name().to_str().unwrap())])
+                    .args(&[
+                        "-c",
+                        &format!(
+                            "gpg --default-key {} --detach-sign {}",
+                            config.mode.repository.signing.key,
+                            file.file_name().to_str().unwrap()
+                        ),
+                    ])
                     .spawn()
                     .unwrap()
                     .wait()
