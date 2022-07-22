@@ -2,7 +2,7 @@ use std::path::Path;
 use std::process::Command;
 use std::{env, fs};
 
-use crate::{log, crash, workspace::read_cfg, internal::AppExitCode};
+use crate::{crash, internal::AppExitCode, log, workspace::read_cfg};
 
 pub fn generate(verbose: bool) {
     // Read config struct from mlc.toml
@@ -31,7 +31,6 @@ pub fn generate(verbose: bool) {
         .wait()
         .unwrap();
     log!(verbose, "Copied out packages to {}", name);
-
 
     // Enter repository directory
     env::set_current_dir(&name).unwrap();
@@ -92,7 +91,7 @@ pub fn generate(verbose: bool) {
     // Ensuring aarch64/ALARM support for the future
     let aarch64_mode = if zst.success() {
         false
-    }  else if xz.success() {
+    } else if xz.success() {
         true
     } else {
         crash!(
@@ -108,7 +107,10 @@ pub fn generate(verbose: bool) {
     Command::new("bash")
         .args(&[
             "-c",
-            &format!("GLOBIGNORE=\"*.sig\" repo-add {}.tar.gz *.pkg.tar.{}", db, suffix),
+            &format!(
+                "GLOBIGNORE=\"*.sig\" repo-add {}.tar.gz *.pkg.tar.{}",
+                db, suffix
+            ),
         ])
         .spawn()
         .unwrap()
