@@ -7,18 +7,28 @@ use crate::internal::AppExitCode;
 use crate::{crash, log};
 
 const DEFAULT_CONFIG: &str = r#"
+[base]
 # Either "repository" or "workspace"
 mode = ""
+# Better left as true, but can be set to false if it causes issues with branches
+smart_pull = true
 
+[mode.repository]
 # Only required when in repository mode, decides what to call the repository and relevant files
 name = ""
 # Only required when in repository mode, decides whether to PGP sign built packages
 sign = true
+# Only required when in repository mode, decides whether to build packages if pull is successful
+build_on_update = false
 
+[mode.workspace]
+# There are currently no options for workspace mode
+
+[repositories]
 # An array of Git repositories to clone from, formatted url_index::repo_name(!)
 # e.g. if you had URLs = [ "https://example.com/%repo%.git" ], 1::package would expand to https://example.com/package.git
 # Repository mode only: Depending on the number of "!"s appended to the name, the priority of the package will be determined. More "!"s = higher priority = built first.
-repo = [
+name = [
     "",
     ""
 ]
