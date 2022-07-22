@@ -30,11 +30,13 @@ fn main() {
     if Path::exists("../.git".as_ref()) {
         info!("Parent directory is a git directory, pulling latest mlc.toml. It is advised you run mlc pull/update in all malachite directories");
 
+        let config = read_cfg(verbose);
+
         let dir = env::current_dir().unwrap();
         env::set_current_dir("../").unwrap();
         log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
 
-        if read_cfg(args.verbose).smart_pull {
+        if config.smart_pull {
             log!(verbose, "Smart pull");
             Command::new("git")
                 .args(&["remote", "update"])
@@ -47,6 +49,7 @@ fn main() {
                 .unwrap()
                 .contains("Your branch is behind")
             {
+                info!("Branch out of date, pulling changes");
                 Command::new("git")
                     .arg("pull")
                     .spawn()
@@ -64,8 +67,9 @@ fn main() {
                 .unwrap()
                 .wait()
                 .unwrap();
-            env::set_current_dir(dir).unwrap();
         }
+        env::set_current_dir(dir).unwrap();
+        log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
     }
 
     match args.subcommand.unwrap_or(Operation::Clone) {

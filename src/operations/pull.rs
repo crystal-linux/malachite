@@ -36,6 +36,7 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool, build_on_
                 .to_string()
                 .contains("Your branch is behind")
             {
+                info!("Branch out of date, pulling changes");
                 Command::new("git")
                     .arg("pull")
                     .spawn()
