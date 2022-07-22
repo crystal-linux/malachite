@@ -2,7 +2,7 @@ use std::path::Path;
 use std::process::Command;
 use std::{env, fs};
 
-use crate::{crash, internal::AppExitCode, log, workspace::read_cfg};
+use crate::{crash, info, internal::AppExitCode, log, workspace::read_cfg};
 
 pub fn generate(verbose: bool) {
     // Read config struct from mlc.toml
@@ -12,6 +12,8 @@ pub fn generate(verbose: bool) {
     // Get repository name from config
     let name = config.mode.repository.name;
     log!(verbose, "Name: {}", name);
+
+    info!("Generating repository: {}", name);
 
     // If repository exists, delete it
     if Path::exists(name.as_ref()) {

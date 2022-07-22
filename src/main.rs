@@ -23,14 +23,18 @@ fn main() {
     }
 
     let args: Args = Args::parse();
-
     let exclude = &args.exclude;
     let verbose = args.verbose;
+    log!(verbose, "Args: {:?}", args);
+    log!(verbose, "Exclude: {:?}", exclude);
+    log!(verbose, "Verbose: You guess. :)");
+
+    let config = read_cfg(verbose);
+    log!(verbose, "Config: {:?}", config);
 
     if Path::exists("../.git".as_ref()) {
+        log!(verbose, "Detected parent git repository");
         info!("Parent directory is a git directory, pulling latest mlc.toml. It is advised you run mlc pull/update in all malachite directories");
-
-        let config = read_cfg(verbose);
 
         let dir = env::current_dir().unwrap();
         env::set_current_dir("../").unwrap();
@@ -72,21 +76,30 @@ fn main() {
         log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
     }
 
+    let repository = config.base.mode == "repository";
+    log!(verbose, "Repository Mode: {:?}", repository);
+
     match args.subcommand.unwrap_or(Operation::Clone) {
         Operation::Clone => operations::clone(verbose),
         Operation::Build {
             packages, no_regen, ..
-        } => operations::build(packages, exclude.to_vec(), no_regen, verbose),
-        Operation::Pull { packages, .. } => operations::pull(packages, exclude.to_vec(), verbose),
-        Operation::RepoGen => {
-            let config = read_cfg(verbose);
-            if config.base.mode != "repository" {
+        } => {
+            if !repository {
                 crash!(
                     AppExitCode::BuildInWorkspace,
                     "Cannot build packages in workspace mode"
                 )
             }
-            info!("Generating repository: {}", config.mode.repository.name);
+            operations::build(packages, exclude.to_vec(), no_regen, verbose)
+        }
+        Operation::Pull { packages, .. } => operations::pull(packages, exclude.to_vec(), verbose),
+        Operation::RepoGen => {
+            if !repository {
+                crash!(
+                    AppExitCode::BuildInWorkspace,
+                    "Cannot build packages in workspace mode"
+                )
+            }
             repository::generate(verbose);
         }
         Operation::Config => operations::config(verbose),
