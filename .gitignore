@@ -2,5 +2,7 @@
 .idea
 .direnv
 
-example*/*
-!example*/mlc.toml
+examples/workspace/*
+examples/repository/*
+!examples/workspace/mlc.toml
+!examples/repository/mlc.toml

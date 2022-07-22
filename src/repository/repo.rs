@@ -81,6 +81,14 @@ pub fn generate(verbose: bool) {
         .wait()
         .unwrap();
 
+    // This should never happen, crash and burn if it does
+    if zst.success() && xz.success() {
+        crash!(
+            AppExitCode::InvalidRepo,
+            "Both .tar.zst and .tar.xz files found in repository. You've done something wrong. Aborting"
+        );
+    }
+
     // Ensuring aarch64/ALARM support for the future
     let aarch64_mode = if zst.success() {
         false
