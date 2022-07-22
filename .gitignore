@@ -2,5 +2,5 @@
 .idea
 .direnv
 
-example/*
-!example/mlc.toml
+example*/*
+!example*/mlc.toml
