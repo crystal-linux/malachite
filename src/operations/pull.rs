@@ -2,24 +2,48 @@ use std::env;
 use std::process::Command;
 
 use crate::info;
-use crate::{crash, internal::AppExitCode, log};
+use crate::{crash, internal::AppExitCode, workspace::read_cfg, log};
 
-fn do_the_pulling(repos: Vec<String>, verbose: bool) {
+fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool) {
     for repo in repos {
         // Set root dir to return after each git pull
         let root_dir = env::current_dir().unwrap();
         log!(verbose, "Root dir: {:?}", root_dir);
+
         info!("Entering working directory: {}", &repo);
         env::set_current_dir(repo).unwrap();
         log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
-        log!(verbose, "Pulling");
-        Command::new("git")
-            .arg("pull")
-            .spawn()
-            .unwrap()
-            .wait()
-            .unwrap();
 
+        log!(verbose, "Pulling");
+        if smart_pull {
+            Command::new("git")
+                .args(&["remote", "update"])
+                .spawn()
+                .unwrap()
+                .wait()
+                .unwrap();
+            let output = Command::new("git")
+                .arg("status")
+                .output()
+                .unwrap();
+            if String::from_utf8(output.stdout).unwrap().to_string().contains("Your branch is behind") {
+                Command::new("git")
+                    .arg("pull")
+                    .spawn()
+                    .unwrap()
+                    .wait()
+                    .unwrap();
+            } else {
+                info!("No changes to pull");
+            }
+        } else {
+            Command::new("git")
+                .arg("pull")
+                .spawn()
+                .unwrap()
+                .wait()
+                .unwrap();
+        }
         // Return to root dir
         env::set_current_dir(root_dir).unwrap();
         log!(
@@ -31,13 +55,17 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool) {
 }
 
 pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool) {
+    let config = read_cfg(verbose);
+    log!(verbose, "Config: {:?}", config);
     // If no packages are specified, imply all
     let all = packages.is_empty();
     log!(verbose, "All: {}", all);
+    // Read smart_pull from config
+    let smart_pull = config.smart_pull;
+    log!(verbose, "Smart pull: {}", smart_pull);
 
-    // Read repos from config file
-    let repos = crate::workspace::read_cfg(verbose)
-        .repo
+    // Read repos from config
+    let repos = config.repo
         .iter()
         .map(|x| x.name.clone())
         .collect::<Vec<String>>();
@@ -63,5 +91,5 @@ pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool) {
 
     // Pull!
     log!(verbose, "Pulling {:?}", repos_applicable);
-    do_the_pulling(repos_applicable, verbose);
+    do_the_pulling(repos_applicable, verbose, smart_pull);
 }

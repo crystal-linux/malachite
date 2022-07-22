@@ -1,6 +1,7 @@
 mode = "repository"
 name = "test"
 sign = false
+smart_pull = true
 
 repo = [
 	"1::amethyst",

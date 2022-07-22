@@ -3,8 +3,9 @@ use serde_derive::Deserialize;
 #[derive(Debug, Deserialize)]
 pub struct Config {
     pub mode: String,
-    pub sign: bool,
     pub name: Option<String>,
+    pub sign: bool,
+    pub smart_pull: bool,
     pub repo: Vec<Repo>,
 }
 
@@ -18,8 +19,9 @@ pub struct Repo {
 #[derive(Debug, Deserialize)]
 pub struct UnexpandedConfig {
     pub mode: String,
-    pub sign: bool,
     pub name: Option<String>,
+    pub sign: bool,
+    pub smart_pull: bool,
     pub repo: Vec<String>,
     pub urls: Vec<String>,
 }
