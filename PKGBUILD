@@ -9,7 +9,7 @@ arch=('any')
 url="https://github.com/crystal-linux/malachite"
 source=("git+$url")
 sha256sums=('SKIP')
-depends=('git' 'pacman-contrib')
+depends=('git' 'pacman-contrib' 'gnupg')
 makedepends=('cargo')
 
 build() {
