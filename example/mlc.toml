@@ -1,15 +1,21 @@
+[base]
 mode = "repository"
-name = "test"
-sign = false
 smart_pull = true
 
-repo = [
+[mode.repository]
+name = "test"
+sign = false
+build_on_update = true
+
+[mode.workspace]
+
+[repositories]
+name = [
 	"1::amethyst",
 	"1::jade!",
 	"2::notop-git",
 	"3::slippy-rb"
 ]
-
 urls = [
 	"https://github.com/crystal-linux/%repo%",
 	"https://aur.archlinux.org/%repo%",

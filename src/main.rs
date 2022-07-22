@@ -24,32 +24,48 @@ fn main() {
 
     let args: Args = Args::parse();
 
-    if Path::exists("mlc.toml".as_ref()) && Path::exists(".git".as_ref()) {
-        info!(
-            "In a git repository, pulling latest mlc.toml. It is advised you run mlc pull/update"
-        );
-        Command::new("git")
-            .arg("pull")
-            .spawn()
-            .unwrap()
-            .wait()
-            .unwrap();
-    }
-
     let exclude = &args.exclude;
     let verbose = args.verbose;
 
     if Path::exists("../.git".as_ref()) {
         info!("Parent directory is a git directory, pulling latest mlc.toml. It is advised you run mlc pull/update in all malachite directories");
+
         let dir = env::current_dir().unwrap();
         env::set_current_dir("../").unwrap();
-        Command::new("git")
-            .arg("pull")
-            .spawn()
-            .unwrap()
-            .wait()
-            .unwrap();
-        env::set_current_dir(dir).unwrap();
+        log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
+
+        if read_cfg(args.verbose).smart_pull {
+            log!(verbose, "Smart pull");
+            Command::new("git")
+                .args(&["remote", "update"])
+                .spawn()
+                .unwrap()
+                .wait()
+                .unwrap();
+            let output = Command::new("git").arg("status").output().unwrap();
+            if String::from_utf8(output.stdout)
+                .unwrap()
+                .contains("Your branch is behind")
+            {
+                Command::new("git")
+                    .arg("pull")
+                    .spawn()
+                    .unwrap()
+                    .wait()
+                    .unwrap();
+            } else {
+                info!("No changes to pull");
+            }
+        } else {
+            log!(verbose, "Normal pull");
+            Command::new("git")
+                .arg("pull")
+                .spawn()
+                .unwrap()
+                .wait()
+                .unwrap();
+            env::set_current_dir(dir).unwrap();
+        }
     }
 
     match args.subcommand.unwrap_or(Operation::Clone) {
@@ -66,7 +82,7 @@ fn main() {
                     "Cannot build packages in workspace mode"
                 )
             }
-            info!("Generating repository: {}", config.name.unwrap());
+            info!("Generating repository: {}", config.name);
             repository::generate(verbose);
         }
         Operation::Config => operations::config(verbose),

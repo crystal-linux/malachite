@@ -10,7 +10,7 @@ pub fn generate(verbose: bool) {
     log!(verbose, "Config: {:?}", config);
 
     // Get repository name from config
-    let name = config.name.unwrap();
+    let name = config.name;
     log!(verbose, "Name: {}", name);
 
     // If repository exists, delete it
