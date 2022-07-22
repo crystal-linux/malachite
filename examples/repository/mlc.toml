@@ -1,0 +1,24 @@
+[base]
+mode = "repository"
+smart_pull = true
+
+[mode.repository]
+name = "repository-test"
+build_on_update = true
+
+[mode.repository.signing]
+enabled = true
+key = "michal@tar.black"
+on_gen = true
+
+[mode.workspace]
+
+[repositories]
+name = [
+	"1::crystal-keyring",
+	"2::pfetch!",
+]
+urls = [
+	"https://github.com/crystal-linux/%repo%",
+	"https://github.com/crystal-linux/pkgbuild.%repo%",
+]
