@@ -2,7 +2,7 @@ use std::path::Path;
 use std::process::Command;
 use std::{env, fs};
 
-use crate::{log, workspace::read_cfg};
+use crate::{log, crash, workspace::read_cfg, internal::AppExitCode};
 
 pub fn generate(verbose: bool) {
     // Read config struct from mlc.toml
@@ -32,13 +32,13 @@ pub fn generate(verbose: bool) {
         .unwrap();
     log!(verbose, "Copied out packages to {}", name);
 
+
+    // Enter repository directory
+    env::set_current_dir(&name).unwrap();
+    log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
+
     // Sign all package files in repository if signing and on_gen are true
     if config.mode.repository.signing.enabled && config.mode.repository.signing.on_gen {
-        // Directory stuff
-        let dir = env::current_dir().unwrap();
-        log!(verbose, "Current dir: {:?}", dir);
-        env::set_current_dir(&name).unwrap();
-        log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
         // Get a list of all .tar.* files in repository
         let files = fs::read_dir("./").unwrap();
         for file in files {
@@ -61,24 +61,46 @@ pub fn generate(verbose: bool) {
                     .unwrap();
             }
         }
-        // Return to root dir
-        env::set_current_dir(dir).unwrap();
-        log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
         log!(verbose, "Signed repository");
     }
 
-    // Enter repository directory
-    env::set_current_dir(&name).unwrap();
-    log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
-
     let db = format!("{}.db", &name);
     let files = format!("{}.files", &name);
+
+    // Check if package files end with .tar.zst or .tar.xz
+    let zst = Command::new("bash")
+        .args(&["-c", "ls *.tar.zst"])
+        .spawn()
+        .unwrap()
+        .wait()
+        .unwrap();
+    let xz = Command::new("bash")
+        .args(&["-c", "ls *.tar.xz"])
+        .spawn()
+        .unwrap()
+        .wait()
+        .unwrap();
+
+    // Ensuring aarch64/ALARM support for the future
+    let aarch64_mode = if zst.success() {
+        false
+    }  else if xz.success() {
+        true
+    } else {
+        crash!(
+            AppExitCode::NoPackagesFound,
+            "No .zst or .xz packages found in repository"
+        );
+        // This should theoretically never be reached, but let's just give the compiler what it wants
+        false
+    };
+    let suffix = if aarch64_mode { "xz" } else { "zst" };
 
     // Create repo.db and repo.files using repo-add
     Command::new("bash")
         .args(&[
             "-c",
-            &format!("GLOBIGNORE=\"*.sig\" repo-add {}.tar.gz *.pkg.tar.*", db),
+            &format!("GLOBIGNORE=\"*.sig\" repo-add {}.tar.gz *.pkg.tar.{}", db, suffix),
         ])
         .spawn()
         .unwrap()

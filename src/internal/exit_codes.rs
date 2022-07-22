@@ -8,4 +8,5 @@ pub enum AppExitCode {
     ConfigNotFound = 7,
     NoPkgs = 8,
     ConfigParseError = 9,
+    NoPackagesFound = 10,
 }
