@@ -2,7 +2,7 @@ use std::env;
 use std::process::Command;
 
 use crate::info;
-use crate::{crash, internal::AppExitCode, workspace::read_cfg, log};
+use crate::{crash, internal::AppExitCode, log, workspace::read_cfg};
 
 fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool) {
     for repo in repos {
@@ -10,23 +10,32 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool) {
         let root_dir = env::current_dir().unwrap();
         log!(verbose, "Root dir: {:?}", root_dir);
 
+        // Enter repo dir
         info!("Entering working directory: {}", &repo);
         env::set_current_dir(repo).unwrap();
         log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
 
+        // Pull
         log!(verbose, "Pulling");
         if smart_pull {
+            // Just update the remote
+            log!(verbose, "Smart pull");
             Command::new("git")
                 .args(&["remote", "update"])
                 .spawn()
                 .unwrap()
                 .wait()
                 .unwrap();
-            let output = Command::new("git")
-                .arg("status")
-                .output()
-                .unwrap();
-            if String::from_utf8(output.stdout).unwrap().to_string().contains("Your branch is behind") {
+
+            // Check the repository status
+            let output = Command::new("git").arg("status").output().unwrap();
+
+            // If there are changes, pull normally
+            if String::from_utf8(output.stdout)
+                .unwrap()
+                .to_string()
+                .contains("Your branch is behind")
+            {
                 Command::new("git")
                     .arg("pull")
                     .spawn()
@@ -34,9 +43,12 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool) {
                     .wait()
                     .unwrap();
             } else {
+                // If there are no changes, alert the user
                 info!("No changes to pull");
             }
         } else {
+            // Pull normally
+            log!(verbose, "Normal pull");
             Command::new("git")
                 .arg("pull")
                 .spawn()
@@ -55,6 +67,7 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool) {
 }
 
 pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool) {
+    // Read config file
     let config = read_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
     // If no packages are specified, imply all
@@ -65,7 +78,8 @@ pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool) {
     log!(verbose, "Smart pull: {}", smart_pull);
 
     // Read repos from config
-    let repos = config.repo
+    let repos = config
+        .repo
         .iter()
         .map(|x| x.name.clone())
         .collect::<Vec<String>>();
