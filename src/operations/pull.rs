@@ -46,7 +46,7 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool, build_on_
 
                 // If build_on_update is set, rebuild package
                 if build_on_update {
-                    unimplemented!()
+                    unimplemented!() // TODO: Implement build_on_update
                 }
             } else {
                 // If there are no changes, alert the user
@@ -80,15 +80,15 @@ pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool) {
     let all = packages.is_empty();
     log!(verbose, "All: {}", all);
     // Read smart_pull from config
-    let smart_pull = config.smart_pull;
+    let smart_pull = config.base.smart_pull;
     log!(verbose, "Smart pull: {}", smart_pull);
     // Read build_on_update from config
-    let build_on_update = config.build_on_update;
+    let build_on_update = config.mode.repository.build_on_update;
     log!(verbose, "Build on update: {}", build_on_update);
 
     // Read repos from config
     let repos = config
-        .repo
+        .repositories
         .iter()
         .map(|x| x.name.clone())
         .collect::<Vec<String>>();

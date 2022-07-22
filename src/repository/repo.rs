@@ -10,7 +10,7 @@ pub fn generate(verbose: bool) {
     log!(verbose, "Config: {:?}", config);
 
     // Get repository name from config
-    let name = config.name;
+    let name = config.mode.repository.name;
     log!(verbose, "Name: {}", name);
 
     // If repository exists, delete it
@@ -31,6 +31,34 @@ pub fn generate(verbose: bool) {
         .wait()
         .unwrap();
     log!(verbose, "Copied out packages to {}", name);
+
+    // Sign all package files in repository if signing and on_gen are true
+    if config.mode.repository.signing.enabled && config.mode.repository.signing.on_gen {
+        // Directory stuff
+        let dir = env::current_dir().unwrap();
+        log!(verbose, "Current dir: {:?}", dir);
+        env::set_current_dir(&name).unwrap();
+        log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
+        // Get a list of all .tar.* files in repository
+        let files = fs::read_dir("./").unwrap();
+        for file in files {
+            let file = file.unwrap();
+            let path = file.path();
+            if path.extension().unwrap() == "zst" || path.extension().unwrap() == "xz" {
+                log!(verbose, "Signing {}", path.display());
+                Command::new("bash")
+                    .args(&["-c", &format!("gpg --default-key {} --detach-sign {}", config.mode.repository.signing.key, file.file_name().to_str().unwrap())])
+                    .spawn()
+                    .unwrap()
+                    .wait()
+                    .unwrap();
+            }
+        }
+        // Return to root dir
+        env::set_current_dir(dir).unwrap();
+        log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
+        log!(verbose, "Signed repository");
+    }
 
     // Enter repository directory
     env::set_current_dir(&name).unwrap();

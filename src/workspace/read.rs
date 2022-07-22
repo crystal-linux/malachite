@@ -67,12 +67,9 @@ pub fn read_cfg(verbose: bool) -> Config {
 
     // Returns parsed config file
     let conf = Config {
-        mode: config.base.mode,
-        smart_pull: config.base.smart_pull,
-        sign: config.mode.repository.sign,
-        name: config.mode.repository.name,
-        build_on_update: config.mode.repository.build_on_update,
-        repo: expanded_repos,
+        base: config.base,
+        mode: config.mode,
+        repositories: expanded_repos,
     };
     log!(verbose, "Config: {:?}", conf);
     conf
