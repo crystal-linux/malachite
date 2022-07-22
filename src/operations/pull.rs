@@ -4,7 +4,7 @@ use std::process::Command;
 use crate::info;
 use crate::{crash, internal::AppExitCode, log, workspace::read_cfg};
 
-fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool) {
+fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool, build_on_update: bool) {
     for repo in repos {
         // Set root dir to return after each git pull
         let root_dir = env::current_dir().unwrap();
@@ -42,6 +42,11 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool) {
                     .unwrap()
                     .wait()
                     .unwrap();
+
+                // If build_on_update is set, rebuild package
+                if build_on_update {
+                    unimplemented!()
+                }
             } else {
                 // If there are no changes, alert the user
                 info!("No changes to pull");
@@ -76,6 +81,9 @@ pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool) {
     // Read smart_pull from config
     let smart_pull = config.smart_pull;
     log!(verbose, "Smart pull: {}", smart_pull);
+    // Read build_on_update from config
+    let build_on_update = config.build_on_update;
+    log!(verbose, "Build on update: {}", build_on_update);
 
     // Read repos from config
     let repos = config
@@ -105,5 +113,5 @@ pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool) {
 
     // Pull!
     log!(verbose, "Pulling {:?}", repos_applicable);
-    do_the_pulling(repos_applicable, verbose, smart_pull);
+    do_the_pulling(repos_applicable, verbose, smart_pull, build_on_update);
 }
