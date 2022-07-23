@@ -39,7 +39,7 @@ pub fn read_cfg(verbose: bool) -> Config {
     let mut expanded_repos: Vec<Repo> = vec![];
 
     // Parsing repos from the config file
-    for x in config.repositories.name {
+    for x in config.repositories.repos {
         log!(verbose, "Parsing repo: {:?}", x);
         // Splits the repo name and index inta a SplitRepo struct
         let split: Vec<&str> = x.split(':').collect();

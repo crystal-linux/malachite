@@ -47,7 +47,7 @@ pub struct ConfigModeWorkspace {}
 
 #[derive(Debug, Deserialize)]
 pub struct ConfigRepositories {
-    pub name: Vec<String>,
+    pub repos: Vec<String>,
     pub urls: HashMap<String, String>,
 }
 
