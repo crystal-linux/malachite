@@ -4,6 +4,7 @@ version = "2.0.0"
 authors = [ "michal <michal@tar.black>" ]
 edition = "2021"
 description = "Packaging tool for pacman repositories"
+repository = "https://github.com/crystal-linux/malachite"
 license-file = "LICENSE"
 keywords = [ "pacman", "repository", "packaging" ]
 categories = [ "filesystem", "development-tools" ]
