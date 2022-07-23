@@ -20,6 +20,9 @@
 
 <p align="center">Malachite is a simple yet useful workspace and local repository management tool, made for packagers of Arch Linux based distributions.</p>
 
+# \>> [Detailed Usage Guide](docs/GETTING_STARTED.md) <<
+
+
 ### Basic Usage Guide
 
 | Action                                                 | Command                                   |
@@ -37,9 +40,6 @@
 - `mlc build <package>` to either build individual packages, or don't specify package names to build all packages in mlc.toml
   - `build` typically automatically updates the repository unless `--no-regen` is passed, if so: 
 - `mlc repo-gen` to generate functional pacman repository at \<name\>/\<name\>.db from built packages
-
-
-##  \>> [Detailed Usage Guide](docs/GETTING_STARTED.md) <<
 
 
 ## How to build:
