@@ -1,8 +1,4 @@
-#![warn(
-    clippy::all,
-    clippy::pedantic,
-    clippy::nursery,
-)]
+#![warn(clippy::all, clippy::pedantic, clippy::nursery)]
 
 use clap::Parser;
 use std::env;
@@ -10,8 +6,8 @@ use std::path::Path;
 use std::process::Command;
 
 use crate::args::{Args, Operation};
-use crate::internal::AppExitCode;
 use crate::internal::parse_cfg;
+use crate::internal::AppExitCode;
 
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
