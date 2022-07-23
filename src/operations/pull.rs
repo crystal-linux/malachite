@@ -4,7 +4,13 @@ use std::process::Command;
 use crate::info;
 use crate::{crash, internal::AppExitCode, log, workspace::read_cfg};
 
-fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool, build_on_update: bool) {
+fn do_the_pulling(
+    repos: Vec<String>,
+    verbose: bool,
+    smart_pull: bool,
+    build_on_update: bool,
+    no_regen: bool,
+) {
     for repo in repos {
         // Set root dir to return after each git pull
         let root_dir = env::current_dir().unwrap();
@@ -12,8 +18,10 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool, build_on_
 
         // Enter repo dir
         info!("Entering working directory: {}", &repo);
-        env::set_current_dir(repo).unwrap();
+        env::set_current_dir(&repo).unwrap();
         log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
+
+        let mut packages_to_rebuild: Vec<String> = vec![];
 
         // Pull
         log!(verbose, "Pulling");
@@ -46,7 +54,9 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool, build_on_
 
                 // If build_on_update is set, rebuild package
                 if build_on_update {
-                    unimplemented!() // TODO: Implement build_on_update
+                    info!("Package {} updated, staging for rebuild", &repo);
+                    log!(verbose, "Pushing package {} to be rebuilt", &repo);
+                    packages_to_rebuild.push(repo);
                 }
             } else {
                 // If there are no changes, alert the user
@@ -69,10 +79,17 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, smart_pull: bool, build_on_
             "Returned to root dir: {:?}",
             env::current_dir().unwrap()
         );
+
+        if !packages_to_rebuild.is_empty() && build_on_update {
+            info!("Rebuilding packages: {}", &packages_to_rebuild.join(", "));
+            log!(verbose, "Rebuilding packages: {:?}", &packages_to_rebuild);
+
+            crate::operations::build(packages_to_rebuild, vec![], no_regen, verbose);
+        }
     }
 }
 
-pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool) {
+pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool, no_regen: bool) {
     // Read config file
     let config = read_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
@@ -114,5 +131,11 @@ pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool) {
 
     // Pull!
     log!(verbose, "Pulling {:?}", repos_applicable);
-    do_the_pulling(repos_applicable, verbose, smart_pull, build_on_update);
+    do_the_pulling(
+        repos_applicable,
+        verbose,
+        smart_pull,
+        build_on_update,
+        no_regen,
+    );
 }

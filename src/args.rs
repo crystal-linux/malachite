@@ -55,6 +55,10 @@ pub enum Operation {
         /// The packages to operate on
         #[clap(name = "package(s)", help = "The packages to operate on", action = ArgAction::Append, index = 1)]
         packages: Vec<String>,
+
+        /// Does not regenerate repository after pulling given package(s). This only applies if build_on_update is set to true in repository config
+        #[clap(short = 'n', long = "no-regen", action = ArgAction::SetTrue)]
+        no_regen: bool,
     },
 
     /// Create and/or open local config file

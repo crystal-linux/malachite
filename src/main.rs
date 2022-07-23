@@ -92,7 +92,9 @@ fn main() {
             }
             operations::build(packages, exclude.to_vec(), no_regen, verbose)
         }
-        Operation::Pull { packages, .. } => operations::pull(packages, exclude.to_vec(), verbose),
+        Operation::Pull {
+            packages, no_regen, ..
+        } => operations::pull(packages, exclude.to_vec(), verbose, no_regen),
         Operation::RepoGen => {
             if !repository {
                 crash!(
