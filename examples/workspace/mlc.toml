@@ -15,13 +15,13 @@ on_gen = false
 
 [repositories]
 name = [
-	"1::amethyst",
-	"1::malachite@development!",
-	"2::notop-git",
-	"3::appendage",
+	"crs:amethyst",
+	"crs:malachite/development!",
+	"aur::notop-git",
+	"nms::appendage",
 ]
-urls = [
-	"https://github.com/crystal-linux/%repo%",
-	"https://aur.archlinux.org/%repo%",
-	"https://github.com/not-my-segfault/%repo%"
-]
+
+[repositories.urls]
+crs = "https://github.com/crystal-linux/%repo%"
+aur = "https://aur.archlinux.org/%repo%"
+nms = "https://github.com/not-my-segfault/%repo%"
