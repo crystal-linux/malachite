@@ -17,14 +17,14 @@ macro_rules! info {
 #[macro_export]
 macro_rules! log {
     ($verbose:expr, $($arg:tt)+) => {
-        $crate::internal::strings::log_fn(&format!("{}:{} {}", file!(), line!(), format!($($arg)+)), $verbose);
+        $crate::internal::strings::log_fn(&format!("[{}:{}] {}", file!(), line!(), format!($($arg)+)), $verbose);
     }
 }
 
 #[macro_export]
 macro_rules! crash {
     ($exit_code:expr, $($arg:tt)+) => {
-        $crate::internal::strings::crash_fn(&format!("{}:{} {}", file!(), line!(), format!($($arg)+)), $exit_code)
+        $crate::internal::strings::crash_fn(&format!("[{}:{}] {}", file!(), line!(), format!($($arg)+)), $exit_code)
     }
 }
 
