@@ -51,7 +51,23 @@ pub fn read_cfg(verbose: bool) -> Config {
 
         // Parses all necessary values for expanding the repo to a Repo struct
         let index = split_struct.indx;
-        let name = split_struct.name.replace('!', "");
+
+        let branch = if split_struct.name.contains('@') {
+            Some(
+                split_struct.name.split('@').collect::<Vec<&str>>()[1]
+                    .to_string()
+                    .replace('!', ""),
+            )
+        } else {
+            None
+        };
+
+        let name = if split_struct.name.contains('@') {
+            split_struct.name.split('@').collect::<Vec<&str>>()[0].to_string()
+        } else {
+            split_struct.name.to_string().replace('!', "")
+        };
+
         let url = config.repositories.urls[index - 1].replace("%repo%", &name);
         let priority = &split_struct.name.matches('!').count();
 
@@ -59,6 +75,7 @@ pub fn read_cfg(verbose: bool) -> Config {
         let repo = Repo {
             name,
             url,
+            branch,
             priority: *priority,
         };
         log!(verbose, "Expanded repo: {:?}", repo);

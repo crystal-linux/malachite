@@ -16,7 +16,7 @@ on_gen = false
 [repositories]
 name = [
 	"1::amethyst",
-	"1::jade!",
+	"1::malachite@development!",
 	"2::notop-git",
 	"3::appendage",
 ]

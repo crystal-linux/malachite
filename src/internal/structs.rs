@@ -60,6 +60,7 @@ pub struct ConfigRepositoriesExpanded {
 pub struct Repo {
     pub name: String,
     pub url: String,
+    pub branch: Option<String>,
     pub priority: usize,
 }
 
