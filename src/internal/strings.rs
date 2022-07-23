@@ -17,7 +17,7 @@ macro_rules! info {
 #[macro_export]
 macro_rules! log {
     ($verbose:expr, $($arg:tt)+) => {
-        $crate::internal::strings::log_fn(format!($($arg)+), $verbose);
+        $crate::internal::strings::log_fn(format!("{}:{} {}", file!(), line!(), format!($($arg)+)), $verbose);
     }
 }
 
