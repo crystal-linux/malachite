@@ -42,21 +42,21 @@ pub fn read_cfg(verbose: bool) -> Config {
     for x in config.repositories.name {
         log!(verbose, "Parsing repo: {:?}", x);
         // Splits the repo name and index inta a SplitRepo struct
-        let split: Vec<&str> = x.split("::").collect();
+        let split: Vec<&str> = x.split(':').collect();
         let split_struct = SplitRepo {
-            indx: split[0].parse().unwrap(),
+            id: split[0].parse().unwrap(),
             name: split[1].parse().unwrap(),
         };
         log!(verbose, "Split repo: {:?}", split_struct);
 
         // Parses all necessary values for expanding the repo to a Repo struct
-        let index = split_struct.indx;
+        let id = split_struct.id;
 
         // If a branch is defined, parse it
-        let branch = if split_struct.name.contains('@') {
+        let branch = if split_struct.name.contains('/') {
             log!(verbose, "Branch defined: {}", split_struct.name);
             Some(
-                split_struct.name.split('@').collect::<Vec<&str>>()[1]
+                split_struct.name.split('/').collect::<Vec<&str>>()[1]
                     .to_string()
                     .replace('!', ""),
             )
@@ -66,14 +66,22 @@ pub fn read_cfg(verbose: bool) -> Config {
         };
 
         // Strip branch and priority info from the name, if present
-        let name = if split_struct.name.contains('@') {
-            split_struct.name.split('@').collect::<Vec<&str>>()[0].to_string()
+        let name = if split_struct.name.contains('/') {
+            split_struct.name.split('/').collect::<Vec<&str>>()[0].to_string()
         } else {
             split_struct.name.to_string().replace('!', "")
         };
 
         // Substitutes the name into the url
-        let url = config.repositories.urls[index - 1].replace("%repo%", &name);
+        let urls = &config.repositories.urls;
+        let mut urls_vec = vec![];
+        for (i, url) in urls {
+            if i == &id {
+                log!(verbose, "Substituting url: {:?}", url);
+                urls_vec.push(url);
+            }
+        }
+        let url = urls_vec[0].replace("%repo%", &name);
 
         // Counts instances of ! in the name, and totals a priority accordingly
         let priority = &split_struct.name.matches('!').count();

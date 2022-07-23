@@ -1,4 +1,5 @@
 use serde_derive::Deserialize;
+use std::collections::HashMap;
 
 //// Config structs
 #[derive(Debug, Deserialize)]
@@ -47,7 +48,7 @@ pub struct ConfigModeWorkspace {}
 #[derive(Debug, Deserialize)]
 pub struct ConfigRepositories {
     pub name: Vec<String>,
-    pub urls: Vec<String>,
+    pub urls: HashMap<String, String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -66,7 +67,7 @@ pub struct Repo {
 
 #[derive(Debug)]
 pub struct SplitRepo {
-    pub indx: usize,
+    pub id: String,
     pub name: String,
 }
 
