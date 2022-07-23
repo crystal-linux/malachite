@@ -20,7 +20,7 @@
 
 <p align="center">Malachite is a simple yet useful workspace and local repository management tool, made for packagers of Arch Linux based distributions.</p>
 
-# \>> [Detailed Usage Guide](docs/GETTING_STARTED.md) <<
+<a align="center" href="docs/GETTING_STARTED.md"> Detailed Usage Guide </a>
 
 
 ### Basic Usage Guide
