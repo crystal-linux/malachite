@@ -14,11 +14,11 @@ on_gen = false
 [mode.workspace]
 
 [repositories]
-name = [
+repos = [
 	"crs:amethyst",
 	"crs:malachite/development!",
-	"aur::notop-git",
-	"nms::appendage",
+	"aur:notop-git",
+	"nms:appendage",
 ]
 
 [repositories.urls]
