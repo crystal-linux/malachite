@@ -115,3 +115,4 @@ For mode-specific config, avert your eyes to the following links!
 - [Workspace Mode](WORKSPACE_MODE.md)
 - [Repository Mode](REPOSITORY_MODE.md)
 
+Alternatively, you can look at more [Detailed Usage](USAGE.md)

@@ -10,10 +10,6 @@ pub struct Args {
     #[clap(long, short, global(true), action = ArgAction::SetTrue)]
     pub verbose: bool,
 
-    /// Complete operations without prompting user
-    #[clap(long = "noconfirm", global(true), action = ArgAction::SetTrue)]
-    pub no_confirm: bool,
-
     /// Excludes packages from given operation, if applicable
     #[clap(short = 'x', long = "exclude", action = ArgAction::Append, takes_value = true)]
     pub exclude: Vec<String>,
