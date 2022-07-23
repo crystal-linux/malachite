@@ -4,12 +4,16 @@ use std::process::Command;
 use crate::info;
 use crate::{crash, internal::AppExitCode, log};
 
-fn do_the_pulling(
-    repos: Vec<String>,
-    verbose: bool,
+struct PullParams {
     smart_pull: bool,
     build_on_update: bool,
     no_regen: bool,
+}
+
+fn do_the_pulling(
+    repos: Vec<String>,
+    verbose: bool,
+    params: &PullParams,
 ) {
     for repo in repos {
         // Set root dir to return after each git pull
@@ -25,7 +29,7 @@ fn do_the_pulling(
 
         // Pull
         log!(verbose, "Pulling");
-        if smart_pull {
+        if params.smart_pull {
             // Just update the remote
             log!(verbose, "Smart pull");
             Command::new("git")
@@ -53,7 +57,7 @@ fn do_the_pulling(
                     .unwrap();
 
                 // If build_on_update is set, rebuild package
-                if build_on_update {
+                if params.build_on_update {
                     info!("Package {} updated, staging for rebuild", &repo);
                     log!(verbose, "Pushing package {} to be rebuilt", &repo);
                     packages_to_rebuild.push(repo);
@@ -80,11 +84,11 @@ fn do_the_pulling(
             env::current_dir().unwrap()
         );
 
-        if !packages_to_rebuild.is_empty() && build_on_update {
+        if !packages_to_rebuild.is_empty() && params.build_on_update {
             info!("Rebuilding packages: {}", &packages_to_rebuild.join(", "));
             log!(verbose, "Rebuilding packages: {:?}", &packages_to_rebuild);
 
-            crate::operations::build(&packages_to_rebuild, vec![], no_regen, verbose);
+            crate::operations::build(&packages_to_rebuild, vec![], params.no_regen, verbose);
         }
     }
 }
@@ -134,8 +138,10 @@ pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: 
     do_the_pulling(
         repos_applicable,
         verbose,
-        smart_pull,
-        build_on_update,
-        no_regen,
+        &PullParams {
+            smart_pull,
+            build_on_update,
+            no_regen,
+        }
     );
 }
