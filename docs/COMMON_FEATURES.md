@@ -60,9 +60,7 @@ smart_pull = true
 In this snippet, we define `mode` to be `"workspace"`.
 
 `base.mode` in Malachite can only ever be one of `"workspace"` or `"repository"`, and defines, drumroll...
-The mode in which it operates.
-
-If it is set to anything but those 2 modes, it crashes.
+The mode in which it operates. If it is set to anything but those 2 modes, it crashes.
 
 Also defined in this snippet is `smart_pull`, which controls whether or not to pull... smartly.
 
@@ -77,7 +75,7 @@ will:
 Theoretically, this only actually speeds things up by a minute amount (think milliseconds, really). Where this feature shines however is in repository mode,
 where it enables helpful automation features such as `build_on_update`.
 
-Either way, it's recommended to keep this enabled for the slight speedup, and only disable it if it causes issues.
+Regardless, it's recommended to keep this enabled for the slight speedup, and only disable it if it causes issues.
 I've never personally had issues with it in the past, but who knows what could happen. This is Git we're talking about.
 
 
@@ -101,15 +99,11 @@ urls = [
 ]
 ```
 
-The way this works is simple.
-
-We have 2 urls in the `repositories.urls` key.
-
-Each `name` in the `repositories.name` key is prefixed with an index.
-
-If the number is `1`, it'll insert the name into the `1`st URL.
-
-Specifically, in the repo's URL, it'll insert the defined `name` in place of the `%repo%` substring.
+The way this works is simple: 
+- We have 2 urls in the `repositories.urls` key.
+- Each `name` in the `repositories.name` key is prefixed with an index.
+- If the number is `N`, it'll insert the name into the `N`th URL.
+  - Specifically, in the repo's URL, it'll insert the defined `name` in place of the `%repo%` substring.
 
 That's literally it!
 
