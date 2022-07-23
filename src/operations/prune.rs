@@ -110,12 +110,12 @@ pub fn prune(verbose: bool) {
     log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
 
     // Print which packages were deleted
-    if !packages_to_delete.is_empty() {
+    if packages_to_delete.is_empty() {
+        info!("No packages were deleted.");
+    } else {
         info!("Deleted the following packages:");
         for p in &mut packages_to_delete {
             info!("{}-{}", p.name.replace("./", ""), p.ver);
         }
-    } else {
-        info!("No packages were deleted.");
     }
 }

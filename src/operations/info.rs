@@ -40,9 +40,7 @@ pub fn info(verbose: bool) {
     log!(verbose, "Repos Sorted: {:?}", repos);
 
     // Displaying basic info about the Malachite Repository
-    let internal_name = if !config.mode.repository.name.is_empty() {
-        config.mode.repository.name
-    } else {
+    let internal_name = if config.mode.repository.name.is_empty() {
         env::current_dir()
             .unwrap()
             .file_name()
@@ -50,6 +48,8 @@ pub fn info(verbose: bool) {
             .to_str()
             .unwrap()
             .to_string()
+    } else {
+        config.mode.repository.name
     };
     let name = format!(
         "{} \"{}\":",

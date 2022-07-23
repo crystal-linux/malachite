@@ -37,14 +37,8 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
     if !packages.is_empty() && !all {
         log!(verbose, "Packages not empty: {:?}", packages);
         for pkg in packages.iter() {
-            // If repo is not in config, crash
-            if !repos.iter().map(|x| x.name.clone()).any(|x| x == *pkg) {
-                crash!(
-                    AppExitCode::PkgNotFound,
-                    "Package repo {} not found in in mlc.toml",
-                    pkg
-                );
-            } else {
+            // If repo is not in config, crash, otherwise, build
+            if repos.iter().map(|x| x.name.clone()).any(|x| x == *pkg) {
                 // Otherwise, build
                 log!(verbose, "Building {}", pkg);
                 let code = repository::build(pkg, sign, verbose);
@@ -61,6 +55,12 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
                     };
                     errored.push(error);
                 }
+            } else {
+                crash!(
+                    AppExitCode::PkgNotFound,
+                    "Package repo {} not found in in mlc.toml",
+                    pkg
+                );
             }
         }
     }
