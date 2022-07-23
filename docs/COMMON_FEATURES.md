@@ -29,15 +29,15 @@ on_gen = false
 
 [repositories]
 name = [
-  "1::foo",
-  "1::bar",
-  "2::baz",
-  "2::qux",
+  "foo:repo1",
+  "foo::repo2/testing",
+  "bar::baz!",
+  "bar::qux/testing!",
 ]
-urls = [
-  "https://example.org/%repo%.git",
-  "https://example.org/other/%repo%.git",
-]
+
+[repositories.urls]
+foo = "https://example.org/%repo%.git"
+bar = "https://example.org/other/%repo%.git"
 ```
 
 Now this is going to look really confusing at first, but bear with me. 
@@ -87,23 +87,29 @@ facilitate many packages without having to type each url out a million times.
 
 ```toml
 [repositories]
-name = [
-  "1::foo",
-  "1::bar",
-  "2::baz",
-  "2::qux",
+repos = [
+  "foo:repo1",
+  "foo:repo2/testing",
+  "bar:baz!",
+  "bar:qux/testing!",
 ]
-urls = [
-  "https://example.org/%repo%.git",
-  "https://example.org/other/%repo%.git",
-]
+
+[repositories.urls]
+foo = "https://example.org/%repo%.git"
+bar = "https://example.org/other/%repo%.git"
 ```
 
 The way this works is simple: 
 - We have 2 urls in the `repositories.urls` key.
-- Each `name` in the `repositories.name` key is prefixed with an index.
-- If the number is `N`, it'll insert the name into the `N`th URL.
-  - Specifically, in the repo's URL, it'll insert the defined `name` in place of the `%repo%` substring.
+- Each `repo` in the `repositories.repos` key is prefixed with an identifier.
+- If the number is `foo`, it'll insert the url with the id `foo`.
+  - Specifically, in the URL, it'll insert the defined `repo`'s name in place of the `%repo%` substring.
+
+#### Hang on, what are the special symbols????
+
+I'm glad you asked!
+- If you want to clone a specific branch, simply use the `/` delimiter. To clone repository `foo` on branch `bar`, use `id:foo/bar`.
+- If you want a specific package to build first, use instances of `!` to set priority. This is explained later in the [Repository Mode](REPOSITORY_MODE.md) page
 
 That's literally it!
 
