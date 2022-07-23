@@ -17,6 +17,7 @@ Work it harder, make it better!
 | Update local repos/PKGBUILDs                           | `mlc pull/update` [all if left empty]     | `--no-regen`: If `mode.repository.build_on_update` is `true`, Do not regenerate repository after package rebuild |
 | Create and/or open config file                         | `mlc conf`                                |                                                                                                                  |
 | Initialises repo/workspace based on config in mlc.toml | `mlc clone/init`                          |                                                                                                                  |
+| Displays an info panel/overview of the current repo    | `mlc info/status`                         |                                                                                                                  |
 
 ### Exit Codes
 

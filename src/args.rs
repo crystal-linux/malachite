@@ -45,6 +45,10 @@ pub enum Operation {
     #[clap(name = "prune", aliases = & ["prune", "p"])]
     Prune,
 
+    /// Shows an info panel/overview about the current repository
+    #[clap(name = "info", aliases = & ["status", "s", "i"])]
+    Info, // TODO: Implement this
+
     /// Pulls in git repositories from mlc.toml branching from current directory
     #[clap(name = "pull", aliases = & ["u"])]
     Pull {
