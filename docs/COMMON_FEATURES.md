@@ -30,7 +30,7 @@ on_gen = false
 [repositories]
 name = [
   "1::foo",
-  "1::bar"
+  "1::bar",
   "2::baz",
   "2::qux",
 ]
