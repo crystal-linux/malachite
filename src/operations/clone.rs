@@ -47,6 +47,7 @@ pub fn clone(verbose: bool) {
             info!("Cloning ({} mode): {}", config.base.mode, r.name);
             Command::new("git")
                 .args(&["clone", &r.url, &r.name])
+                // If a branch is specified, clone that specific branch
                 .args(if r.branch.is_some() {
                     vec!["-b", r.branch.as_ref().unwrap()]
                 } else {
