@@ -2,13 +2,13 @@ use std::env;
 use std::path::Path;
 use std::process::Command;
 
-use crate::{create_config, log};
+use crate::{repository::create, log};
 
 pub fn config(verbose: bool) {
     // Generate new config file if not already present
     if !Path::exists("mlc.toml".as_ref()) {
         log!(verbose, "Creating mlc.toml");
-        create_config(verbose);
+        create(verbose);
     }
 
     // Open config file in user's editor of choice

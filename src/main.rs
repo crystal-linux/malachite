@@ -11,7 +11,6 @@ use std::process::Command;
 
 use crate::args::{Args, Operation};
 use crate::internal::AppExitCode;
-use crate::repository::create_config;
 use crate::internal::parse_cfg;
 
 #[global_allocator]

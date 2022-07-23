@@ -39,7 +39,7 @@ urls = [
     ""
 ]"#;
 
-pub fn create_config(verbose: bool) {
+pub fn create(verbose: bool) {
     // Ensure current directory is empty
     if env::current_dir()
         .unwrap()
