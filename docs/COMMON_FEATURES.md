@@ -28,11 +28,11 @@ on_gen = false
 [mode.workspace]
 
 [repositories]
-name = [
+repos = [
   "foo:repo1",
-  "foo::repo2/testing",
-  "bar::baz!",
-  "bar::qux/testing!",
+  "foo:repo2/testing",
+  "bar:baz!",
+  "bar:qux/testing!",
 ]
 
 [repositories.urls]
