@@ -14,11 +14,11 @@ on_gen = true
 [mode.workspace]
 
 [repositories]
-name = [
-	"1::crystal-keyring",
-	"2::pfetch!",
+repos = [
+	"crs:malachite/development",
+	"pkg:pfetch!",
 ]
-urls = [
-	"https://github.com/crystal-linux/%repo%",
-	"https://github.com/crystal-linux/pkgbuild.%repo%",
-]
+
+[repositories.urls]
+crs = "https://github.com/crystal-linux/%repo%"
+pkg = "https://github.com/crystal-linux/pkgbuild.%repo%"
