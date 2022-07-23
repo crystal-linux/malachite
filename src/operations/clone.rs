@@ -15,13 +15,15 @@ pub fn clone(verbose: bool) {
         .map(|x| x.unwrap().path().display().to_string())
         .collect::<Vec<String>>();
     dirs.retain(|x| *x != "./mlc.toml");
+    dirs.retain(|x| *x != "./out");
+    dirs.retain(|x| *x != format!("./{}", config.mode.repository.name));
     log!(verbose, "Paths with mlc.toml excluded: {:?}", dirs);
 
     // Creates a vector of the difference between cloned repos and repos defined in config
     let mut repo_diff = vec![];
     for repo in repos {
         let name = &repo.name;
-        if !dirs.contains(name) {
+        if !dirs.contains(&format!("./{}", name)) {
             repo_diff.push(repo);
         }
     }
