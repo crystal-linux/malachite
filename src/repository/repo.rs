@@ -97,7 +97,7 @@ pub fn generate(verbose: bool) {
         true
     } else {
         crash!(
-            AppExitCode::NoPackagesFound,
+            AppExitCode::NoPkgs,
             "No .zst or .xz packages found in repository"
         );
         // This should theoretically never be reached, but let's just give the compiler what it wants
