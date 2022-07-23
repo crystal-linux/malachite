@@ -47,7 +47,7 @@ pub enum Operation {
 
     /// Shows an info panel/overview about the current repository
     #[clap(name = "info", aliases = & ["status", "s", "i"])]
-    Info, // TODO: Implement this
+    Info,
 
     /// Pulls in git repositories from mlc.toml branching from current directory
     #[clap(name = "pull", aliases = & ["u"])]

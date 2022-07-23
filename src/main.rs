@@ -107,5 +107,6 @@ fn main() {
         Operation::Config => operations::config(verbose),
         Operation::Prune => operations::prune(verbose),
         Operation::Clean => operations::clean(verbose),
+        Operation::Info => operations::info(verbose),
     }
 }
