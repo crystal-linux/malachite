@@ -1,4 +1,4 @@
-use colored::*;
+use colored::Colorize;
 use std::process::exit;
 use std::time::UNIX_EPOCH;
 
@@ -30,7 +30,7 @@ macro_rules! crash {
 
 pub fn info_fn<S: ToString>(msg: S) {
     let msg = msg.to_string();
-    println!("{} {}", LOGO_SYMBOL.black(), msg.bold())
+    println!("{} {}", LOGO_SYMBOL.black(), msg.bold());
 }
 
 pub fn log_fn<S: ToString>(msg: S, verbose: bool) {

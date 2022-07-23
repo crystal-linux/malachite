@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use crate::info;
 use crate::log;
-use crate::read_cfg;
+use crate::parse_cfg;
 
 #[derive(Debug, Clone)]
 struct PackageFile {
@@ -15,7 +15,7 @@ struct PackageFile {
 
 pub fn prune(verbose: bool) {
     // Read config struct from mlc.toml
-    let config = read_cfg(verbose);
+    let config = parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
 
     // Read current directory
@@ -46,6 +46,7 @@ pub fn prune(verbose: bool) {
         for cap in re.captures_iter(file) {
             let name = cap[1].to_string();
             let mut ver = cap[2].to_string();
+            // Remove the leading "-" from the version and ext strings
             ver.remove(0).to_string();
             let mut ext = cap[3].to_string();
             ext.remove(0).to_string();
@@ -61,7 +62,7 @@ pub fn prune(verbose: bool) {
         log!(verbose, "Sorting Package: {:?}", package);
         let name = &package.name;
         let mut found = false;
-        for p in packages_by_name.iter_mut() {
+        for p in &mut packages_by_name {
             if &p[0].name == name {
                 log!(verbose, "Found {}", name);
                 found = true;
@@ -75,14 +76,14 @@ pub fn prune(verbose: bool) {
     }
 
     // Sort each Vector of Vectors by version
-    for p in packages_by_name.iter_mut() {
+    for p in &mut packages_by_name {
         log!(verbose, "Sorting {:?}", p);
         p.sort_by(|a, b| b.ver.cmp(&a.ver));
     }
 
     // Pushes all but the 4 most recent versions of each package into a new Vector of PackageFiles
     let mut packages_to_delete: Vec<PackageFile> = vec![];
-    for p in packages_by_name.iter() {
+    for p in &packages_by_name {
         let mut to_delete = vec![];
         for (i, _) in p.iter().enumerate() {
             if i >= 3 {
@@ -95,7 +96,7 @@ pub fn prune(verbose: bool) {
     log!(verbose, "Packages to delete: {:?}", packages_to_delete);
 
     // Delete all packages in packages_to_delete
-    for p in packages_to_delete.iter() {
+    for p in &packages_to_delete {
         let path = format!("{}-{}-{}", p.name, p.ver, p.ext);
         log!(verbose, "Deleting {}", path);
         std::process::Command::new("bash")
@@ -111,7 +112,7 @@ pub fn prune(verbose: bool) {
     // Print which packages were deleted
     if !packages_to_delete.is_empty() {
         info!("Deleted the following packages:");
-        for p in packages_to_delete.iter_mut() {
+        for p in &mut packages_to_delete {
             info!("{}-{}", p.name.replace("./", ""), p.ver);
         }
     } else {

@@ -1,10 +1,10 @@
 use crate::internal::structs::{ErroredPackage, Repo};
 use crate::internal::AppExitCode;
-use crate::{crash, info, log, repository, workspace};
+use crate::{crash, info, log, repository, internal};
 
-pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool, verbose: bool) {
+pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose: bool) {
     // Read config struct from mlc.toml
-    let config = workspace::read_cfg(verbose);
+    let config = internal::parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
     let all = packages.is_empty();
     log!(verbose, "All: {:?}", all);
@@ -36,7 +36,7 @@ pub fn build(packages: Vec<String>, exclude: Vec<String>, no_regen: bool, verbos
     let mut errored: Vec<ErroredPackage> = vec![];
     if !packages.is_empty() && !all {
         log!(verbose, "Packages not empty: {:?}", packages);
-        for pkg in &packages {
+        for pkg in packages.iter() {
             // If repo is not in config, crash
             if !repos.iter().map(|x| x.name.clone()).any(|x| x == *pkg) {
                 crash!(

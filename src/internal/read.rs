@@ -5,13 +5,13 @@ use crate::internal::structs::{Config, Repo, SplitRepo, UnexpandedConfig};
 use crate::internal::AppExitCode;
 use crate::{crash, log};
 
-pub fn read_cfg(verbose: bool) -> Config {
+pub fn parse_cfg(verbose: bool) -> Config {
     // Crash if mlc.toml doesn't exist
     if !Path::exists("mlc.toml".as_ref()) {
         crash!(
             AppExitCode::ConfigNotFound,
             "Config file not found (mlc.toml)"
-        )
+        );
     }
 
     // Reading the config file to an UnexpandedConfig struct
