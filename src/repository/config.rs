@@ -14,31 +14,30 @@ mode = ""
 smart_pull = true
 
 [mode.repository]
-# Only required when in repository mode, decides what to call the repository and relevant files
+# Decides what to call the repository and relevant files
 name = ""
-# Only required when in repository mode, decides whether to PGP sign built packages
-sign = true
-# Only required when in repository mode, decides whether to build packages if pull is successful
+# Decides whether to build packages if package repo is updated on pull
 build_on_update = false
+
+[mode.repository.signing]
+# Decides whether or not to sign packages
+enabled = true
 
 [mode.workspace]
 # There are currently no options for workspace mode
 
 [repositories]
-# An array of Git repositories to clone from, formatted url_index::repo_name(!)
-# e.g. if you had URLs = [ "https://example.com/%repo%.git" ], 1::package would expand to https://example.com/package.git
-# Repository mode only: Depending on the number of "!"s appended to the name, the priority of the package will be determined. More "!"s = higher priority = built first.
-name = [
-    "",
-    ""
+# List of repositories formatted as id:name (priority is decided by the ! suffix, and decides package build order)
+repos = [
+    "aur:hello!",
+    "crs:malachite"
 ]
 
-# An array of URLs to clone from, in the format https://example.com/%repo% (the %repo% is NOT optional and will be replaced with the name of the repository)
-urls = [
-    "",
-    ""
-]"#;
-
+[repositories.urls]
+# URL keys for repositories, with {} where the repository name would go
+crs = "https://github.com/crystal-linux/{}"
+aur = "https://aur.archlinux.org/{}"
+"#;
 pub fn create(verbose: bool) {
     // Ensure current directory is empty
     if env::current_dir()

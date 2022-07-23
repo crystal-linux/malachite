@@ -22,6 +22,6 @@ repos = [
 ]
 
 [repositories.urls]
-crs = "https://github.com/crystal-linux/%repo%"
-aur = "https://aur.archlinux.org/%repo%"
-nms = "https://github.com/not-my-segfault/%repo%"
+crs = "https://github.com/crystal-linux/{}"
+aur = "https://aur.archlinux.org/{}"
+nms = "https://github.com/not-my-segfault/{}"

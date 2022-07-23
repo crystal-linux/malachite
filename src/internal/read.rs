@@ -81,7 +81,7 @@ pub fn parse_cfg(verbose: bool) -> Config {
                 urls_vec.push(url);
             }
         }
-        let url = urls_vec[0].replace("%repo%", &name);
+        let url = urls_vec[0].replace("{}", &name);
 
         // Counts instances of ! in the name, and totals a priority accordingly
         let priority = &split_struct.name.matches('!').count();
