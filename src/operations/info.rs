@@ -73,7 +73,6 @@ pub fn info(verbose: bool) {
     let table = tabled::Table::new(&repos)
         .with(tabled::Style::modern())
         .with(tabled::Width::wrap(width as usize))
-        .with(tabled::Width::increase(width as usize))
         .to_string();
 
     // Print all of the info
