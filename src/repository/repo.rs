@@ -2,7 +2,7 @@ use std::path::Path;
 use std::process::Command;
 use std::{env, fs};
 
-use crate::{crash, info, internal::AppExitCode, log, internal::parse_cfg};
+use crate::{crash, info, internal::parse_cfg, internal::AppExitCode, log};
 
 pub fn generate(verbose: bool) {
     // Read config struct from mlc.toml

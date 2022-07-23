@@ -2,7 +2,7 @@ use std::env;
 use std::path::Path;
 use std::process::Command;
 
-use crate::{repository::create, log};
+use crate::{log, repository::create};
 
 pub fn config(verbose: bool) {
     // Generate new config file if not already present
