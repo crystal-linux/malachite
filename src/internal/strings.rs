@@ -29,7 +29,7 @@ macro_rules! crash {
 }
 
 pub fn info_fn(msg: &str) {
-    println!("{} {}", LOGO_SYMBOL.black(), msg.bold());
+    println!("{} {}", LOGO_SYMBOL.green(), msg.bold());
 }
 
 pub fn log_fn(msg: &str, verbose: bool) {
