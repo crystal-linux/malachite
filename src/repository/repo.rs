@@ -2,11 +2,11 @@ use std::path::Path;
 use std::process::Command;
 use std::{env, fs};
 
-use crate::{crash, info, internal::AppExitCode, log, workspace::read_cfg};
+use crate::{crash, info, internal::AppExitCode, log, internal::parse_cfg};
 
 pub fn generate(verbose: bool) {
     // Read config struct from mlc.toml
-    let config = read_cfg(verbose);
+    let config = parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
 
     // Get repository name from config

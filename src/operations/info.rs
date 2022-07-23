@@ -16,7 +16,7 @@ struct RepoDisplay {
 
 pub fn info(verbose: bool) {
     log!(verbose, "Showing Info");
-    let config = crate::workspace::read_cfg(verbose);
+    let config = crate::internal::parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
 
     // Add the branch to the name if it's not the default branch for said repository

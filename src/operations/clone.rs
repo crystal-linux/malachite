@@ -1,10 +1,10 @@
 use std::process::Command;
 
-use crate::{info, log, workspace};
+use crate::{info, log};
 
 pub fn clone(verbose: bool) {
     // Read config struct from mlc.toml
-    let config = workspace::read_cfg(verbose);
+    let config = crate::internal::parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
     let repos = &config.repositories;
     log!(verbose, "Repos: {:?}", repos);

@@ -1,3 +1,9 @@
+#![warn(
+    clippy::all,
+    clippy::pedantic,
+    clippy::nursery,
+)]
+
 use clap::Parser;
 use std::env;
 use std::path::Path;
@@ -6,7 +12,7 @@ use std::process::Command;
 use crate::args::{Args, Operation};
 use crate::internal::AppExitCode;
 use crate::repository::create_config;
-use crate::workspace::read_cfg;
+use crate::internal::parse_cfg;
 
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
@@ -15,7 +21,6 @@ mod args;
 mod internal;
 mod operations;
 mod repository;
-mod workspace;
 
 fn main() {
     if unsafe { libc::geteuid() } == 0 {
@@ -29,7 +34,7 @@ fn main() {
     log!(verbose, "Exclude: {:?}", exclude);
     log!(verbose, "Verbose: You guess. :)");
 
-    let config = read_cfg(verbose);
+    let config = parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
 
     if Path::exists("../.git".as_ref()) {
@@ -88,19 +93,19 @@ fn main() {
                 crash!(
                     AppExitCode::BuildInWorkspace,
                     "Cannot build packages in workspace mode"
-                )
+                );
             }
-            operations::build(packages, exclude.to_vec(), no_regen, verbose)
+            operations::build(&packages, exclude.clone(), no_regen, verbose);
         }
         Operation::Pull {
             packages, no_regen, ..
-        } => operations::pull(packages, exclude.to_vec(), verbose, no_regen),
+        } => operations::pull(packages, exclude, verbose, no_regen),
         Operation::RepoGen => {
             if !repository {
                 crash!(
                     AppExitCode::BuildInWorkspace,
                     "Cannot build packages in workspace mode"
-                )
+                );
             }
             repository::generate(verbose);
         }

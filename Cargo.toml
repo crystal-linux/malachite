@@ -5,6 +5,8 @@ authors = [ "michal <michal@tar.black>" ]
 edition = "2021"
 description = "Packaging tool for pacman repositories"
 license-file = "LICENSE"
+keywords = [ "pacman", "repository", "packaging" ]
+categories = [ "filesystem", "development-tools" ]
 
 [[bin]]
 name = "mlc"

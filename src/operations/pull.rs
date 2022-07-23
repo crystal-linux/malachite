@@ -2,7 +2,7 @@ use std::env;
 use std::process::Command;
 
 use crate::info;
-use crate::{crash, internal::AppExitCode, log, workspace::read_cfg};
+use crate::{crash, internal::AppExitCode, log};
 
 fn do_the_pulling(
     repos: Vec<String>,
@@ -84,14 +84,14 @@ fn do_the_pulling(
             info!("Rebuilding packages: {}", &packages_to_rebuild.join(", "));
             log!(verbose, "Rebuilding packages: {:?}", &packages_to_rebuild);
 
-            crate::operations::build(packages_to_rebuild, vec![], no_regen, verbose);
+            crate::operations::build(&packages_to_rebuild, vec![], no_regen, verbose);
         }
     }
 }
 
-pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool, no_regen: bool) {
+pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: bool) {
     // Read config file
-    let config = read_cfg(verbose);
+    let config = crate::parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
     // If no packages are specified, imply all
     let all = packages.is_empty();
@@ -117,7 +117,7 @@ pub fn pull(packages: Vec<String>, exclude: Vec<String>, verbose: bool, no_regen
 
     // Subtract exclude from repos_applicable
     if !exclude.is_empty() {
-        for ex in &exclude {
+        for ex in exclude.iter() {
             repos_applicable.retain(|x| *x != *ex);
         }
     }
