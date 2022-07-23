@@ -20,5 +20,5 @@ repos = [
 ]
 
 [repositories.urls]
-crs = "https://github.com/crystal-linux/%repo%"
-pkg = "https://github.com/crystal-linux/pkgbuild.%repo%"
+crs = "https://github.com/crystal-linux/{}"
+pkg = "https://github.com/crystal-linux/pkgbuild.{}"
