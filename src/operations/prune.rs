@@ -40,19 +40,19 @@ pub fn prune(verbose: bool) {
     // Split files into Vec<PackageFile>, turning name-1.0.0-1-x86_64.tar.gz into PackageFile { name: "name", ver: "1.0.0-1", ext: "x86_64.tar.gz" }
     let mut packages: Vec<PackageFile> = vec![];
     for file in files {
+        // Regex fuckery. Please don't mess with this.
+        let re = regex::Regex::new(r"^(.+)(-.+-.+)(-.+\..+\..+\.+..+)$").unwrap();
         let file = file.to_str().unwrap();
-        let mut parts = file.split('-');
-        let name = parts.next().unwrap();
-        let ver = parts.next().unwrap();
-        let rel = parts.next().unwrap();
-        let ext = parts.next().unwrap();
-        let package = PackageFile {
-            name: name.to_string(),
-            ver: ver.to_string() + "-" + rel,
-            ext: ext.to_string(),
-        };
-        log!(verbose, "Package: {:?}", package);
-        packages.push(package);
+        for cap in re.captures_iter(file) {
+            let name = cap[1].to_string();
+            let mut ver = cap[2].to_string();
+            ver.remove(0).to_string();
+            let mut ext = cap[3].to_string();
+            ext.remove(0).to_string();
+            let package = PackageFile { name, ver, ext };
+            log!(verbose, "Package: {:?}", package);
+            packages.push(package);
+        }
     }
 
     // Split packages into a Vector of Vectors by unique name
