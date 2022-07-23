@@ -89,7 +89,7 @@ facilitate many packages without having to type each url out a million times.
 [repositories]
 name = [
   "1::foo",
-  "1::bar"
+  "1::bar",
   "2::baz",
   "2::qux",
 ]
