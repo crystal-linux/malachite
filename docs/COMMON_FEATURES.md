@@ -119,4 +119,10 @@ For mode-specific config, avert your eyes to the following links!
 - [Workspace Mode](WORKSPACE_MODE.md)
 - [Repository Mode](REPOSITORY_MODE.md)
 
+### Examples
+
+Functioning config examples for both modes are available in the [examples](../examples) directory!
+
+### Usage 
+
 Alternatively, you can look at the [Usage](USAGE.md) guide!
