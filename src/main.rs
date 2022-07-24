@@ -57,13 +57,21 @@ fn main() {
             if !repository {
                 crash!(
                     AppExitCode::BuildInWorkspace,
-                    "Cannot build packages in workspace mode"
+                    "Cannot generate repository in workspace mode"
                 );
             }
             repository::generate(verbose);
         }
         Operation::Config => operations::config(verbose),
-        Operation::Prune => operations::prune(verbose),
+        Operation::Prune => {
+            if !repository {
+                crash!(
+                    AppExitCode::BuildInWorkspace,
+                    "Cannot prune packages in workspace mode"
+                );
+            }
+            operations::prune(verbose)
+        },
         Operation::Clean => operations::clean(verbose),
         Operation::Info => operations::info(verbose),
     }
