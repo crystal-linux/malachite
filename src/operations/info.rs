@@ -201,7 +201,7 @@ pub fn info(verbose: bool) {
     );
 
     // Get terminal width
-    let width = match termion::terminal_size() {
+    let width = match crossterm::terminal::size() {
         Ok((w, _)) => w,
         Err(_) => 80,
     };
