@@ -11,12 +11,10 @@ repos = [
 	"crs:amethyst",
 	"crs:malachite/development!",
 	"aur:notop-git",
-	"nms:appendage",
-	"nix:nixpkgs/nixos-unstable:ass",
+	"nix:nixpkgs/nixos-unstable:1",
 ]
 
 [repositories.urls]
 crs = "https://github.com/crystal-linux/{}"
 aur = "https://aur.archlinux.org/{}"
-nms = "https://github.com/not-my-segfault/{}"
 nix = "https://github.com/nixos/{}"

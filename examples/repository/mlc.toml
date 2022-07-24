@@ -13,10 +13,12 @@ on_gen = true
 
 [repositories]
 repos = [
-	"crs:malachite/development",
+	"crs:malachite/development:0a5bdc9",
+	"mic:apod:v.1.1.2",
 	"pkg:pfetch!",
 ]
 
 [repositories.urls]
 crs = "https://github.com/crystal-linux/{}"
 pkg = "https://github.com/crystal-linux/pkgbuild.{}"
+mic = "https://git.tar.black/michal/{}"

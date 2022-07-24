@@ -68,7 +68,7 @@ pub struct Repo {
     pub name: String,
     pub url: String,
     pub branch: Option<String>,
-    pub depth: Option<usize>,
+    pub extra: Option<String>,
     pub priority: usize,
 }
 
@@ -76,7 +76,7 @@ pub struct Repo {
 pub struct SplitRepo {
     pub id: String,
     pub name: String,
-    pub depth: Option<usize>,
+    pub extra: Option<String>,
 }
 
 //// Build operation structs
