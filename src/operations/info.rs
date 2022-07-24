@@ -37,7 +37,7 @@ pub fn git_status(verbose: bool, repo: &str, colorblind: bool) -> String {
     env::set_current_dir(&repo).unwrap_or_else(|e| {
         crash!(
             AppExitCode::NotInit,
-            "Failed to enter directory {} for Git info: {}",
+            "Failed to enter directory {} for Git info: {}, Have you initialized the repo?",
             repo,
             e.to_string()
         );
