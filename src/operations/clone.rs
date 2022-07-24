@@ -47,8 +47,23 @@ pub fn clone(verbose: bool) {
 
         // Clone all diff repos
         for r in repo_diff {
+            let depth = if r.depth.is_some() {
+                format!("{}", r.depth.as_ref().unwrap())
+            } else {
+                "".to_string()
+            };
+            log!(verbose, "Depth: {:?}", r.depth);
             log!(verbose, "Cloning {}", r.name);
-            info!("Cloning ({} mode): {}", config.base.mode, r.name);
+            if r.depth.is_some() {
+                info!(
+                    "Cloning ({} mode): {} - Depth: {}",
+                    config.base.mode,
+                    r.name,
+                    r.depth.unwrap()
+                );
+            } else {
+                info!("Cloning ({} mode): {}", config.base.mode, r.name);
+            }
             Command::new("git")
                 .args(&["clone", &r.url, &r.name])
                 // If a branch is specified, clone that specific branch
@@ -56,6 +71,11 @@ pub fn clone(verbose: bool) {
                     vec!["-b", r.branch.as_ref().unwrap()]
                 } else {
                     vec![]
+                })
+                .args(if depth.is_empty() {
+                    vec![]
+                } else {
+                    vec!["--depth", &depth]
                 })
                 .spawn()
                 .unwrap()

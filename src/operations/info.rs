@@ -159,7 +159,7 @@ pub fn info(verbose: bool) {
         }
     }
 
-    // Thanks memory management
+    // Because spinoff requires &'static str, we need to Box these in the heap and then leak them to be able to format the spinner
     let symbol = Box::new(format!("{}", "✔".bold().green()));
     let done = Box::new(format!("{}", "Done!".bold()));
 

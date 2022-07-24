@@ -43,9 +43,26 @@ pub fn parse_cfg(verbose: bool) -> Config {
         log!(verbose, "Parsing repo: {:?}", x);
         // Splits the repo name and index inta a SplitRepo struct
         let split: Vec<&str> = x.split(':').collect();
-        let split_struct = SplitRepo {
-            id: split[0].parse().unwrap(),
-            name: split[1].parse().unwrap(),
+        let split_struct = if split.len() > 2 {
+            SplitRepo {
+                id: split[0].parse().unwrap(),
+                name: split[1].parse().unwrap(),
+                depth: Some(split[2].parse().unwrap_or_else(|e| {
+                    crash!(
+                        AppExitCode::ConfigParseError,
+                        "Depth must be an integer: {}",
+                        e
+                    );
+                    // This is unreachable, but rustc complains about it otherwise
+                    std::process::exit(1);
+                })),
+            }
+        } else {
+            SplitRepo {
+                id: split[0].parse().unwrap(),
+                name: split[1].parse().unwrap(),
+                depth: None,
+            }
         };
         log!(verbose, "Split repo: {:?}", split_struct);
 
@@ -91,6 +108,7 @@ pub fn parse_cfg(verbose: bool) -> Config {
             name,
             url,
             branch,
+            depth: split_struct.depth,
             priority: *priority,
         };
         log!(verbose, "Expanded repo: {:?}", repo);
