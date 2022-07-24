@@ -193,12 +193,12 @@ pub fn info(verbose: bool) {
     let table = if git_info {
         tabled::Table::new(&repos_git)
             .with(tabled::Style::modern())
-            .with(tabled::Width::wrap(width as usize))
+            .with(tabled::Width::wrap(width as usize).keep_words())
             .to_string()
     } else {
         tabled::Table::new(&repos)
             .with(tabled::Style::modern())
-            .with(tabled::Width::wrap(width as usize))
+            .with(tabled::Width::wrap(width as usize).keep_words())
             .to_string()
     };
 
@@ -215,8 +215,7 @@ pub fn info(verbose: bool) {
     println!("{}", table);
     if config.mode.workspace.is_some() && config.mode.workspace.as_ref().unwrap().git_info {
         info!(
-            "Key: \n  \
-            D:  Dirty -  Unstaged Changes \n  \
+            "D:  Dirty -  Unstaged Changes \n  \
             Pl: Pull  -  Changes at Remote \n  \
             Ps: Push  -  Unpushed Changes \n  \
             {}:  Applies, {}: Does Not Apply",
