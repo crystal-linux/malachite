@@ -3,6 +3,8 @@ You'll never have to work(space) another day in your life!
 
 ### Workspace Config
 
+Taking an example section from the Workspace mode config,
+
 ```toml
 [mode.workspace]
 git_info = true
@@ -22,8 +24,8 @@ The key for the values is as follows:
 
 These will be typically displayed in either Green (Clean) or Red (Dirty)
 
-However, if colorblind is set to true, the colors will instead be set to Blue (Clean) or Dark Red (Dirty), to be more discernible to colorblind users
+However, if `colorblind` is set to true, the colors will instead be set to Blue (Clean) or Dark Red (Dirty), to be more discernible to colorblind users
 
-### For Now...
+---
 
-You can return to [Getting Started](GETTING_STARTED.md), or head directly into [Repository Mode](REPOSITORY_MODE.md) to see where Malachite really shines!
+You can return to [Getting Started](GETTING_STARTED.md) page here!

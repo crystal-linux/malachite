@@ -6,7 +6,7 @@ PacManage your repositories in style!
 As opposed to the rather barren Workspace mode, the Repository mode config is rather fleshed out,
 and we have a few options to choose from.
 
-Let's take an example config,
+Let's take an example section from a Repository mode config,
 
 ```toml
 [mode.repository]
@@ -36,3 +36,6 @@ Calling back to the example above, we can see 3 config keys:
 - `key`: Defines the GPG key ID to use for signing.
 - `on_gen`: Defines whether to sign packages when they are built, or all at once on repository generation (this is also recommended).
 
+---
+
+You can return to [Getting Started](GETTING_STARTED.md) page here!
