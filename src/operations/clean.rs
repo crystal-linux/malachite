@@ -13,7 +13,15 @@ pub fn clean(verbose: bool) {
     dirs.retain(|x| *x != "./mlc.toml");
     dirs.retain(|x| *x != "./.git");
     log!(verbose, "Paths with mlc.toml excluded: {:?}", dirs);
-    for dir in dirs {
+    for dir in &dirs {
         std::fs::remove_dir_all(dir).unwrap();
     }
+    info!(
+        "Reset complete, dirs removed: \n  \
+        {}",
+        dirs.iter()
+            .map(|x| x.replace("./", ""))
+            .collect::<Vec<String>>()
+            .join("\n  ")
+    );
 }
