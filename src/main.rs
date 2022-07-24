@@ -16,6 +16,7 @@ mod operations;
 mod repository;
 
 fn main() {
+    #[cfg(target_os = "linux")]
     if unsafe { libc::geteuid() } == 0 {
         crash!(AppExitCode::RunAsRoot, "Running malachite as root is disallowed as it can lead to system breakage. Instead, malachite will prompt you when it needs superuser permissions");
     }
