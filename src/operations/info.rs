@@ -53,7 +53,7 @@ pub fn git_status(verbose: bool, repo: &str, colorblind: bool) -> String {
     let output = String::from_utf8(output.stdout).unwrap();
     log!(verbose, "Git status: {}", output);
 
-    let unstaged = output.contains("Changes not staged for commit");
+    let unstaged = output.contains("Changes not staged for commit") || output.contains("Changes to be committed");
     let untracked = output.contains("Untracked files");
     let dirty = unstaged || untracked;
 
