@@ -2,6 +2,7 @@ use colored::Colorize;
 use std::env;
 use std::process::Command;
 use tabled::Tabled;
+use spinoff::{Spinner, Spinners, Color};
 
 use crate::{crash, info, internal::AppExitCode, log};
 
@@ -114,6 +115,8 @@ pub fn info(verbose: bool) {
     let repos_unparsed = config.repositories;
     let mut repos = vec![];
     let mut repos_git = vec![];
+
+    let sp = Spinner::new(Spinners::Dots, format!("{}", "Parsing Git Info...".bold()), Color::Green);
     for repo in repos_unparsed {
         // Get name with branch, '/' serving as the delimiter
         let name = if repo.branch.is_some() {
@@ -124,11 +127,12 @@ pub fn info(verbose: bool) {
 
         // Get git info, if applicable
         let git_info_string = if git_info {
-            Some(git_status(
+            let info = Some(git_status(
                 verbose,
                 &repo.name,
                 config.mode.workspace.as_ref().unwrap().colorblind,
-            ))
+            ));
+            info
         } else {
             None
         };
@@ -150,6 +154,15 @@ pub fn info(verbose: bool) {
             });
         }
     }
+
+    // Thanks memory management
+    let symbol = Box::new(format!("{}", "✔".bold().green()));
+    let done = Box::new(format!("{}", "Done!".bold()));
+
+    let symbol: &'static str = Box::leak(symbol);
+    let done: &'static str = Box::leak(done);
+
+    sp.stop_and_persist(symbol, done);
     log!(verbose, "Repos: {:?}", repos);
 
     // Sort by priority
