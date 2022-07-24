@@ -70,8 +70,8 @@ fn main() {
                     "Cannot prune packages in workspace mode"
                 );
             }
-            operations::prune(verbose)
-        },
+            operations::prune(verbose);
+        }
         Operation::Clean => operations::clean(verbose),
         Operation::Info => operations::info(verbose),
     }
