@@ -39,7 +39,11 @@ pub enum Operation {
 
     /// Removes everything in directory except for mlc.toml
     #[clap(name = "clean", aliases = & ["clean", "cl", "reset"])]
-    Clean,
+    Clean {
+        /// Force removes everything, even if git directory is dirty or has unpushed changes or changes at remote
+        #[clap(short = 'f', long = "force", action = ArgAction::SetTrue)]
+        force: bool,
+    },
 
     /// Removes all but the latest 3 versions of each package in a repository
     #[clap(name = "prune", aliases = & ["prune", "p"])]
