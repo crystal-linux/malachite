@@ -30,3 +30,4 @@ colored = { version = "2.0.0", default-features = false }
 tabled = { version = "0.8.0", default-features = false, features = ["derive", "color"] }
 termion = { version = "1.5.6", default-features = false }
 regex = { version = "1.6.0", default-features = false, features = ["std"] }
+spinoff = { version = "0.4.0", default-features = false }
