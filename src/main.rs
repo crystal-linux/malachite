@@ -72,7 +72,7 @@ fn main() {
             }
             operations::prune(verbose);
         }
-        Operation::Clean => operations::clean(verbose),
+        Operation::Clean { force, .. } => operations::clean(verbose, force),
         Operation::Info => operations::info(verbose),
     }
 }
