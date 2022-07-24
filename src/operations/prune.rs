@@ -28,9 +28,9 @@ pub fn prune(verbose: bool) {
     env::set_current_dir("out").unwrap();
     log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
 
-    // Read all files from ./ into a Vec<PathBuf>, except for .sig files
+    // Read all files from . into a Vec<PathBuf>, except for .sig files
     let mut files: Vec<PathBuf> = vec![];
-    for entry in fs::read_dir("./").unwrap() {
+    for entry in fs::read_dir(".").unwrap() {
         let entry = entry.unwrap();
         let path = entry.path();
         if path.extension().unwrap() != "sig" {
@@ -120,7 +120,7 @@ pub fn prune(verbose: bool) {
         for p in &mut packages_to_delete {
             println!(
                 "{}",
-                format!("  {}-{}", p.name.replace("./", ""), p.ver).bold()
+                format!("  {}-{}", p.name.replace("./", "").replace(".\\", ""), p.ver).bold()
             );
         }
     }

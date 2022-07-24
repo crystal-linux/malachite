@@ -11,14 +11,14 @@ pub fn clone(verbose: bool) {
     log!(verbose, "Repos: {:?}", repos);
 
     // Get a vector of all files/dirs in the current directory, excluding config file
-    let dir_paths = std::fs::read_dir("./").unwrap();
+    let dir_paths = std::fs::read_dir(".").unwrap();
     let mut dirs = dir_paths
         .map(|x| x.unwrap().path().display().to_string())
         .collect::<Vec<String>>();
-    dirs.retain(|x| *x != "./mlc.toml");
-    dirs.retain(|x| *x != "./out");
+    dirs.retain(|x| *x != "./mlc.toml" && *x != ".\\mlc.toml");
+    dirs.retain(|x| *x != "./out" && *x != ".\\out");
     if config.mode.repository.is_some() {
-        dirs.retain(|x| *x != format!("./{}", config.mode.repository.as_ref().unwrap().name));
+        dirs.retain(|x| *x != format!("./{}", config.mode.repository.as_ref().unwrap().name) && *x != format!(".\\{}", config.mode.repository.as_ref().unwrap().name));
     }
     log!(verbose, "Paths with mlc.toml excluded: {:?}", dirs);
 
@@ -26,7 +26,7 @@ pub fn clone(verbose: bool) {
     let mut repo_diff = vec![];
     for repo in repos {
         let name = &repo.name;
-        if !dirs.contains(&format!("./{}", name)) {
+        if !dirs.contains(&format!("./{}", name)) || !dirs.contains(&format!(".\\{}", name)) {
             repo_diff.push(repo);
         }
     }

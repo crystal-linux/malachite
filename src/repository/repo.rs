@@ -43,7 +43,7 @@ pub fn generate(verbose: bool) {
         && config.mode.repository.as_ref().unwrap().signing.on_gen
     {
         // Get a list of all .tar.* files in repository
-        let files = fs::read_dir("./").unwrap();
+        let files = fs::read_dir(".").unwrap();
         for file in files {
             let file = file.unwrap();
             let path = file.path();

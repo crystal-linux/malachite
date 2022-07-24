@@ -1,4 +1,5 @@
 pub enum AppExitCode {
+    #[cfg(target_os = "linux")]
     RunAsRoot = 1,
     BuildInWorkspace = 2,
     PkgNotFound = 3,
