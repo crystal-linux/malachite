@@ -1,8 +1,8 @@
 use colored::Colorize;
+use spinoff::{Color, Spinner, Spinners};
 use std::env;
 use std::process::Command;
 use tabled::Tabled;
-use spinoff::{Spinner, Spinners, Color};
 
 use crate::{crash, info, internal::AppExitCode, log};
 
@@ -116,7 +116,11 @@ pub fn info(verbose: bool) {
     let mut repos = vec![];
     let mut repos_git = vec![];
 
-    let sp = Spinner::new(Spinners::Dots, format!("{}", "Parsing Git Info...".bold()), Color::Green);
+    let sp = Spinner::new(
+        Spinners::Dots,
+        format!("{}", "Parsing Git Info...".bold()),
+        Color::Green,
+    );
     for repo in repos_unparsed {
         // Get name with branch, '/' serving as the delimiter
         let name = if repo.branch.is_some() {
