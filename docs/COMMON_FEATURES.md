@@ -27,10 +27,10 @@ on_gen = false
 
 [repositories]
 repos = [
-  "foo:repo1",
+  "foo:repo1:2",
   "foo:repo2/testing",
   "bar:baz!",
-  "bar:qux/testing!",
+  "bar:qux/testing!:1",
 ]
 
 [repositories.urls]
@@ -86,10 +86,10 @@ facilitate many packages without having to type each url out a million times.
 ```toml
 [repositories]
 repos = [
-  "foo:repo1",
+  "foo:repo1:2",
   "foo:repo2/testing",
   "bar:baz!",
-  "bar:qux/testing!",
+  "bar:qux/testing!:1",
 ]
 
 [repositories.urls]
@@ -108,6 +108,7 @@ The way this works is simple:
 I'm glad you asked!
 - If you want to clone a specific branch, simply use the `/` delimiter. To clone repository `foo` on branch `bar`, use `id:foo/bar`.
 - If you want a specific package to build first, use instances of `!` to set priority. This is explained later in the [Repository Mode](REPOSITORY_MODE.md) page
+- If you want to clone the repository with a specific depth, for example, in the case of a large git repository like `nixpkgs`, you can add a 2nd `:` delimiter and the integer after that will be used as the depth
 
 That's literally it!
 
