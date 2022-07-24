@@ -9,8 +9,9 @@ pub fn clean(verbose: bool) {
         .map(|x| x.unwrap().path().display().to_string())
         .collect::<Vec<String>>();
 
-    // Remove all files/dirs in the current directory, excluding ./mlc.toml
+    // Remove all files/dirs in the current directory, excluding ./mlc.toml and .git
     dirs.retain(|x| *x != "./mlc.toml");
+    dirs.retain(|x| *x != "./.git");
     log!(verbose, "Paths with mlc.toml excluded: {:?}", dirs);
     for dir in dirs {
         std::fs::remove_dir_all(dir).unwrap();

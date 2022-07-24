@@ -8,12 +8,18 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
     log!(verbose, "Config: {:?}", config);
     let all = packages.is_empty();
     log!(verbose, "All: {:?}", all);
-    let sign = if config.mode.repository.signing.enabled && config.mode.repository.signing.on_gen {
+    let sign = if config.mode.repository.as_ref().unwrap().signing.enabled
+        && config.mode.repository.as_ref().unwrap().signing.on_gen
+    {
         false
     } else {
-        config.mode.repository.signing.enabled
+        config.mode.repository.as_ref().unwrap().signing.enabled
     };
-    log!(verbose, "Signing: {:?}", config.mode.repository.signing);
+    log!(
+        verbose,
+        "Signing: {:?}",
+        config.mode.repository.unwrap().signing
+    );
 
     // Get list of repos and subtract exclude
     let mut repos: Vec<Repo> = config.repositories;

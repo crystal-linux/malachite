@@ -10,11 +10,7 @@ struct PullParams {
     no_regen: bool,
 }
 
-fn do_the_pulling(
-    repos: Vec<String>,
-    verbose: bool,
-    params: &PullParams,
-) {
+fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
     for repo in repos {
         // Set root dir to return after each git pull
         let root_dir = env::current_dir().unwrap();
@@ -104,7 +100,11 @@ pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: 
     let smart_pull = config.base.smart_pull;
     log!(verbose, "Smart pull: {}", smart_pull);
     // Read build_on_update from config
-    let build_on_update = config.mode.repository.build_on_update;
+    let build_on_update = if config.mode.repository.is_some() {
+        config.mode.repository.unwrap().build_on_update
+    } else {
+        false
+    };
     log!(verbose, "Build on update: {}", build_on_update);
 
     // Read repos from config
@@ -142,6 +142,6 @@ pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: 
             smart_pull,
             build_on_update,
             no_regen,
-        }
+        },
     );
 }
