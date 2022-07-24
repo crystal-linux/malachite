@@ -25,8 +25,6 @@ enabled = false
 key = ""
 on_gen = false
 
-[mode.workspace]
-
 [repositories]
 repos = [
   "foo:repo1",
