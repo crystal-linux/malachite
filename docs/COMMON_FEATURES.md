@@ -16,14 +16,9 @@ Without further ado, let's take a look at this example config file.
 mode = "workspace"
 smart_pull = true
 
-[mode.repository]
-name = ""
-build_on_update = false
-
-[mode.repository.signing]
-enabled = false
-key = ""
-on_gen = false
+[mode.workspace]
+git_info = true
+colorblind = true
 
 [repositories]
 repos = [
@@ -93,8 +88,8 @@ repos = [
 ]
 
 [repositories.urls]
-foo = "https://example.org/%repo%.git"
-bar = "https://example.org/other/%repo%.git"
+foo = "https://example.org/{}.git"
+bar = "https://example.org/other/{}.git"
 ```
 
 The way this works is simple: 
@@ -108,7 +103,10 @@ The way this works is simple:
 I'm glad you asked!
 - If you want to clone a specific branch, simply use the `/` delimiter. To clone repository `foo` on branch `bar`, use `id:foo/bar`.
 - If you want a specific package to build first, use instances of `!` to set priority. This is explained later in the [Repository Mode](REPOSITORY_MODE.md) page
-- If you want to clone the repository with a specific depth, for example, in the case of a large git repository like `nixpkgs`, you can add a 2nd `:` delimiter and the integer after that will be used as the depth
+
+The last `:` delimiter is entirely optional, and behaves differently depending on the mode:
+- In Repository mode, it defines the desired commit hash/rev/tag to checkout on repository clone
+- In Workspace mode, it defines the desired depth to clone the repository, useful with large git repositories, such as `nixpkgs`.
 
 That's literally it!
 
