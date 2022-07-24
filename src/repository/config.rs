@@ -38,6 +38,7 @@ repos = [
 crs = "https://github.com/crystal-linux/{}"
 aur = "https://aur.archlinux.org/{}"
 "#;
+
 pub fn create(verbose: bool) {
     // Ensure current directory is empty
     if env::current_dir()
