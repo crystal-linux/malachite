@@ -211,14 +211,14 @@ pub fn info(verbose: bool) {
 
     // Print all of the info
     info!("{}", name);
-    info!("Local Repositories: {}", len);
+    info!("Total Repositories: {}", len.to_string().green());
     println!("{}", table);
     if config.mode.workspace.is_some() && config.mode.workspace.as_ref().unwrap().git_info {
         info!(
             "D:  Dirty -  Unstaged Changes \n  \
             Pl: Pull  -  Changes at Remote \n  \
             Ps: Push  -  Unpushed Changes \n  \
-            {}:  Applies, {}: Does Not Apply",
+            {}:  Dirty,   {}: Clean",
             " ".on_red(),
             if config.mode.workspace.unwrap().colorblind {
                 " ".on_bright_blue()
