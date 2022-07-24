@@ -6,6 +6,8 @@ use crate::info;
 use crate::log;
 use crate::parse_cfg;
 
+use colored::Colorize;
+
 #[derive(Debug, Clone)]
 struct PackageFile {
     name: String,
@@ -37,18 +39,19 @@ pub fn prune(verbose: bool) {
     }
     log!(verbose, "Files: {:?}", files);
 
-    // Split files into Vec<PackageFile>, turning name-1.0.0-1-x86_64.tar.gz into PackageFile { name: "name", ver: "1.0.0-1", ext: "x86_64.tar.gz" }
+    // Split files into Vec<PackageFile>, turning package-name-1.0.0-1-x86_64.tar.gz into PackageFile { name: "package-name", ver: "1.0.0-1", ext: "x86_64.tar.gz" }
     let mut packages: Vec<PackageFile> = vec![];
     for file in files {
         // Regex fuckery. Please don't mess with this.
         let re = regex::Regex::new(r"^(.+)(-.+-.+)(-.+\..+\..+\.+..+)$").unwrap();
         let file = file.to_str().unwrap();
         for cap in re.captures_iter(file) {
+            // Collect regex captures
             let name = cap[1].to_string();
             let mut ver = cap[2].to_string();
-            // Remove the leading "-" from the version and ext strings
-            ver.remove(0).to_string();
             let mut ext = cap[3].to_string();
+            // Strip leading - from ver and ext
+            ver.remove(0).to_string();
             ext.remove(0).to_string();
             let package = PackageFile { name, ver, ext };
             log!(verbose, "Package: {:?}", package);
@@ -115,7 +118,10 @@ pub fn prune(verbose: bool) {
     } else {
         info!("Deleted the following packages:");
         for p in &mut packages_to_delete {
-            info!("{}-{}", p.name.replace("./", ""), p.ver);
+            println!(
+                "{}",
+                format!("  {}-{}", p.name.replace("./", ""), p.ver).bold()
+            );
         }
     }
 }
