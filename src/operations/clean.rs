@@ -1,4 +1,4 @@
-use crate::{info, log, crash, internal::AppExitCode};
+use crate::{crash, info, internal::AppExitCode, log};
 
 pub fn clean(verbose: bool, force: bool) {
     info!("Resetting mlc repo, deleting all directories");
@@ -27,7 +27,10 @@ pub fn clean(verbose: bool, force: bool) {
             .unwrap();
         let output = std::string::String::from_utf8(status.stdout).unwrap();
         log!(verbose, "Git status: {}", output);
-        if output.contains("Your branch is up to date with") && !output.contains("Untracked files") && !output.contains("Changes not staged for commit") {
+        if output.contains("Your branch is up to date with")
+            && !output.contains("Untracked files")
+            && !output.contains("Changes not staged for commit")
+        {
             log!(verbose, "Directory {} is clean", dir);
         } else {
             unclean_dirs.push(dir);
@@ -36,12 +39,12 @@ pub fn clean(verbose: bool, force: bool) {
         log!(verbose, "Current directory: {}", root_dir.display());
     }
 
-    if unclean_dirs.len() > 0 && !force{
+    if !unclean_dirs.is_empty() && !force {
         crash!(
             AppExitCode::NotClean,
             "The following directories are not clean: \n   {}\n\
             If you are sure no important changes are staged, run `mlc clean` with the `--force` flag to delete them.",
-            unclean_dirs.iter().map(|x| x.to_string().replace("./", "")).collect::<Vec<String>>().join(", ")
+            unclean_dirs.iter().map(|x| (*x).to_string().replace("./", "")).collect::<Vec<String>>().join(", ")
         );
     }
 
