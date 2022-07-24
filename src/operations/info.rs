@@ -117,7 +117,7 @@ pub fn info(verbose: bool) {
     let mut repos_git = vec![];
 
     let sp = Spinner::new(
-        Spinners::Dots,
+        Spinners::Line,
         format!("{}", "Parsing Git Info...".bold()),
         Color::Green,
     );
