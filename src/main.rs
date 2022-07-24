@@ -7,6 +7,7 @@ use crate::args::{Args, Operation};
 use crate::internal::parse_cfg;
 use crate::internal::AppExitCode;
 
+#[cfg(target_os = "linux")]
 #[global_allocator]
 static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
 

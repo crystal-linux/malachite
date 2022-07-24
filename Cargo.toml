@@ -20,7 +20,6 @@ lto = "fat"
 codegen-units = 1
 
 [dependencies]
-mimalloc = { version = "0.1.29" }
 clap = { version = "3.2.8", features = ["derive", "suggestions"] }
 toml = { version = "0.5.9", default-features = false }
 serde = { version = "1.0.139", default-features = false }
@@ -31,3 +30,6 @@ tabled = { version = "0.8.0", default-features = false, features = ["derive", "c
 crossterm = { version = "0.24.0", default-features = false }
 regex = { version = "1.6.0", default-features = false, features = ["std"] }
 spinoff = { version = "0.4.0", default-features = false }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+mimalloc = { version = "0.1.29" }

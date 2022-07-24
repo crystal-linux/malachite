@@ -3,15 +3,15 @@ use crate::{crash, info, internal::AppExitCode, log};
 pub fn clean(verbose: bool, force: bool) {
     info!("Resetting mlc repo, deleting all directories");
     // Get a vec of all files/dirs in the current directory
-    let dir_paths = std::fs::read_dir("./").unwrap();
+    let dir_paths = std::fs::read_dir(".").unwrap();
     log!(verbose, "Paths: {:?}", dir_paths);
     let mut dirs = dir_paths
         .map(|x| x.unwrap().path().display().to_string())
         .collect::<Vec<String>>();
 
     // Remove mlc.toml and .git from output
-    dirs.retain(|x| *x != "./mlc.toml");
-    dirs.retain(|x| *x != "./.git");
+    dirs.retain(|x| *x != "./mlc.toml" && *x != ".\\mlc.toml");
+    dirs.retain(|x| *x != "./.git" && *x != ".\\.git");
 
     // Enter each directory and check git status
 
@@ -44,7 +44,7 @@ pub fn clean(verbose: bool, force: bool) {
             AppExitCode::NotClean,
             "The following directories are not clean: \n   {}\n\
             If you are sure no important changes are staged, run `mlc clean` with the `--force` flag to delete them.",
-            unclean_dirs.iter().map(|x| (*x).to_string().replace("./", "")).collect::<Vec<String>>().join(", ")
+            unclean_dirs.iter().map(|x| (*x).to_string().replace("./", "").replace(".\\", "")).collect::<Vec<String>>().join(", ")
         );
     }
 
@@ -56,7 +56,7 @@ pub fn clean(verbose: bool, force: bool) {
         "Reset complete, dirs removed: \n  \
         {}",
         dirs.iter()
-            .map(|x| x.replace("./", ""))
+            .map(|x| x.replace("./", "").replace(".\\", ""))
             .collect::<Vec<String>>()
             .join("\n  ")
     );
