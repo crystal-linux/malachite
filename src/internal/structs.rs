@@ -24,8 +24,8 @@ pub struct ConfigBase {
 
 #[derive(Debug, Deserialize)]
 pub struct ConfigMode {
-    pub repository: ConfigModeRepository,
-    pub workspace: ConfigModeWorkspace,
+    pub repository: Option<ConfigModeRepository>,
+    pub workspace: Option<ConfigModeWorkspace>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -43,7 +43,13 @@ pub struct ConfigModeRepositorySigning {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct ConfigModeWorkspace {}
+pub struct ConfigModeWorkspace {
+    pub git_info: bool,
+    pub colorblind: bool,
+    /*  pub backup: bool,
+        pub backup_dir: Option<String>,  TODO: Implement backup
+    */
+}
 
 #[derive(Debug, Deserialize)]
 pub struct ConfigRepositories {

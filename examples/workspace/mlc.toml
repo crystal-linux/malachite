@@ -2,16 +2,9 @@
 mode = "workspace"
 smart_pull = true
 
-[mode.repository]
-name = ""
-build_on_update = false
-
-[mode.repository.signing]
-enabled = false
-key = ""
-on_gen = false
-
 [mode.workspace]
+git_info = true
+colorblind = true
 
 [repositories]
 repos = [

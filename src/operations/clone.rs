@@ -16,7 +16,9 @@ pub fn clone(verbose: bool) {
         .collect::<Vec<String>>();
     dirs.retain(|x| *x != "./mlc.toml");
     dirs.retain(|x| *x != "./out");
-    dirs.retain(|x| *x != format!("./{}", config.mode.repository.name));
+    if config.mode.repository.is_some() {
+        dirs.retain(|x| *x != format!("./{}", config.mode.repository.as_ref().unwrap().name));
+    }
     log!(verbose, "Paths with mlc.toml excluded: {:?}", dirs);
 
     // Creates a vector of the difference between cloned repos and repos defined in config

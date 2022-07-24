@@ -10,7 +10,7 @@ pub fn generate(verbose: bool) {
     log!(verbose, "Config: {:?}", config);
 
     // Get repository name from config
-    let name = config.mode.repository.name;
+    let name = &config.mode.repository.as_ref().unwrap().name;
     log!(verbose, "Name: {}", name);
 
     info!("Generating repository: {}", name);
@@ -39,7 +39,9 @@ pub fn generate(verbose: bool) {
     log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
 
     // Sign all package files in repository if signing and on_gen are true
-    if config.mode.repository.signing.enabled && config.mode.repository.signing.on_gen {
+    if config.mode.repository.as_ref().unwrap().signing.enabled
+        && config.mode.repository.as_ref().unwrap().signing.on_gen
+    {
         // Get a list of all .tar.* files in repository
         let files = fs::read_dir("./").unwrap();
         for file in files {
@@ -52,7 +54,7 @@ pub fn generate(verbose: bool) {
                         "-c",
                         &format!(
                             "gpg --default-key {} --detach-sign {}",
-                            config.mode.repository.signing.key,
+                            config.mode.repository.as_ref().unwrap().signing.key,
                             file.file_name().to_str().unwrap()
                         ),
                     ])

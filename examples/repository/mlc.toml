@@ -11,8 +11,6 @@ enabled = true
 key = "michal@tar.black"
 on_gen = true
 
-[mode.workspace]
-
 [repositories]
 repos = [
 	"crs:malachite/development",
