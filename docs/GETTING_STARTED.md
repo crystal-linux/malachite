@@ -15,21 +15,21 @@ Malachite isn't:
 
 ### With that out of the way
 
-Hi! My name is Michal, I wrote this tool pretty much on my own for [Crystal Linux](https://getcryst.al),
+Hi! My name is Michal, and I wrote this tool pretty much on my own for [Crystal Linux](https://getcryst.al);
 but it is not at all exclusive to Crystal. This tool should and will work on and for any pacman-based
 distribution (so long as it packages all of Malachite's dependencies, of course).
 
-Throughout this tutorial I'll explain each little feature of Malachite in what I hope to be bite-sized and
+Throughout this tutorial, I'll explain each little feature of Malachite in what I hope to be bite-sized and
 programmatic chunks.
 
-Without further ado, let's begin with the first most important question
+Without further ado, let's begin with the first, most important question:
 
 
 ### Modes
 
 What mode are you using malachite in?
 
-Currently malachite supports 2 modes:
+Currently, malachite supports 2 modes:
 
 #### Repository Mode
 - Allows the user to configure and manage a remote (or local) pacman-based package repository

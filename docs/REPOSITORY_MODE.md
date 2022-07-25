@@ -3,7 +3,7 @@ PacManage your repositories in style!
 
 ### Repository Config
 
-As opposed to the rather barren Workspace mode, the Repository mode config is rather fleshed out,
+As opposed to the rather barren Workspace mode, the Repository mode config is rather fleshed out;
 and we have a few options to choose from.
 
 Let's take an example section from a Repository mode config,
@@ -27,7 +27,7 @@ To start with, there are 2 main config keys to Repository mode:
 
 ### Signing
 
-Malachite also supports, and encourages the signing of packages.
+Malachite also supports, and encourages, the signing of packages.
 GPG Signing packages ensures that the user receives exactly what you packaged, without any chance of tampering.
 
 Calling back to the example above, we can see 3 config keys:
