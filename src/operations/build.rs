@@ -120,8 +120,8 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
     if !errored.is_empty() {
         log!(verbose, "Errored packages: \n{:?}", error_strings);
         info!(
-            "The following packages build jobs returned a non-zero exit code: {}",
-            error_strings.join("\n")
+            "The following packages build jobs returned a non-zero exit code: \n  {}",
+            error_strings.join("\n  ")
         );
     }
 }

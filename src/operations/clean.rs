@@ -39,7 +39,7 @@ pub fn clean(verbose: bool, force: bool) {
         log!(verbose, "Current directory: {}", root_dir.display());
     }
 
-    if !unclean_dirs.is_empty() && !force {
+    if !unclean_dirs.is_empty() && !force && crate::parse_cfg(verbose).base.mode == "workspace" {
         crash!(
             AppExitCode::NotClean,
             "The following directories are not clean: \n   {}\n\
@@ -50,7 +50,8 @@ pub fn clean(verbose: bool, force: bool) {
 
     log!(verbose, "Paths with mlc.toml excluded: {:?}", dirs);
     for dir in &dirs {
-        std::fs::remove_dir_all(dir).unwrap();
+        log!(verbose, "Deleting directory: {}", dir);
+        rm_rf::remove(dir).unwrap();
     }
     info!(
         "Reset complete, dirs removed: \n  \
