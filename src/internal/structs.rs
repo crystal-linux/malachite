@@ -38,8 +38,8 @@ pub struct ConfigModeRepository {
 #[derive(Debug, Deserialize)]
 pub struct ConfigModeRepositorySigning {
     pub enabled: bool,
-    pub key: String,
-    pub on_gen: bool,
+    pub key: Option<String>,
+    pub on_gen: Option<bool>,
 }
 
 #[derive(Debug, Deserialize)]

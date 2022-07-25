@@ -40,7 +40,22 @@ pub fn generate(verbose: bool) {
 
     // Sign all package files in repository if signing and on_gen are true
     if config.mode.repository.as_ref().unwrap().signing.enabled
-        && config.mode.repository.as_ref().unwrap().signing.on_gen
+        && config
+            .mode
+            .repository
+            .as_ref()
+            .unwrap()
+            .signing
+            .on_gen
+            .is_some()
+        && config
+            .mode
+            .repository
+            .as_ref()
+            .unwrap()
+            .signing
+            .on_gen
+            .unwrap()
     {
         // Get a list of all .tar.* files in repository
         let files = fs::read_dir(".").unwrap();
@@ -48,18 +63,49 @@ pub fn generate(verbose: bool) {
             // Get file name
             let file = file.unwrap();
             let path = file.path();
+
+            let sign_command = if config
+                .mode
+                .repository
+                .as_ref()
+                .unwrap()
+                .signing
+                .key
+                .is_some()
+                && !config
+                    .mode
+                    .repository
+                    .as_ref()
+                    .unwrap()
+                    .signing
+                    .key
+                    .as_ref()
+                    .unwrap()
+                    .is_empty()
+            {
+                format!(
+                    "gpg --default-key {} --detach-sign {}",
+                    config
+                        .mode
+                        .repository
+                        .as_ref()
+                        .unwrap()
+                        .signing
+                        .key
+                        .as_ref()
+                        .unwrap(),
+                    path.to_str().unwrap()
+                )
+            } else {
+                format!("gpg --detach-sign {}", path.to_str().unwrap())
+            };
+
             // If extension is either .zst or .xz, sign it
             if path.extension().unwrap() == "zst" || path.extension().unwrap() == "xz" {
                 log!(verbose, "Signing {}", path.display());
                 Command::new("bash")
-                    .args(&[
-                        "-c",
-                        &format!(
-                            "gpg --default-key {} --detach-sign {}",
-                            config.mode.repository.as_ref().unwrap().signing.key,
-                            file.file_name().to_str().unwrap()
-                        ),
-                    ])
+                    .arg("-c")
+                    .args(&[&sign_command])
                     .spawn()
                     .unwrap()
                     .wait()
