@@ -24,7 +24,10 @@ build_on_update = false
 enabled = true
 
 [mode.workspace]
-# There are currently no options for workspace mode
+# Whether to show rich git info for repositories
+git_info = true
+# Colorblind mode toggle
+colorblind = false
 
 [repositories]
 # List of repositories formatted as id:name (priority is decided by the ! suffix, and decides package build order)

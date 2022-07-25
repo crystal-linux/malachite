@@ -30,13 +30,6 @@ fn main() {
     log!(verbose, "Exclude: {:?}", exclude);
     log!(verbose, "Verbose: You guess. :)");
 
-    // Parse config
-    let config = parse_cfg(verbose);
-    log!(verbose, "Config: {:?}", config);
-
-    // Get repository mode status
-    let repository = config.base.mode == "repository";
-    log!(verbose, "Repository Mode: {:?}", repository);
 
     // Arg matching
     match args.subcommand.unwrap_or(Operation::Clone) {
@@ -44,6 +37,13 @@ fn main() {
         Operation::Build {
             packages, no_regen, ..
         } => {
+            // Parse config
+            let config = parse_cfg(verbose);
+            log!(verbose, "Config: {:?}", config);
+
+            // Get repository mode status
+            let repository = config.base.mode == "repository";
+            log!(verbose, "Repository Mode: {:?}", repository);
             if !repository {
                 crash!(
                     AppExitCode::BuildInWorkspace,
@@ -56,6 +56,13 @@ fn main() {
             packages, no_regen, ..
         } => operations::pull(packages, exclude, verbose, no_regen),
         Operation::RepoGen => {
+            // Parse config
+            let config = parse_cfg(verbose);
+            log!(verbose, "Config: {:?}", config);
+
+            // Get repository mode status
+            let repository = config.base.mode == "repository";
+            log!(verbose, "Repository Mode: {:?}", repository);
             if !repository {
                 crash!(
                     AppExitCode::BuildInWorkspace,
@@ -66,6 +73,13 @@ fn main() {
         }
         Operation::Config => operations::config(verbose),
         Operation::Prune => {
+            // Parse config
+            let config = parse_cfg(verbose);
+            log!(verbose, "Config: {:?}", config);
+
+            // Get repository mode status
+            let repository = config.base.mode == "repository";
+            log!(verbose, "Repository Mode: {:?}", repository);
             if !repository {
                 crash!(
                     AppExitCode::BuildInWorkspace,
