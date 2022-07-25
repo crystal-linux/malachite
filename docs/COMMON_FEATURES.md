@@ -5,7 +5,7 @@ As[mode]us, shared of between uh… repositories… or something.
 Malachite is fairly fleshed out in Repository mode, and not so much in Workspace mode.
 
 This isn't of course because I'm lazy and hate Workspace mode or anything, there's just not
-a lot *to* add.
+a lot *to add*.
 
 Without further ado, let's take a look at this example config file.
 
