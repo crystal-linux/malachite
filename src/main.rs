@@ -16,6 +16,19 @@ mod internal;
 mod operations;
 mod repository;
 
+fn repository(verbose: bool) -> bool {
+    // Parse config
+    let config = parse_cfg(verbose);
+    log!(verbose, "Config: {:?}", config);
+
+    // Get repository mode status
+    let repository = config.base.mode == "repository";
+    log!(verbose, "Repository Mode: {:?}", repository);
+
+    // Return repository mode status
+    repository
+}
+
 fn main() {
     #[cfg(target_os = "linux")]
     if unsafe { libc::geteuid() } == 0 {
@@ -37,14 +50,7 @@ fn main() {
         Operation::Build {
             packages, no_regen, ..
         } => {
-            // Parse config
-            let config = parse_cfg(verbose);
-            log!(verbose, "Config: {:?}", config);
-
-            // Get repository mode status
-            let repository = config.base.mode == "repository";
-            log!(verbose, "Repository Mode: {:?}", repository);
-            if !repository {
+            if !repository(verbose) {
                 crash!(
                     AppExitCode::BuildInWorkspace,
                     "Cannot build packages in workspace mode"
@@ -56,14 +62,7 @@ fn main() {
             packages, no_regen, ..
         } => operations::pull(packages, exclude, verbose, no_regen),
         Operation::RepoGen => {
-            // Parse config
-            let config = parse_cfg(verbose);
-            log!(verbose, "Config: {:?}", config);
-
-            // Get repository mode status
-            let repository = config.base.mode == "repository";
-            log!(verbose, "Repository Mode: {:?}", repository);
-            if !repository {
+            if !repository(verbose) {
                 crash!(
                     AppExitCode::BuildInWorkspace,
                     "Cannot generate repository in workspace mode"
@@ -73,14 +72,7 @@ fn main() {
         }
         Operation::Config => operations::config(verbose),
         Operation::Prune => {
-            // Parse config
-            let config = parse_cfg(verbose);
-            log!(verbose, "Config: {:?}", config);
-
-            // Get repository mode status
-            let repository = config.base.mode == "repository";
-            log!(verbose, "Repository Mode: {:?}", repository);
-            if !repository {
+            if !repository(verbose) {
                 crash!(
                     AppExitCode::BuildInWorkspace,
                     "Cannot prune packages in workspace mode"
