@@ -1,3 +1,4 @@
+use colored::Colorize;
 use std::env;
 use std::fs;
 use std::path::PathBuf;
@@ -5,8 +6,6 @@ use std::path::PathBuf;
 use crate::info;
 use crate::log;
 use crate::parse_cfg;
-
-use colored::Colorize;
 
 #[derive(Debug, Clone)]
 struct PackageFile {
