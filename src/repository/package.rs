@@ -22,7 +22,7 @@ pub fn build(pkg: &str, sign: bool, verbose: bool) -> i32 {
     // If package directory is not found, crash
     if !Path::exists(pkg.as_ref()) {
         crash!(
-            AppExitCode::PkgNotFound,
+            AppExitCode::PkgsNotFound,
             "Repo for package {} not found, aborting",
             pkg
         );

@@ -63,7 +63,7 @@ pub fn clone(verbose: bool) {
 
             if r.extra.is_some() && config.base.mode == "workspace" {
                 info!(
-                    "Cloning ({} mode): {} at depth: {}",
+                    "Cloning ({} mode): {} with `--depth {}`",
                     config.base.mode,
                     r.name,
                     r.extra.as_ref().unwrap()

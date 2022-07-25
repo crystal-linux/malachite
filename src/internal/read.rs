@@ -9,7 +9,7 @@ pub fn parse_cfg(verbose: bool) -> Config {
     // Crash if mlc.toml doesn't exist
     if !Path::exists("mlc.toml".as_ref()) {
         crash!(
-            AppExitCode::ConfigNotFound,
+            AppExitCode::ConfigParseError,
             "Config file not found (mlc.toml)"
         );
     }
@@ -31,7 +31,7 @@ pub fn parse_cfg(verbose: bool) -> Config {
     // Crash if incorrect mode is set
     if config.base.mode != "workspace" && config.base.mode != "repository" {
         crash!(
-            AppExitCode::InvalidMode,
+            AppExitCode::ConfigParseError,
             "Invalid mode in mlc.toml, must be either \"repository\" or \"workspace\""
         );
     }

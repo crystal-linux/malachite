@@ -68,7 +68,7 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
                 }
             } else {
                 crash!(
-                    AppExitCode::PkgNotFound,
+                    AppExitCode::PkgsNotFound,
                     "Package repo {} not found in in mlc.toml",
                     pkg
                 );
@@ -108,7 +108,7 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
     // If all is not specified, but packages is empty, crash
     if !all && packages.is_empty() {
         log!(verbose, "Packages empty. Crashing");
-        crash!(AppExitCode::NoPkgs, "No packages specified");
+        crash!(AppExitCode::PkgsNotFound, "No packages specified");
     }
 
     // If no_regen is passed, do not generate a repository

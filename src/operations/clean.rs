@@ -45,7 +45,7 @@ pub fn clean(verbose: bool, force: bool) {
 
     if !unclean_dirs.is_empty() && !force && crate::parse_cfg(verbose).base.mode == "workspace" {
         crash!(
-            AppExitCode::NotClean,
+            AppExitCode::RepoNotClean,
             "The following directories are not clean: \n   {}\n\
             If you are sure no important changes are staged, run `mlc clean` with the `--force` flag to delete them.",
             unclean_dirs.iter().map(|x| (*x).to_string().replace("./", "").replace(".\\", "")).collect::<Vec<String>>().join(", ")
