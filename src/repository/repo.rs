@@ -45,8 +45,10 @@ pub fn generate(verbose: bool) {
         // Get a list of all .tar.* files in repository
         let files = fs::read_dir(".").unwrap();
         for file in files {
+            // Get file name
             let file = file.unwrap();
             let path = file.path();
+            // If extension is either .zst or .xz, sign it
             if path.extension().unwrap() == "zst" || path.extension().unwrap() == "xz" {
                 log!(verbose, "Signing {}", path.display());
                 Command::new("bash")

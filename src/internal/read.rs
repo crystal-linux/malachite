@@ -41,7 +41,7 @@ pub fn parse_cfg(verbose: bool) -> Config {
     // Parsing repos from the config file
     for x in config.repositories.repos {
         log!(verbose, "Parsing repo: {:?}", x);
-        // Splits the repo name and index inta a SplitRepo struct
+        // Splits the repo name and index into a SplitRepo struct
         let split: Vec<&str> = x.split(':').collect();
         let split_struct = if split.len() > 2 {
             SplitRepo {
@@ -114,5 +114,6 @@ pub fn parse_cfg(verbose: bool) -> Config {
         repositories: expanded_repos,
     };
     log!(verbose, "Config: {:?}", conf);
+
     conf
 }

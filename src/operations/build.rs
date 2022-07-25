@@ -1,13 +1,16 @@
 use crate::internal::structs::{ErroredPackage, Repo};
 use crate::internal::AppExitCode;
-use crate::{crash, info, internal, log, repository};
+use crate::{crash, info, log, repository};
 
 pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose: bool) {
     // Read config struct from mlc.toml
-    let config = internal::parse_cfg(verbose);
+    let config = crate::internal::parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
+    // Check if any packages were passed, if not, imply all
     let all = packages.is_empty();
     log!(verbose, "All: {:?}", all);
+
+    // Parse whether to sign on build or not
     let sign = if config.mode.repository.as_ref().unwrap().signing.enabled
         && config.mode.repository.as_ref().unwrap().signing.on_gen
     {
@@ -47,6 +50,7 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
             if repos.iter().map(|x| x.name.clone()).any(|x| x == *pkg) {
                 // Otherwise, build
                 log!(verbose, "Building {}", pkg);
+
                 let code = repository::build(pkg, sign, verbose);
                 log!(
                     verbose,
@@ -54,6 +58,7 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
                     pkg,
                     code
                 );
+
                 if code != 0 {
                     let error = ErroredPackage {
                         name: pkg.to_string(),
@@ -81,6 +86,7 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
         log!(verbose, "Sorted: {:?}", repos);
         for pkg in repos {
             log!(verbose, "Building {}", pkg.name);
+
             let code = repository::build(&pkg.name, sign, verbose);
             log!(
                 verbose,
@@ -88,6 +94,7 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
                 pkg.name,
                 code
             );
+
             if code != 0 {
                 let error = ErroredPackage {
                     name: pkg.name,

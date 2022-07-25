@@ -94,9 +94,11 @@ pub fn git_status(verbose: bool, repo: &str, colorblind: bool) -> String {
 
 pub fn info(verbose: bool) {
     log!(verbose, "Showing Info");
+    // Parse config from mlc.toml
     let config = crate::internal::parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
 
+    // Check for git_info
     let git_info = if config.mode.workspace.is_some() {
         config.mode.workspace.as_ref().unwrap().git_info
     } else {
@@ -104,6 +106,7 @@ pub fn info(verbose: bool) {
     };
     log!(verbose, "Git info: {}", git_info);
 
+    // Check for colorblind mode
     let colorblind = if config.mode.workspace.is_some() {
         config.mode.workspace.as_ref().unwrap().colorblind
     } else {
@@ -116,11 +119,14 @@ pub fn info(verbose: bool) {
     let mut repos = vec![];
     let mut repos_git = vec![];
 
+    // Start the spinner
     let sp = Spinner::new(
         Spinners::Line,
         format!("{}", "Parsing Git Info...".bold()),
         Color::Green,
     );
+
+    // Iterate over all repositories
     for repo in repos_unparsed {
         // Get name with branch, '/' serving as the delimiter
         let name = if repo.branch.is_some() {
@@ -200,7 +206,7 @@ pub fn info(verbose: bool) {
         internal_name
     );
 
-    // Get terminal width
+    // Get terminal width for table formatting
     let width = match crossterm::terminal::size() {
         Ok((w, _)) => w,
         Err(_) => 80,
