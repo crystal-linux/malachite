@@ -34,6 +34,7 @@ Malachite is a simple yet useful workspace and local repository management tool,
 | Update local repos/PKGBUILDs                           | mlc pull/update [all if left empty]       |
 | Create and/or open config file                         | mlc conf                                  |
 | Initialises repo/workspace based on config in mlc.toml | mlc clone/init                            |
+| Displays information about a Malachite repository      | mlc info/status                           |
 
 ### Pacman Repository Creation
 
