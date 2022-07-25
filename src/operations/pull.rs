@@ -23,10 +23,10 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
 
         let mut packages_to_rebuild: Vec<String> = vec![];
 
-        // Pull
+        // Pull logic
         log!(verbose, "Pulling");
         if params.smart_pull {
-            // Just update the remote
+            // Update the remote
             log!(verbose, "Smart pull");
             Command::new("git")
                 .args(&["remote", "update"])
@@ -80,10 +80,12 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
             env::current_dir().unwrap()
         );
 
+        // Rebuild packages if necessary
         if !packages_to_rebuild.is_empty() && params.build_on_update {
             info!("Rebuilding packages: {}", &packages_to_rebuild.join(", "));
             log!(verbose, "Rebuilding packages: {:?}", &packages_to_rebuild);
 
+            // Push to build
             crate::operations::build(&packages_to_rebuild, vec![], params.no_regen, verbose);
         }
     }
@@ -93,12 +95,15 @@ pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: 
     // Read config file
     let config = crate::parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
+
     // If no packages are specified, imply all
     let all = packages.is_empty();
     log!(verbose, "All: {}", all);
+
     // Read smart_pull from config
     let smart_pull = config.base.smart_pull;
     log!(verbose, "Smart pull: {}", smart_pull);
+
     // Read build_on_update from config
     let build_on_update = if config.mode.repository.is_some() {
         config.mode.repository.unwrap().build_on_update

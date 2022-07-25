@@ -8,6 +8,7 @@ use crate::{crash, log};
 pub fn build(pkg: &str, sign: bool, verbose: bool) -> i32 {
     log!(verbose, "Building {}", pkg);
     log!(verbose, "Signing: {}", sign);
+
     // Set root dir to return after build
     let dir = env::current_dir().unwrap();
     log!(verbose, "Root dir: {:?}", dir);

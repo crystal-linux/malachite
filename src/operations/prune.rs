@@ -42,17 +42,23 @@ pub fn prune(verbose: bool) {
     // Split files into Vec<PackageFile>, turning package-name-1.0.0-1-x86_64.tar.gz into PackageFile { name: "package-name", ver: "1.0.0-1", ext: "x86_64.tar.gz" }
     let mut packages: Vec<PackageFile> = vec![];
     for file in files {
-        // Regex fuckery. Please don't mess with this.
+        // Regex, splits package-name-1.0.0-1-x86_64.tar.gz into 3 groups: package-name, -1.0.0-1, -x86_64.tar.gz
         let re = regex::Regex::new(r"^(.+)(-.+-.+)(-.+\..+\..+\.+..+)$").unwrap();
+
+        // Get file name to string
         let file = file.to_str().unwrap();
+
+        // Match file name against regex
         for cap in re.captures_iter(file) {
             // Collect regex captures
             let name = cap[1].to_string();
             let mut ver = cap[2].to_string();
             let mut ext = cap[3].to_string();
+
             // Strip leading - from ver and ext
             ver.remove(0).to_string();
             ext.remove(0).to_string();
+
             let package = PackageFile { name, ver, ext };
             log!(verbose, "Package: {:?}", package);
             packages.push(package);
@@ -65,6 +71,7 @@ pub fn prune(verbose: bool) {
         log!(verbose, "Sorting Package: {:?}", package);
         let name = &package.name;
         let mut found = false;
+        // Check if name is already present in packages_by_name
         for p in &mut packages_by_name {
             if &p[0].name == name {
                 log!(verbose, "Found {}", name);
@@ -72,6 +79,7 @@ pub fn prune(verbose: bool) {
                 p.push(package);
             }
         }
+        // If not, create a new vector and push to it
         if !found {
             log!(verbose, "Creating {}", name);
             packages_by_name.push(vec![package]);
@@ -84,7 +92,7 @@ pub fn prune(verbose: bool) {
         p.sort_by(|a, b| b.ver.cmp(&a.ver));
     }
 
-    // Pushes all but the 4 most recent versions of each package into a new Vector of PackageFiles
+    // Pushes all but the 3 most recent versions of each package into a new Vector of PackageFiles
     let mut packages_to_delete: Vec<PackageFile> = vec![];
     for p in &packages_by_name {
         let mut to_delete = vec![];

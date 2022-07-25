@@ -7,6 +7,7 @@ pub fn clone(verbose: bool) {
     // Read config struct from mlc.toml
     let config = crate::internal::parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
+    // Parse repositories from config
     let repos = &config.repositories;
     log!(verbose, "Repos: {:?}", repos);
 
@@ -15,13 +16,18 @@ pub fn clone(verbose: bool) {
     let mut dirs = dir_paths
         .map(|x| x.unwrap().path().display().to_string())
         .collect::<Vec<String>>();
+
+    // Remove mlc.toml and .git from output
     dirs.retain(|x| *x != "./mlc.toml" && *x != ".\\mlc.toml");
-    dirs.retain(|x| *x != "./out" && *x != ".\\out");
+    dirs.retain(|x| *x != "./.git" && *x != ".\\.git");
+
+    // If mode is repository, also exclude repository mode directories
     if config.mode.repository.is_some() {
         dirs.retain(|x| {
             *x != format!("./{}", config.mode.repository.as_ref().unwrap().name)
                 && *x != format!(".\\{}", config.mode.repository.as_ref().unwrap().name)
         });
+        dirs.retain(|x| *x != "./out" && *x != ".\\out");
     }
     log!(verbose, "Paths with mlc.toml excluded: {:?}", dirs);
 
@@ -29,6 +35,7 @@ pub fn clone(verbose: bool) {
     let mut repo_diff = vec![];
     for repo in repos {
         let name = &repo.name;
+
         if !dirs.contains(&format!("./{}", name)) && !dirs.contains(&format!(".\\{}", name)) {
             repo_diff.push(repo);
         }
@@ -53,6 +60,7 @@ pub fn clone(verbose: bool) {
         for r in repo_diff {
             log!(verbose, "Depth: {:?}", r.extra);
             log!(verbose, "Cloning {}", r.name);
+
             if r.extra.is_some() && config.base.mode == "workspace" {
                 info!(
                     "Cloning ({} mode): {} at depth: {}",

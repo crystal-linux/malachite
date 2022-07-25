@@ -43,7 +43,6 @@ fn main() {
     log!(verbose, "Exclude: {:?}", exclude);
     log!(verbose, "Verbose: You guess. :)");
 
-
     // Arg matching
     match args.subcommand.unwrap_or(Operation::Clone) {
         Operation::Clone => operations::clone(verbose),

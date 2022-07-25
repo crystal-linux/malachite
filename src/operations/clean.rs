@@ -13,20 +13,23 @@ pub fn clean(verbose: bool, force: bool) {
     dirs.retain(|x| *x != "./mlc.toml" && *x != ".\\mlc.toml");
     dirs.retain(|x| *x != "./.git" && *x != ".\\.git");
 
-    // Enter each directory and check git status
-
     let mut unclean_dirs = vec![];
 
+    // Enter each directory and check git status
     for dir in &dirs {
         let root_dir = std::env::current_dir().unwrap();
+
         log!(verbose, "Entering directory: {}", dir);
         std::env::set_current_dir(dir).unwrap();
+
         let status = std::process::Command::new("git")
             .arg("status")
             .output()
             .unwrap();
+
         let output = std::string::String::from_utf8(status.stdout).unwrap();
         log!(verbose, "Git status: {}", output);
+
         if output.contains("Your branch is up to date with")
             && !output.contains("Untracked files")
             && !output.contains("Changes not staged for commit")
@@ -35,6 +38,7 @@ pub fn clean(verbose: bool, force: bool) {
         } else {
             unclean_dirs.push(dir);
         }
+
         std::env::set_current_dir(&root_dir).unwrap();
         log!(verbose, "Current directory: {}", root_dir.display());
     }
