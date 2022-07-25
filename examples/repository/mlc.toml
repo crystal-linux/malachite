@@ -16,9 +16,11 @@ repos = [
 	"crs:malachite/development:0a5bdc9", # Note, in this example, these two
 	"mic:apod:v.1.1.2",                  # will fail to build.
 	"pkg:pfetch!",
+	"nms:rpass"                          # This too
 ]
 
 [repositories.urls]
 crs = "https://github.com/crystal-linux/{}"
 pkg = "https://github.com/crystal-linux/pkgbuild.{}"
 mic = "https://git.tar.black/michal/{}"
+nms = "https://github.com/not-my-segfault/{}"

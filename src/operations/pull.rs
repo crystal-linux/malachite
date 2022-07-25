@@ -138,8 +138,38 @@ pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: 
         crash!(AppExitCode::NoPkgs, "No packages specified");
     }
 
-    // Pull!
+    // Sort repos_applicable by priority
+    repos_applicable.sort_by(|a, b| {
+        config
+            .repositories
+            .iter()
+            .find(|x| x.name == *a)
+            .unwrap()
+            .priority
+            .cmp(
+                &config
+                    .repositories
+                    .iter()
+                    .find(|x| x.name == *b)
+                    .unwrap()
+                    .priority,
+            )
+    });
+
     log!(verbose, "Pulling {:?}", repos_applicable);
+
+    // If the directories specified in repos_applicable do not exist, crash
+    for repo in &repos_applicable {
+        if !std::path::Path::new(repo).exists() {
+            crash!(
+                AppExitCode::NoPkgs,
+                "Package {} does not exist, have you run `mlc clone/init`?",
+                repo
+            );
+        }
+    }
+
+    // Pull!
     do_the_pulling(
         repos_applicable,
         verbose,

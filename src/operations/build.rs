@@ -10,19 +10,19 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
     let all = packages.is_empty();
     log!(verbose, "All: {:?}", all);
 
+    // Read signing
+    let signing = config.mode.repository.as_ref().unwrap().signing.enabled;
+
+    // Read on_gen
+    let on_gen = config.mode.repository.as_ref().unwrap().signing.on_gen;
+
     // Parse whether to sign on build or not
-    let sign = if config.mode.repository.as_ref().unwrap().signing.enabled
-        && config.mode.repository.as_ref().unwrap().signing.on_gen
-    {
+    let sign = if signing && on_gen.is_some() && on_gen.unwrap() {
         false
     } else {
-        config.mode.repository.as_ref().unwrap().signing.enabled
+        signing
     };
-    log!(
-        verbose,
-        "Signing: {:?}",
-        config.mode.repository.unwrap().signing
-    );
+    log!(verbose, "Signing: {:?}", sign);
 
     // Get list of repos and subtract exclude
     let mut repos: Vec<Repo> = config.repositories;
@@ -130,5 +130,11 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
             "The following packages build jobs returned a non-zero exit code: \n  {}",
             error_strings.join("\n  ")
         );
+        info!("Please check `man 8 makepkg` for more information");
+        // Check if code 63 appeared at all
+        if errored.iter().any(|x| x.code == 63) {
+            log!(verbose, "Code 63 found");
+            info!("Note: Code 63 is an internal Malachite exit code, and specifies that no PKGBUILD was found.");
+        }
     }
 }

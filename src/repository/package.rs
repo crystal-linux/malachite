@@ -32,6 +32,13 @@ pub fn build(pkg: &str, sign: bool, verbose: bool) -> i32 {
     env::set_current_dir(pkg).unwrap();
     log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
 
+    // If PKGBUILD is not found, return 63 and break
+    if !Path::exists("PKGBUILD".as_ref()) {
+        env::set_current_dir(&dir).unwrap();
+        log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
+        return 63;
+    }
+
     // Build each package
     let a = Command::new("makepkg")
         .args(&[
