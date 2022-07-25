@@ -120,7 +120,12 @@ pub fn prune(verbose: bool) {
         for p in &mut packages_to_delete {
             println!(
                 "{}",
-                format!("  {}-{}", p.name.replace("./", "").replace(".\\", ""), p.ver).bold()
+                format!(
+                    "  {}-{}",
+                    p.name.replace("./", "").replace(".\\", ""),
+                    p.ver
+                )
+                .bold()
             );
         }
     }
