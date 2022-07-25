@@ -29,7 +29,7 @@ pub fn clone(verbose: bool) {
     let mut repo_diff = vec![];
     for repo in repos {
         let name = &repo.name;
-        if !dirs.contains(&format!("./{}", name)) || !dirs.contains(&format!(".\\{}", name)) {
+        if !dirs.contains(&format!("./{}", name)) && !dirs.contains(&format!(".\\{}", name)) {
             repo_diff.push(repo);
         }
     }
