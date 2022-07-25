@@ -29,8 +29,8 @@ repos = [
 ]
 
 [repositories.urls]
-foo = "https://example.org/%repo%.git"
-bar = "https://example.org/other/%repo%.git"
+foo = "https://example.org/{}.git"
+bar = "https://example.org/other/{}.git"
 ```
 
 Now, this is going to look really confusing at first, but bear with me. 
