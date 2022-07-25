@@ -9,9 +9,21 @@ pub fn generate(verbose: bool) {
     let config = parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
 
+    // Get signing from config
+    let signing = &config.mode.repository.as_ref().unwrap().signing.enabled;
+    log!(verbose, "Signing: {:?}", signing);
+
     // Get repository name from config
     let name = &config.mode.repository.as_ref().unwrap().name;
     log!(verbose, "Name: {}", name);
+
+    // Read on_gen from config
+    let on_gen = &config.mode.repository.as_ref().unwrap().signing.on_gen;
+    log!(verbose, "On gen: {:?}", on_gen);
+
+    // Read key from config
+    let key = &config.mode.repository.as_ref().unwrap().signing.key;
+    log!(verbose, "Key: {:?}", key);
 
     info!("Generating repository: {}", name);
 
@@ -39,61 +51,19 @@ pub fn generate(verbose: bool) {
     log!(verbose, "Current dir: {:?}", env::current_dir().unwrap());
 
     // Sign all package files in repository if signing and on_gen are true
-    if config.mode.repository.as_ref().unwrap().signing.enabled
-        && config
-            .mode
-            .repository
-            .as_ref()
-            .unwrap()
-            .signing
-            .on_gen
-            .is_some()
-        && config
-            .mode
-            .repository
-            .as_ref()
-            .unwrap()
-            .signing
-            .on_gen
-            .unwrap()
-    {
+    if *signing && on_gen.is_some() && on_gen.unwrap() {
         // Get a list of all .tar.* files in repository
         let files = fs::read_dir(".").unwrap();
+
         for file in files {
             // Get file name
             let file = file.unwrap();
             let path = file.path();
 
-            let sign_command = if config
-                .mode
-                .repository
-                .as_ref()
-                .unwrap()
-                .signing
-                .key
-                .is_some()
-                && !config
-                    .mode
-                    .repository
-                    .as_ref()
-                    .unwrap()
-                    .signing
-                    .key
-                    .as_ref()
-                    .unwrap()
-                    .is_empty()
-            {
+            let sign_command = if key.is_some() && !key.as_ref().unwrap().is_empty() {
                 format!(
                     "gpg --default-key {} --detach-sign {}",
-                    config
-                        .mode
-                        .repository
-                        .as_ref()
-                        .unwrap()
-                        .signing
-                        .key
-                        .as_ref()
-                        .unwrap(),
+                    key.as_ref().unwrap(),
                     path.to_str().unwrap()
                 )
             } else {
@@ -135,7 +105,7 @@ pub fn generate(verbose: bool) {
     // This should never happen, crash and burn if it does
     if zst.success() && xz.success() {
         crash!(
-            AppExitCode::InvalidRepo,
+            AppExitCode::RepoParseError,
             "Both .tar.zst and .tar.xz files found in repository. You've done something wrong. Aborting"
         );
     }
@@ -147,7 +117,7 @@ pub fn generate(verbose: bool) {
         true
     } else {
         crash!(
-            AppExitCode::NoPkgs,
+            AppExitCode::PkgsNotFound,
             "No .zst or .xz packages found in repository"
         );
         // This should theoretically never be reached, but let's just give the compiler what it wants

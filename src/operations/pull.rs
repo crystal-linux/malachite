@@ -135,7 +135,7 @@ pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: 
 
     // If all is not specified and packages is empty, crash
     if repos_applicable.is_empty() {
-        crash!(AppExitCode::NoPkgs, "No packages specified");
+        crash!(AppExitCode::PkgsNotFound, "No packages specified");
     }
 
     // Sort repos_applicable by priority
@@ -158,14 +158,15 @@ pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: 
 
     log!(verbose, "Pulling {:?}", repos_applicable);
 
-    // If the directories specified in repos_applicable do not exist, crash
+    // If any repos are not in the config, run a clone
     for repo in &repos_applicable {
         if !std::path::Path::new(repo).exists() {
-            crash!(
-                AppExitCode::NoPkgs,
-                "Package {} does not exist, have you run `mlc clone/init`?",
+            info!(
+                "Repo {} does not exist, ensuring all repos are cloned",
                 repo
             );
+            crate::operations::clone(verbose);
+            break;
         }
     }
 

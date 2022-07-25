@@ -51,7 +51,7 @@ fn main() {
         } => {
             if !repository(verbose) {
                 crash!(
-                    AppExitCode::BuildInWorkspace,
+                    AppExitCode::ConfigParseError,
                     "Cannot build packages in workspace mode"
                 );
             }
@@ -63,7 +63,7 @@ fn main() {
         Operation::RepoGen => {
             if !repository(verbose) {
                 crash!(
-                    AppExitCode::BuildInWorkspace,
+                    AppExitCode::ConfigParseError,
                     "Cannot generate repository in workspace mode"
                 );
             }
@@ -73,7 +73,7 @@ fn main() {
         Operation::Prune => {
             if !repository(verbose) {
                 crash!(
-                    AppExitCode::BuildInWorkspace,
+                    AppExitCode::ConfigParseError,
                     "Cannot prune packages in workspace mode"
                 );
             }
