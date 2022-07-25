@@ -18,7 +18,10 @@ pub fn clone(verbose: bool) {
     dirs.retain(|x| *x != "./mlc.toml" && *x != ".\\mlc.toml");
     dirs.retain(|x| *x != "./out" && *x != ".\\out");
     if config.mode.repository.is_some() {
-        dirs.retain(|x| *x != format!("./{}", config.mode.repository.as_ref().unwrap().name) && *x != format!(".\\{}", config.mode.repository.as_ref().unwrap().name));
+        dirs.retain(|x| {
+            *x != format!("./{}", config.mode.repository.as_ref().unwrap().name)
+                && *x != format!(".\\{}", config.mode.repository.as_ref().unwrap().name)
+        });
     }
     log!(verbose, "Paths with mlc.toml excluded: {:?}", dirs);
 
