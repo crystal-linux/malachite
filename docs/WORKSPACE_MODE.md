@@ -24,7 +24,7 @@ The key for the values is as follows:
 
 These will be typically displayed in either Green (Clean) or Red (Dirty)
 
-However, if `colorblind` is set to true, the colors will instead be set to Blue (Clean) or Dark Red (Dirty), to be more discernible to colorblind users
+However, if `colorblind` is set to true, the colors will instead be set to Blue (Clean) or Dark Red (Dirty), to be more discernible to colorblind users.
 
 ---
 

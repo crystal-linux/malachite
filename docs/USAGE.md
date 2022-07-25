@@ -24,8 +24,8 @@ Work it harder, make it better!
 
 | AppExitCode (named Enum) | Exit code (i32) | Error Description                                                                                      |
 |--------------------------|-----------------|--------------------------------------------------------------------------------------------------------|
-| `RunAsRoot`              | `1`             | Malachite was ran as root. This is highly discouraged. So highly, in fact, that it will refuse to run. |
-| `BuildInWorkspace`       | `2`             | Malachite was ran in Workspace mode, but a Repository-mode-specific operation was supplied             |
+| `RunAsRoot`              | `1`             | Malachite was run as root. This is highly discouraged. So highly, in fact, that it will refuse to run. |
+| `BuildInWorkspace`       | `2`             | Malachite was run in Workspace mode, but a Repository-mode-specific operation was supplied             |
 | `PkgNotFound`            | `3`             | A build was attempted for a package that does not exist                                                |
 | `InvalidMode`            | `4`             | Malachite was launched in a mode other than `workspace` or `repository`                                |
 | `DirNotEmpty`            | `5`             | The creation of a Malachite repository was attempted in a non-empty directory                          |
