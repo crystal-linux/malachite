@@ -103,9 +103,9 @@ pub fn clone(verbose: bool) {
                 // Create an empty directory with repo.name and enter it
                 let root_dir = env::current_dir().unwrap();
 
-                // Git clone the repo with the `-n` flag to not immediately checkout the files
+                // Git clone the repo
                 Command::new("git")
-                    .args(&["clone", &r.url, &r.name, "-n"])
+                    .args(&["clone", &r.url, &r.name])
                     .args(if r.branch.is_some() {
                         vec!["-b", r.branch.as_ref().unwrap()]
                     } else {
@@ -122,14 +122,7 @@ pub fn clone(verbose: bool) {
                 // Git checkout the PKGBUILD from the hash
                 if r.extra.is_some() {
                     Command::new("git")
-                        .args(&["checkout", r.extra.as_ref().unwrap(), "PKGBUILD"])
-                        .spawn()
-                        .unwrap()
-                        .wait()
-                        .unwrap();
-                } else {
-                    Command::new("git")
-                        .args(&["checkout", "HEAD", "PKGBUILD"])
+                        .args(&["checkout", r.extra.as_ref().unwrap()])
                         .spawn()
                         .unwrap()
                         .wait()
