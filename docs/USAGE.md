@@ -25,15 +25,8 @@ Work it harder, make it better!
 | AppExitCode (named Enum) | Exit code (i32) | Error Description                                                                                      |
 |--------------------------|-----------------|--------------------------------------------------------------------------------------------------------|
 | `RunAsRoot`              | `1`             | Malachite was run as root. This is highly discouraged. So highly, in fact, that it will refuse to run. |
-| `BuildInWorkspace`       | `2`             | Malachite was run in Workspace mode, but a Repository-mode-specific operation was supplied             |
-| `PkgNotFound`            | `3`             | A build was attempted for a package that does not exist                                                |
-| `InvalidMode`            | `4`             | Malachite was launched in a mode other than `workspace` or `repository`                                |
-| `DirNotEmpty`            | `5`             | The creation of a Malachite repository was attempted in a non-empty directory                          |
-| `ConfigNotFound`         | `6`             | The default config file (`./mlc.toml`) was not found                                                   |
-| `NoPkgs`                 | `7`             | Somehow, no packages were supplied to/found in the relevant operation                                  |
-| `ConfigParseError`       | `8`             | The config file could not be parsed                                                                    |
-| `InvalidRepo`            | `9`             | The generated repository somehow contains no packages                                                  |
-
-
-
-
+| `PkgsNotFound`           | `2`             | No packages were specified/found for the desired operation                                             |
+| `DirNotEmpty`            | `3`             | The creation of a Malachite repository was attempted in a non-empty directory                          |
+| `ConfigParseError`       | `4`             | The config file could not be parsed                                                                    |
+| `RepoParseError`         | `5`             | The repository info could not be parsed                                                                |
+| `RepoNotClean`           | `6`             | The git repository is not clean and cannot be removed without `--force`                                |
