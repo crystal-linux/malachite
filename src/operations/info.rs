@@ -126,12 +126,14 @@ pub fn info(verbose: bool) {
     // This helps speed up the operation when, for example, you have a lot of repositories and you store your SSH key as a subkey of your GPG key on a yubikey
     // This took my `mlc info` time down from 17s to 8s (i have the above described setup)
     let mut bash_script = String::new();
-    bash_script.push_str("\n\
-    #!/usr/bin/env bash\n\
-    \n\
-    # This script will run `git remote update` in all repositories\n\
-    pull() { cd $1; git remote update; cd -; }\n\
-    \n");
+    bash_script.push_str(
+        "\n\
+        #!/usr/bin/env bash\n\
+        \n\
+        # This script will run `git remote update` in all repositories\n\
+        pull() { cd $1; git remote update; cd -; }\n\
+        \n",
+    );
     for repo in &repos_unparsed {
         writeln!(bash_script, "pull {} &", repo.name).unwrap();
     }
@@ -140,7 +142,11 @@ pub fn info(verbose: bool) {
     log!(verbose, "Bash script: {}", bash_script);
 
     // Run the bash script
-    Command::new("bash").arg("-c").arg(bash_script).output().unwrap();
+    Command::new("bash")
+        .arg("-c")
+        .arg(bash_script)
+        .output()
+        .unwrap();
 
     // Iterate over all repositories
     for repo in repos_unparsed {
