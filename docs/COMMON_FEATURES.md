@@ -1,5 +1,5 @@
 # Common Features Between Modes
-As[mode]us, shared of between uh… repositories… or something.
+As [mode]us, shared of between uh… repositories… or something.
 
 ### What you need to know
 Malachite is fairly fleshed out in Repository mode, and not so much in Workspace mode.
