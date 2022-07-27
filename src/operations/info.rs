@@ -115,38 +115,50 @@ pub fn info(verbose: bool) {
     let mut repos = vec![];
     let mut repos_git = vec![];
 
-    // Start the spinner
-    let sp = Spinner::new(
-        Spinners::Line,
-        format!("{}", "Parsing Git Info...".bold()),
-        Color::Green,
-    );
+    if git_info {
+        // Start the spinner
+        let sp = Spinner::new(
+            Spinners::Line,
+            format!("{}", "Parsing Git Info...".bold()),
+            Color::Green,
+        );
 
-    // Construct bash script to run git remote upgrade on all repos asynchronously
-    // This helps speed up the operation when, for example, you have a lot of repositories and you store your SSH key as a subkey of your GPG key on a yubikey
-    // This took my `mlc info` time down from 17s to 8s (i have the above described setup)
-    let mut bash_script = String::new();
-    bash_script.push_str(
-        "\n\
+        // Construct bash script to run git remote upgrade on all repos asynchronously
+        // This helps speed up the operation when, for example, you have a lot of repositories and you store your SSH key as a subkey of your GPG key on a yubikey
+        // This took my `mlc info` time down from 17s to 8s (i have the above described setup)
+        let mut bash_script = String::new();
+        bash_script.push_str(
+            "\n\
         #!/usr/bin/env bash\n\
         \n\
         # This script will run `git remote update` in all repositories\n\
         pull() { cd $1; git remote update; cd -; }\n\
-        \n",
-    );
-    for repo in &repos_unparsed {
-        writeln!(bash_script, "pull {} &", repo.name).unwrap();
+        \n"
+        );
+        for repo in &repos_unparsed {
+            writeln!(bash_script, "pull {} &", repo.name).unwrap();
+        }
+        bash_script.push_str("wait\n");
+
+        log!(verbose, "Bash script: {}", bash_script);
+
+        // Run the bash script
+        Command::new("bash")
+            .arg("-c")
+            .arg(bash_script)
+            .output()
+            .unwrap();
+
+        // Because spinoff requires &'static str, we need to Box these in the heap and then leak them to be able to format the spinner
+        let symbol = Box::new(format!("{}", "✔".bold().green()));
+        let done = Box::new(format!("{}", "Done!".bold()));
+
+        let symbol: &'static str = Box::leak(symbol);
+        let done: &'static str = Box::leak(done);
+
+        sp.stop_and_persist(symbol, done);
+        log!(verbose, "Repos: {:?}", repos);
     }
-    bash_script.push_str("wait\n");
-
-    log!(verbose, "Bash script: {}", bash_script);
-
-    // Run the bash script
-    Command::new("bash")
-        .arg("-c")
-        .arg(bash_script)
-        .output()
-        .unwrap();
 
     // Iterate over all repositories
     for repo in repos_unparsed {
@@ -186,16 +198,6 @@ pub fn info(verbose: bool) {
             });
         }
     }
-
-    // Because spinoff requires &'static str, we need to Box these in the heap and then leak them to be able to format the spinner
-    let symbol = Box::new(format!("{}", "✔".bold().green()));
-    let done = Box::new(format!("{}", "Done!".bold()));
-
-    let symbol: &'static str = Box::leak(symbol);
-    let done: &'static str = Box::leak(done);
-
-    sp.stop_and_persist(symbol, done);
-    log!(verbose, "Repos: {:?}", repos);
 
     // Sort by priority
     repos.sort_by(|a, b| b.priority.cmp(&a.priority));
