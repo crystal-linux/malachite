@@ -161,14 +161,8 @@ pub fn info(verbose: bool) {
             .output()
             .unwrap();
 
-        // Because spinoff requires &'static str, we need to Box these in the heap and then leak them to be able to format the spinner
-        let symbol = Box::new(format!("{}", "✔".bold().green()));
-        let done = Box::new(format!("{}", "Done!".bold()));
-
-        let symbol: &'static str = Box::leak(symbol);
-        let done: &'static str = Box::leak(done);
-
-        sp.stop_and_persist(symbol, done);
+        // Stop the spinner with a success message
+        sp.success("Done!");
         log!(verbose, "Repos: {:?}", repos);
     }
 
