@@ -2,6 +2,7 @@ use colored::Colorize;
 use spinoff::{Color, Spinner, Spinners};
 use std::env;
 use std::fmt::Write;
+use std::path::Path;
 use std::process::Command;
 use tabled::Tabled;
 
@@ -116,6 +117,17 @@ pub fn info(verbose: bool) {
     let mut repos_git = vec![];
 
     if git_info {
+        // Crash early if directories are not found for git_info
+        for repo in &repos_unparsed {
+            if !Path::new(&repo.name).exists() {
+                crash!(
+                    AppExitCode::RepoParseError,
+                    "Failed to check directory {} for Git info, have you initialized the repo?",
+                    repo.name,
+                );
+            };
+        }
+
         // Start the spinner
         let sp = Spinner::new(
             Spinners::Line,
@@ -133,7 +145,7 @@ pub fn info(verbose: bool) {
         \n\
         # This script will run `git remote update` in all repositories\n\
         pull() { cd $1; git remote update; cd -; }\n\
-        \n"
+        \n",
         );
         for repo in &repos_unparsed {
             writeln!(bash_script, "pull {} &", repo.name).unwrap();
