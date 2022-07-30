@@ -162,7 +162,7 @@ pub fn info(verbose: bool) {
             .unwrap();
 
         // Stop the spinner with a success message
-        sp.success("Done!");
+        sp.success(&"Done!".bold());
         log!(verbose, "Repos: {:?}", repos);
     }
 
