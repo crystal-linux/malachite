@@ -485,9 +485,9 @@ checksum = "2fd0db749597d91ff862fd1d55ea87f7855a744a8425a64695b6fca237d1dad1"
 
 [[package]]
 name = "spinoff"
-version = "0.5.1"
+version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "01e1a863da0489c765f2642597c8d367a0a3939184b4775306d7fffdb455d952"
+checksum = "7d3f754b5a185a81fa60acbd32f095411e276743d27307a531d34eae5d49c991"
 dependencies = [
  "maplit",
  "once_cell",
