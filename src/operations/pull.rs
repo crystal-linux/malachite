@@ -73,7 +73,7 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
                 .unwrap();
         }
         // Return to root dir
-        env::set_current_dir(root_dir).unwrap();
+        env::set_current_dir(&root_dir).unwrap();
         log!(
             verbose,
             "Returned to root dir: {:?}",
@@ -87,6 +87,14 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
 
             // Push to build
             crate::operations::build(&packages_to_rebuild, vec![], params.no_regen, verbose);
+            
+            // Ensure you are in root dir
+            env::set_current_dir(root_dir).unwrap();
+            log!(
+                verbose,
+                "Returned to root dir: {:?}",
+                env::current_dir().unwrap()
+            );
         }
     }
 }
