@@ -63,6 +63,10 @@ pub enum Operation {
         /// Does not regenerate repository after pulling given package(s). This only applies if build_on_update is set to true in repository config
         #[clap(short = 'n', long = "no-regen", action = ArgAction::SetTrue)]
         no_regen: bool,
+
+        /// Will not prompt for confirmation before rebuilding a package
+        #[clap(long, action = ArgAction::SetTrue)]
+        no_confirm: bool,
     },
 
     /// Create and/or open local config file

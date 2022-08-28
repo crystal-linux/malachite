@@ -162,7 +162,10 @@ pub fn info(verbose: bool) {
             .unwrap();
 
         // Stop the spinner with a success message
-        sp.success(&"Done!".bold());
+        let text = format!("{}", "Parsing Git Info... Done".bold());
+        let symbol = format!("{}", "✔".bold().green());
+
+        sp.stop_and_persist(&symbol, &text);
         log!(verbose, "Repos: {:?}", repos);
     }
 

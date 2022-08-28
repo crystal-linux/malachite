@@ -2,7 +2,7 @@ use std::env;
 use std::process::Command;
 
 use crate::info;
-use crate::{crash, internal::AppExitCode, log};
+use crate::{crash, internal::AppExitCode, log, prompt};
 
 struct PullParams {
     smart_pull: bool,
@@ -10,7 +10,7 @@ struct PullParams {
     no_regen: bool,
 }
 
-fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
+fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams, no_confirm: bool) {
     for repo in repos {
         // Set root dir to return after each git pull
         let root_dir = env::current_dir().unwrap();
@@ -54,9 +54,16 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
 
                 // If build_on_update is set, rebuild package
                 if params.build_on_update {
-                    info!("Package {} updated, staging for rebuild", &repo);
-                    log!(verbose, "Pushing package {} to be rebuilt", &repo);
-                    packages_to_rebuild.push(repo);
+                    if no_confirm {
+                        packages_to_rebuild.push(repo);
+                    } else {
+                        let cont = prompt!(default true, "Rebuild package {}?", &repo);
+                        if cont {
+                            info!("Package {} updated, staging for rebuild", &repo);
+                            log!(verbose, "Pushing package {} to be rebuilt", &repo);
+                            packages_to_rebuild.push(repo);
+                        }
+                    }
                 }
             } else {
                 // If there are no changes, alert the user
@@ -87,7 +94,7 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
 
             // Push to build
             crate::operations::build(&packages_to_rebuild, vec![], params.no_regen, verbose);
-            
+
             // Ensure you are in root dir
             env::set_current_dir(root_dir).unwrap();
             log!(
@@ -99,7 +106,13 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
     }
 }
 
-pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: bool) {
+pub fn pull(
+    packages: Vec<String>,
+    exclude: &[String],
+    verbose: bool,
+    no_regen: bool,
+    no_confirm: bool,
+) {
     // Read config file
     let config = crate::parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
@@ -187,5 +200,6 @@ pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: 
             build_on_update,
             no_regen,
         },
+        no_confirm,
     );
 }

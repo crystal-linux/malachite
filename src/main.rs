@@ -58,8 +58,11 @@ fn main() {
             operations::build(&packages, exclude.clone(), no_regen, verbose);
         }
         Operation::Pull {
-            packages, no_regen, ..
-        } => operations::pull(packages, exclude, verbose, no_regen),
+            packages,
+            no_regen,
+            no_confirm,
+            ..
+        } => operations::pull(packages, exclude, verbose, no_regen, no_confirm),
         Operation::RepoGen => {
             if !repository(verbose) {
                 crash!(

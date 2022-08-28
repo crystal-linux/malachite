@@ -28,6 +28,13 @@ macro_rules! crash {
     }
 }
 
+#[macro_export]
+macro_rules! prompt {
+    (default $default:expr, $($arg:tt)+) => {
+        $crate::internal::strings::prompt_fn(&format!($($arg)+), $default)
+    };
+}
+
 pub fn info_fn(msg: &str) {
     println!("{} {}", LOGO_SYMBOL.green(), msg.bold());
 }
@@ -48,4 +55,21 @@ pub fn log_fn(msg: &str, verbose: bool) {
 pub fn crash_fn(msg: &str, exit_code: AppExitCode) {
     println!("{} {}", ERR_SYMBOL.red(), msg.bold());
     exit(exit_code as i32);
+}
+
+pub fn prompt_fn(msg: &str, default: bool) -> bool {
+    let yn = if default { "[Y/n]" } else { "[y/N]" };
+    print!("{} {} {}", "?".bold().green(), msg.bold(), yn);
+    let mut input = String::new();
+    std::io::stdin().read_line(&mut input).unwrap();
+
+    let input = input.trim().to_lowercase();
+
+    if input == "y" || input == "yes" {
+        true
+    } else if input == "n" || input == "no" {
+        false
+    } else {
+        default
+    }
 }
