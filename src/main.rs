@@ -60,9 +60,9 @@ fn main() {
         Operation::Pull {
             packages,
             no_regen,
-            no_confirm,
+            interactive,
             ..
-        } => operations::pull(packages, exclude, verbose, no_regen, no_confirm),
+        } => operations::pull(packages, exclude, verbose, no_regen, interactive),
         Operation::RepoGen => {
             if !repository(verbose) {
                 crash!(

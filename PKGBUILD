@@ -3,7 +3,7 @@
 # Developer:  Michal S <michal[at]tar[dot]black>
 
 pkgname=malachite
-pkgver=2.0.0
+pkgver=2.1.0
 pkgrel=1
 pkgdesc="Tool for packaging and maintaining pacman repositories"
 arch=('x86_64')

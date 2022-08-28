@@ -10,7 +10,7 @@ struct PullParams {
     no_regen: bool,
 }
 
-fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams, no_confirm: bool) {
+fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams, interactive: bool) {
     for repo in repos {
         // Set root dir to return after each git pull
         let root_dir = env::current_dir().unwrap();
@@ -54,15 +54,17 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams, no_con
 
                 // If build_on_update is set, rebuild package
                 if params.build_on_update {
-                    if no_confirm {
-                        packages_to_rebuild.push(repo);
-                    } else {
+                    if interactive {
                         let cont = prompt!(default true, "Rebuild package {}?", &repo);
                         if cont {
                             info!("Package {} updated, staging for rebuild", &repo);
                             log!(verbose, "Pushing package {} to be rebuilt", &repo);
                             packages_to_rebuild.push(repo);
+                        } else {
+                            info!("Not rebuilding package {}", &repo);
                         }
+                    } else {
+                        packages_to_rebuild.push(repo);
                     }
                 }
             } else {
@@ -111,7 +113,7 @@ pub fn pull(
     exclude: &[String],
     verbose: bool,
     no_regen: bool,
-    no_confirm: bool,
+    interactive: bool,
 ) {
     // Read config file
     let config = crate::parse_cfg(verbose);
@@ -200,6 +202,6 @@ pub fn pull(
             build_on_update,
             no_regen,
         },
-        no_confirm,
+        interactive,
     );
 }

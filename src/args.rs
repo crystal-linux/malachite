@@ -64,9 +64,9 @@ pub enum Operation {
         #[clap(short = 'n', long = "no-regen", action = ArgAction::SetTrue)]
         no_regen: bool,
 
-        /// Will not prompt for confirmation before rebuilding a package
+        /// Will prompt for confirmation before rebuilding a package
         #[clap(long, action = ArgAction::SetTrue)]
-        no_confirm: bool,
+        interactive: bool,
     },
 
     /// Create and/or open local config file
