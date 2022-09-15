@@ -8,6 +8,7 @@ struct PullParams {
     smart_pull: bool,
     build_on_update: bool,
     no_regen: bool,
+    no_deps: bool,
 }
 
 fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
@@ -86,7 +87,7 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
             log!(verbose, "Rebuilding packages: {:?}", &packages_to_rebuild);
 
             // Push to build
-            crate::operations::build(&packages_to_rebuild, vec![], params.no_regen, verbose);
+            crate::operations::build(&packages_to_rebuild, vec![], params.no_regen, verbose, params.no_deps);
             
             // Ensure you are in root dir
             env::set_current_dir(root_dir).unwrap();
@@ -99,7 +100,7 @@ fn do_the_pulling(repos: Vec<String>, verbose: bool, params: &PullParams) {
     }
 }
 
-pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: bool) {
+pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: bool, no_deps: bool) {
     // Read config file
     let config = crate::parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
@@ -186,6 +187,7 @@ pub fn pull(packages: Vec<String>, exclude: &[String], verbose: bool, no_regen: 
             smart_pull,
             build_on_update,
             no_regen,
+            no_deps,
         },
     );
 }

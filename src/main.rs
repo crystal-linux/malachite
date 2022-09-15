@@ -47,7 +47,7 @@ fn main() {
     match args.subcommand.unwrap_or(Operation::Clone) {
         Operation::Clone => operations::clone(verbose),
         Operation::Build {
-            packages, no_regen, ..
+            packages, no_regen, no_deps, ..
         } => {
             if !repository(verbose) {
                 crash!(
@@ -55,11 +55,11 @@ fn main() {
                     "Cannot build packages in workspace mode"
                 );
             }
-            operations::build(&packages, exclude.clone(), no_regen, verbose);
+            operations::build(&packages, exclude.clone(), no_regen, verbose, no_deps);
         }
         Operation::Pull {
-            packages, no_regen, ..
-        } => operations::pull(packages, exclude, verbose, no_regen),
+            packages, no_regen, no_deps, ..
+        } => operations::pull(packages, exclude, verbose, no_regen, no_deps),
         Operation::RepoGen => {
             if !repository(verbose) {
                 crash!(

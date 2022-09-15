@@ -27,6 +27,10 @@ pub enum Operation {
         /// Does not regenerate repository after building given package(s)
         #[clap(short = 'n', long = "no-regen", action = ArgAction::SetTrue)]
         no_regen: bool,
+
+        /// Disables makepkg dependency checking
+        #[clap(short = 'd', long = "no-deps", action = ArgAction::SetTrue)]
+        no_deps: bool,
     },
 
     /// Generates Pacman repository from built packages
@@ -63,6 +67,10 @@ pub enum Operation {
         /// Does not regenerate repository after pulling given package(s). This only applies if build_on_update is set to true in repository config
         #[clap(short = 'n', long = "no-regen", action = ArgAction::SetTrue)]
         no_regen: bool,
+
+        /// Disables makepkg dependency checking
+        #[clap(short = 'd', long = "no-deps", action = ArgAction::SetTrue)]
+        no_deps: bool,
     },
 
     /// Create and/or open local config file

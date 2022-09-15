@@ -2,7 +2,7 @@ use crate::internal::structs::{ErroredPackage, Repo};
 use crate::internal::AppExitCode;
 use crate::{crash, info, log, repository};
 
-pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose: bool) {
+pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose: bool, no_deps: bool) {
     // Read config struct from mlc.toml
     let config = crate::internal::parse_cfg(verbose);
     log!(verbose, "Config: {:?}", config);
@@ -51,7 +51,7 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
                 // Otherwise, build
                 log!(verbose, "Building {}", pkg);
 
-                let code = repository::build(pkg, sign, verbose);
+                let code = repository::build(pkg, sign, verbose, no_deps);
                 log!(
                     verbose,
                     "Package {} finished with exit code: {:?}",
@@ -87,7 +87,7 @@ pub fn build(packages: &[String], exclude: Vec<String>, no_regen: bool, verbose:
         for pkg in repos {
             log!(verbose, "Building {}", pkg.name);
 
-            let code = repository::build(&pkg.name, sign, verbose);
+            let code = repository::build(&pkg.name, sign, verbose, no_deps);
             log!(
                 verbose,
                 "Package {} finished with exit code: {:?}",

@@ -5,7 +5,7 @@ use std::{env, fs};
 use crate::internal::AppExitCode;
 use crate::{crash, log};
 
-pub fn build(pkg: &str, sign: bool, verbose: bool) -> i32 {
+pub fn build(pkg: &str, sign: bool, verbose: bool, no_deps: bool) -> i32 {
     log!(verbose, "Building {}", pkg);
     log!(verbose, "Signing: {}", sign);
 
@@ -39,8 +39,10 @@ pub fn build(pkg: &str, sign: bool, verbose: bool) -> i32 {
         return 63;
     }
 
+    let makepkg_command: &str = if no_deps { "makepkg -d" } else { "makepkg" };
+
     // Build each package
-    let a = Command::new("makepkg")
+    let a = Command::new(makepkg_command)
         .args(&[
             "-sf",
             "--skippgpcheck",
