@@ -4,6 +4,7 @@ use std::process::Command;
 use crate::info;
 use crate::{crash, internal::AppExitCode, log};
 
+#[allow(clippy::struct_excessive_bools)]
 struct PullParams {
     smart_pull: bool,
     build_on_update: bool,
