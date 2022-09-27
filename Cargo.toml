@@ -1,13 +1,13 @@
 [package]
 name = "Malachite"
 version = "2.1.0"
-authors = [ "michal <michal@tar.black>" ]
+authors = ["michal <michal@tar.black>"]
 edition = "2021"
 description = "Packaging tool for pacman repositories"
 repository = "https://github.com/crystal-linux/malachite"
 license-file = "LICENSE"
-keywords = [ "pacman", "repository", "packaging" ]
-categories = [ "filesystem", "development-tools" ]
+keywords = ["pacman", "repository", "packaging"]
+categories = ["filesystem", "development-tools"]
 
 [[bin]]
 name = "mlc"
@@ -20,16 +20,20 @@ lto = "fat"
 codegen-units = 1
 
 [dependencies]
+
 clap = { version = "3.2.8", features = ["derive", "suggestions"] }
 toml = { version = "0.5.9", default-features = false }
 serde = { version = "1.0.139", default-features = false }
 serde_derive = { version = "1.0.139", default-features = false }
 libc = { version = "0.2.126", default-features = false }
 colored = { version = "2.0.0", default-features = false }
-tabled = { version = "0.8.0", default-features = false, features = ["derive", "color"] }
+tabled = { version = "0.8.0", default-features = false, features = [
+    "derive",
+    "color",
+] }
 crossterm = { version = "0.25.0", default-features = false }
 regex = { version = "1.6.0", default-features = false, features = ["std"] }
-spinoff = { version = "0.5.3", default-features = false }
+spinoff = { version = "0.5.4", default-features = false }
 rm_rf = { version = "0.6.2", default-features = false }
 
 [target.'cfg(target_os = "linux")'.dependencies]
