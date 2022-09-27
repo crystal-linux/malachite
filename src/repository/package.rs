@@ -39,14 +39,26 @@ pub fn build(pkg: &str, sign: bool, verbose: bool) -> i32 {
         return 63;
     }
 
+    // Parse extra flags from envvar
+    let extra_flags = env::var("MAKEPKG_FLAGS").unwrap_or_else(|_| "".to_string());
+    let extra_flags = extra_flags.split(' ').collect::<Vec<&str>>();
+
+    // Default set of flags
+    let default_args = vec![
+        "-sf",
+        "--skippgpcheck",
+        if sign { "--sign" } else { "--nosign" },
+        "--noconfirm",
+    ];
+
     // Build each package
     let a = Command::new("makepkg")
-        .args(&[
-            "-sf",
-            "--skippgpcheck",
-            if sign { "--sign" } else { "--nosign" },
-            "--noconfirm",
-        ])
+        .args(
+            default_args
+                .iter()
+                .chain(extra_flags.iter())
+                .map(std::string::ToString::to_string),
+        )
         .spawn()
         .unwrap()
         .wait()
