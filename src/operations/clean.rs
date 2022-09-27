@@ -12,6 +12,9 @@ pub fn clean(verbose: bool, force: bool) {
     // Remove mlc.toml and .git from output
     dirs.retain(|x| *x != "./mlc.toml" && *x != ".\\mlc.toml");
     dirs.retain(|x| *x != "./.git" && *x != ".\\.git");
+    dirs.retain(|x| *x != "./.gitignore" && *x != ".\\.gitignore");
+    dirs.retain(|x| *x != "./.gitmodules" && *x != ".\\.gitmodules");
+    dirs.retain(|x| *x != "./README.md" && *x != ".\\README.md");
 
     let mut unclean_dirs = vec![];
 
