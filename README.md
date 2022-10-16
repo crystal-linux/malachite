@@ -6,6 +6,9 @@
 
 <h2 align="center">Malachite</h2>
 
+**NOTE**: As a trial, Malachite's development currently takes place at https://git.getcryst.al/crystal/software/malachite
+
+
 <p align="center">
     <a href="https://github.com/crystal-linux/.github/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-blue.svg" alt="License">
     <a href="https://github/crystal-linux/malachite"><img alt="GitHub isses" src="https://img.shields.io/github/issues-raw/crystal-linux/malachite"></a>
